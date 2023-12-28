@@ -33,7 +33,6 @@ const categorylist=async (req,res)=>{
 
 const addCategory=(req,res)=>{
     if(req.session.AdminsId){
-        console.log("123233",87977);
         res.render('admin/addCategory')
     }
   
@@ -51,7 +50,6 @@ const categoryAddedPost= async (req,res)=>{
         }
         await CategoryDB.insertMany([categoryData]);
         // req.session.categoryAdded=true
-        console.log(9090909);
             res.redirect('/admin/categorylist')
     }catch (err){
         console.error(err);
@@ -73,12 +71,9 @@ if(req.session.AdminsId){
         try{
             // console.log(req.params.id);
             console.log(3333333333333);
-            // res.send('its unblocked')
             const categoryIdToUpdate=req.params.id
             const categoryName=await CategoryDB.find({_id:categoryIdToUpdate},{name:1,_id:0})
             const updatedCategory = await CategoryDB.updateOne({ _id: categoryIdToUpdate }, { $set: { isAvailable: false } });
-    // console.log(updatedCategory);
-    // res.send(userName)
     res.redirect('/admin/categoryList')
         } catch (err){
             console.error(err);
@@ -92,7 +87,6 @@ const show=  async (req,res)=>{
     if(req.session.AdminsId){
         try{
             console.log("show hb");
-            // console.log(req.params.id);
             const categoryIdToUpdate=req.params.id
             const categoryName=await CategoryDB.find({_id:categoryIdToUpdate},{name:1,_id:0})
             console.log(categoryName);

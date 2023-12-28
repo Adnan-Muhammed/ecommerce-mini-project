@@ -11,7 +11,6 @@ const userlist = async (req, res) => {
     if(req.session.AdminsId){
         try {
 
-            console.log(2020202);
             
             
             const users = await userDB.find();
@@ -45,13 +44,11 @@ const userlist = async (req, res) => {
 const blocking=  async (req,res)=>{
     if(req.session.AdminsId){
         try{
-            // console.log('blocking');
             console.log(req.params.id);
             const userIdToUpdate=req.params.id
             const userName=await userDB.find({_id:userIdToUpdate},{name:1,_id:0})
             const updatedUser = await userDB.updateOne({ _id: userIdToUpdate }, { $set: { isBlocked: true } });
             req.session.Blocked=true
-    console.log(updatedUser);
     res.redirect('/admin/userList')
         } catch (err){
     console.error(err);

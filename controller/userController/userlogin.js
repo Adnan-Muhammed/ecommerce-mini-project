@@ -5,9 +5,7 @@ const   userSignIn=  async (req,res)=>{
     try{
         const {email_Id,password}=req.body
 
-        console.log("3333333333333333333");
         const user=await userDB.findOne({email:email_Id},{name:1,email:1,password:1,isBlocked:1})
-        console.log(user.password, 12337777777777)
         const isAdminBlockedUser=(user.isBlocked==true)?true:false
 
 console.log(isAdminBlockedUser,true,false);
@@ -20,7 +18,6 @@ console.log(isAdminBlockedUser,true,false);
         res.redirect('/')
             }
                 if(user.password!=password){
-                console.log("hai");
                 const iserror="yes"
                 req.session.error= iserror//true
                 res.redirect('/loginpage')
@@ -29,18 +26,7 @@ console.log(isAdminBlockedUser,true,false);
             req.session.Blocked=email_Id
             res.redirect('/loginpage')
         }
-    // if(user.password==password){
-    //     req.session.usersId=user.name
-    //     console.log('welcome to home');
-    //     res.render('user/home',{isLogged:user.name})
 
-    // }
-    //     if(user.password!=password){
-    //     console.log("hai");
-    //     const iserror="yes"
-    //     req.session.error= iserror//true
-    //     res.redirect('/loginpage')
-    //     }
     }
 
 

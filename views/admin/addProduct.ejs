@@ -15,38 +15,31 @@
             <div class="col-sm-12 col-xl-6">
                 <div class="bg-light rounded h-100 p-4">
                     <h6 class="mb-4">Add Product</h6>
+                  
                     <form action="/admin/productadded" method="post" enctype="multipart/form-data">
 
                         <div class="form-floating mb-3">
-                            <input type="name" class="form-control" id="productName" placeholder="productname"
-                                name="productName" required>
-                            <label for="floatingInput">product name</label>
+                          <input type="text" class="form-control" id="productName" placeholder="productname" name="productName">
+                          <label for="floatingInput">Product Name</label>
+                          <div id="productNameError" class="error" style="color: red;"></div>
                         </div>
-
+                    
                         <div class="form-floating mb-3">
-                            <input type="name" class="form-control" id="productName" placeholder="productquantity"
-                                name="productStock" required>
-                            <label for="floatingInput">stock</label>
+                          <input type="number" class="form-control" id="productStock" placeholder="productquantity" name="productStock"
+                          min="1" >
+                          <label for="floatingInput">Stock</label>
+                          <div id="productStockError" class="error" style="color: red;"></div>
                         </div>
-
+                    
                         <div class="form-floating mb-3">
-                            <input type="number" class="form-control" id="productPrice" placeholder="productPrice"
-                                name="productPrice" required>
-                            <label for="productPrice">price</label>
+                          <input type="number" class="form-control" id="productPrice" placeholder="productPrice" name="productPrice"
+                          min="1">
+                          <label for="productPrice">Price</label>
+                          <div id="productPriceError" class="error" style="color: red;"></div>
                         </div>
-
-                        <!-- <%if(locals.categoryList){%>
-                                <div class="form-floating mb-3">
-                                    <select class="form-select" name="productCategory" id="floatingSelect" aria-label="Floating label select example">
-                                        <% categoryList.forEach(category => { %>
-                                            <option name="productCategory" value="<%= category._id %>" ><%= category.name %></option>
-                                        <% }); %>
-                                    </select>
-                                    <label for="floatingSelect">Select Category</label>
-                                </div>
-                            <%}%> -->
-
-
+                    
+                        
+                    
 
                         <% if (locals.categoryList) { %>
                             <div class="form-floating mb-3">
@@ -65,28 +58,23 @@
 
 
 
+                        <div class="mb-3">
+                          <label for="formFileMultiple" class="form-label">Multiple files input example (Max 6 files)</label>
+                          <input class="form-control" type="file" name="images" id="formFileMultiple" multiple>
+                          <p id="imageError" class="error" style="color: red;"></p>
+                        </div>
 
+                        <div class="form-floating">
+                            <textarea name="productDescription" class="form-control" placeholder="Leave a comment here" id="floatingTextarea"
+                              style="height: 150px;"></textarea>
+                            <label for="floatingTextarea">Description</label>
+                            <div id="productDescriptionError" class="error" style="color: red;"></div>
+                          </div>
+                    
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                      </form>
+                    
 
-
-
-
-                                <div class="mb-3">
-                                    <label for="formFileMultiple" class="form-label">Multiple files input
-                                        example</label>
-                                    <!-- <input class="form-control" type="file" id="formFileMultiple" multiple> -->
-                                    <input class="form-control" type="file" name="images" id="formFileMultiple" multiple
-                                        required>
-                                </div>
-
-
-                                <div class="form-floating">
-                                    <textarea name="productDescription" class="form-control"
-                                        placeholder="Leave a comment here" id="floatingTextarea" style="height: 150px;"
-                                        required></textarea>
-                                    <label for="floatingTextarea">Description</label>
-                                </div>
-                                <button type="submit" class="btn btn-primary">Submit</button>
-                    </form>
                 </div>
             </div>
 
@@ -122,4 +110,90 @@
     <!-- Back to Top -->
     <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
     </div>
+
+    
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const form = document.querySelector('form[action="/admin/productadded"]');
+
+      form.addEventListener('submit', function (event) {
+        let valid = true;
+
+        // Reset previous error messages
+        const errorFields = form.querySelectorAll('.error');
+        errorFields.forEach(function (error) {
+          error.textContent = '';
+        });
+
+        // Validate Product Name
+        const productName = form.querySelector('input[name="productName"]').value.trim();
+        if (productName === '') {
+          valid = false;
+          displayError('Product Name is required.', 'productNameError');
+        }
+
+        // Validate Stock
+        const productStock = form.querySelector('input[name="productStock"]').value.trim();
+        if (productStock === '') {
+          valid = false;
+          displayError('Stock is required.', 'productStockError');
+        }
+
+        // Validate Price
+        const productPrice = form.querySelector('input[name="productPrice"]').value.trim();
+        if (productPrice === '') {
+          valid = false;
+          displayError('Price is required.', 'productPriceError');
+        }
+
+        // Validate Description
+        const productDescription = form.querySelector('textarea[name="productDescription"]').value.trim();
+        if (productDescription === '') {
+          valid = false;
+          displayError('Description is required.', 'productDescriptionError');
+        }
+
+        // Validate Image Upload
+        const images = form.querySelector('input[name="images"]');
+        const imageFiles = images.files;
+
+        if (imageFiles.length > 6) {
+          valid = false;
+          displayError('Maximum of 6 files allowed.', 'imageError');
+        } else {
+          for (let i = 0; i < imageFiles.length; i++) {
+            const file = imageFiles[i];
+            const fileType = file.type;
+
+            if (!fileType.startsWith('image/')) {
+              valid = false;
+              displayError('Invalid file type. Please upload only images.', 'imageError');
+              break;
+            }
+          }
+        }
+
+        if (imageFiles.length === 0) {
+          valid = false;
+          displayError('Image(s) are required.', 'imageError');
+        }
+
+        if (!valid) {
+          event.preventDefault(); // Prevent form submission if validation fails
+        }
+      });
+
+      function displayError(message, errorFieldId) {
+        const errorField = document.getElementById(errorFieldId);
+        errorField.textContent = message;
+      }
+    });
+  </script>
+
+
+
+
+
     <%-include('footer')-%>

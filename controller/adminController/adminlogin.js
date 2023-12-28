@@ -4,7 +4,6 @@ const adminPassword="adnan1234"
 
 const adminlogin=(req,res)=>{
     if(!req.session.AdminsId){
-        console.log(100000);
     if(req.session.wrongId){
         req.session.wrongId=null
         res.render('admin/sign-in',{isAlert:true})
@@ -30,7 +29,6 @@ const admindashboardPost=(req,res)=>{
     const {admin_id,password}=req.body
     if(admin_id==adminId &&  password==adminPassword){
         req.session.AdminsId=true
-        console.log(4444444);
         res.redirect('/admin/admindashboard')
     }
     else{

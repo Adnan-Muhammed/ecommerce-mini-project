@@ -3,11 +3,7 @@ const CategoryDB=require('../../models/category')
 const productDB = require('../../models/product');
 const multer = require('multer');
 const path = require('path');
-// const { log } = require('console');
-const upload = multer({ dest: 'public/uploads/' }); // Adjust the destination directory
-
-
-
+const upload = multer({ dest: 'public/uploads/' }); 
 
 
 const productlist=async (req,res)=>{
@@ -40,7 +36,6 @@ const addProduct=async(req,res)=>{
     try{
         console.log('rrrrr');
         const categoryList=await CategoryDB.find({isAvailable:true},{name:1,_id:0})
-        console.log(categoryList);
     res.render('admin/addproduct',{categoryList})
     }catch(err){
         console.error(err);
@@ -75,8 +70,6 @@ const productadded = async (req, res) => {
                 description: req.body.productDescription,
                 image: newImages, 
             };
-            console.log(6574838382);
-            console.log(newProduct);
             await productDB.insertMany([newProduct])
             req.session.productAdded=newProduct
 

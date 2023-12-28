@@ -4,8 +4,8 @@ const path=require("path")
 // const bodyParser = require('body-parser');
 const session=require("express-session")
 const logger=require('morgan')
-const nodemailer = require('nodemailer');
-const otpGenerator = require('otp-generator');
+// const nodemailer = require('nodemailer');
+// const otpGenerator = require('otp-generator');
 
 const userRoute=require('./router/userRouter')
 const adminRoute=require('./router/adminRouter')
@@ -54,11 +54,6 @@ app.set("views", path.join(__dirname, "views")); // Assuming your views are in a
 
 // app.use(logger('dev'));
 app.use(express.static(path.join(__dirname, 'public')));
-
-// app.use(express.json());
-// app.use(bodyParser.urlencoded({ extended: true }));
-
-// app.use(express.urlencoded({ extended: true }));
 
 app.use(express.static('public'))
 

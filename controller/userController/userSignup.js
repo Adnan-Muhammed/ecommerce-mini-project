@@ -14,7 +14,6 @@ let isLogged
 
 
 const userlogin=(req, res) => {
-    console.log('login1111');
     if( req.session.error){
         req.session.error=null
         console.log(1);
@@ -33,7 +32,6 @@ const userlogin=(req, res) => {
         return res.render('user/user-login',{isAlert3:true})
     }
     if(!req.session.usersId){
-        console.log();
         res.render('user/user-login'); 
     }
     }
@@ -41,8 +39,7 @@ const userlogin=(req, res) => {
 
 
 const userSignupGet=(req,res)=>{
-    // console.log('user-signup');
-    // res.render('user/user-register')
+ 
 
     if ( !req.session.usersId ) {
         console.log(777777);
@@ -65,7 +62,7 @@ const userSignupGet=(req,res)=>{
 
 
 const nodemailer = require('nodemailer');
-const { log } = require('util');
+// const { log } = require('util');
 const userSignupPost = async (req, res) => {
     try {
         req.session.otp=null
@@ -113,17 +110,16 @@ const userSignupPost = async (req, res) => {
 
 
 
-            transporter.sendMail(mailOptions, function(error, info) {
-                if (error) {
-                    console.log(error);
-                } else {
-                    console.log(otp , 1010101);
-                    console.log('Email sent: ' + info.response);
-                }
-            });
+            // transporter.sendMail(mailOptions, function(error, info) {
+            //     if (error) {
+            //         console.log(error);
+            //     } else {
+            //         console.log(otp , 1010101);
+            //         console.log('Email sent: ' + info.response);
+            //     }
+            // });
             // Redirect after sending the email
             // req.session.otp=otp
-            console.log(900000000);
 
 
             res.redirect('/otpPage');
@@ -150,7 +146,6 @@ const userSignupPost = async (req, res) => {
    
     // Redirect after sending the email
   
-    console.log(900000000);
 
 
 
@@ -187,9 +182,7 @@ const otpPage=async (req,res)=>{
 const otpVerificationPost = (req, res) => {
     try {
         const enteredOTP = req.body.otpform; // Assuming the input name in the form is 'otpform'
-        // const storedOTP = req.session.otp;
-        // console.log(storedOTP,5666);
-        // console.log(req.session.otp,888);
+    
         console.log(191919191);
         if(otp==null){
         //   return  res.render('user/user-otp', { error: 'Invalid its expired' });

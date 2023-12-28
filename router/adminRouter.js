@@ -1,13 +1,12 @@
-
-
-
 const express = require('express');
 const router = express.Router();
 const adminController = require('../controller/adminController/adminlogin.js');
 const categoryManagement = require('../controller/adminController/categorymanagement.js');
 const productManagement = require('../controller/adminController/productmanagement.js');
 const userManagement = require('../controller/adminController/usermanagement.js');
+
 const session = require('express-session');
+
 
 
 
