@@ -1,0 +1,161 @@
+<%-include('header')-%>
+
+    <!--Body Content-->
+    <div id="page-content">
+    	<!--Page Title-->
+    	<div class="page section-header text-center">
+			<div class="page-title">
+        		<div class="wrapper"><h1 class="page-width">Login</h1></div>
+      		</div>
+		</div>
+        <!--End Page Title-->
+        
+        <div class="container">
+        	<div class="row">
+                
+                <div class="col-12 col-sm-12 col-md-6 col-lg-6 main-col offset-md-3">
+                  
+                	<div class="mb-4">
+                            <!-- <div  class="card-header    errorAlert" >
+                                <p>Incorrect password. Please try again.</p>
+                             </div> -->
+
+
+                             <%if(locals.isAlert){     %>
+                                <div  class="card-header rounded bg-danger text-white   errorAlert" >
+                                    <p>Incorrect password. Please try again.</p>
+                                 </div>
+                            <% } %>
+        
+                            <%if(locals.isAlert2){     %>
+                                <div  class="card-header rounded bg-danger text-white   errorAlert" >
+                                    <p>User not found. Please sign up.</p>
+                                 </div>
+                            <% } %>
+
+                            <%if(locals.isAlert3){     %>
+                                <div  class="card-header rounded bg-danger text-white   errorAlert" >
+                                    <p>User is Blocked</p>
+                                 </div>
+                            <% } %>
+
+                   
+                       <form method="post" action="/signin" id="CustomerLoginForm" accept-charset="UTF-8" class="contact-form">	
+                          <div class="row">
+                            <div class="col-12 col-sm-12 col-md-12 col-lg-12">
+                                <div class="form-group">
+                                    <label for="CustomerEmail">Email</label>
+                                    <input type="email" name="email_Id" placeholder="" id="CustomerEmail" class="" autocorrect="off" autocapitalize="off" autofocus="">
+                                </div>
+                            </div>
+                            <div class="col-12 col-sm-12 col-md-12 col-lg-12">
+                                <div class="form-group">
+                                    <label for="CustomerPassword">Password</label>
+                                    <input type="password" value="" name="password" placeholder="" id="CustomerPassword" class="">                        	
+                                </div>
+                            </div>
+                          </div>
+                          <div class="row">
+                            <div class="text-center col-12 col-sm-12 col-md-12 col-lg-12">
+                                <input type="submit" class="btn mb-3" value="Sign In">
+                                <p class="mb-4">
+									<a href="#" id="RecoverPassword">Forgot your password?</a> &nbsp; | &nbsp;
+								    <a href="register.html" id="customer_register_link">Create account</a>
+                                </p>
+                            </div>
+                         </div>
+                     </form>
+                    </div>
+               	</div>
+            </div>
+        </div>
+        
+    </div>
+    <!--End Body Content-->
+    
+    <!--Footer-->
+    <footer id="footer">
+        
+        <div class="site-footer">
+        	<div class="container">
+     			<!--Footer Links-->
+            	<div class="footer-top">
+                	<div class="row">
+                    	<div class="col-12 col-sm-12 col-md-3 col-lg-3 footer-links">
+                        	<h4 class="h4">Quick Shop</h4>
+                            <ul>
+                            	<li><a href="#">Women</a></li>
+                                <li><a href="#">Men</a></li>
+                                <li><a href="#">Kids</a></li>
+                                <li><a href="#">Sportswear</a></li>
+                                <li><a href="#">Sale</a></li>
+                            </ul>
+                        </div>
+                        <div class="col-12 col-sm-12 col-md-3 col-lg-3 footer-links">
+                        	<h4 class="h4">Informations</h4>
+                            <ul>
+                            	<li><a href="#">About us</a></li>
+                                <li><a href="#">Careers</a></li>
+                                <li><a href="#">Privacy policy</a></li>
+                                <li><a href="#">Terms &amp; condition</a></li>
+                                <li><a href="#">My Account</a></li>
+                            </ul>
+                        </div>
+                        <div class="col-12 col-sm-12 col-md-3 col-lg-3 footer-links">
+                        	<h4 class="h4">Customer Services</h4>
+                            <ul>
+                            	<li><a href="#">Request Personal Data</a></li>
+                                <li><a href="#">FAQ's</a></li>
+                                <li><a href="#">Contact Us</a></li>
+                                <li><a href="#">Orders and Returns</a></li>
+                                <li><a href="#">Support Center</a></li>
+                            </ul>
+                        </div>
+                        <div class="col-12 col-sm-12 col-md-3 col-lg-3 contact-box">
+                        	<h4 class="h4">Contact Us</h4>
+                            <ul class="addressFooter">
+                            	<li><i class="icon anm anm-map-marker-al"></i><p>55 Gallaxy Enque,<br>2568 steet, 23568 NY</p></li>
+                                <li class="phone"><i class="icon anm anm-phone-s"></i><p>(440) 000 000 0000</p></li>
+                                <li class="email"><i class="icon anm anm-envelope-l"></i><p>sales@yousite.com</p></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <!--End Footer Links-->
+                <hr>
+              
+            </div>
+        </div>
+    </footer>
+    <!--End Footer-->
+    <!--Scoll Top-->
+    <span id="site-scroll"><i class="icon anm anm-angle-up-r"></i></span>
+    <!--End Scoll Top-->
+   
+    <script>
+
+        setTimeout(()=>{
+            const AlertDiv=document.querySelector('.errorAlert')
+            if(AlertDiv){
+                AlertDiv.remove()
+            }
+        },3000)
+       </script>
+
+
+     <!-- Including Jquery -->
+     <script src="/assets/js/vendor/jquery-3.3.1.min.js"></script>
+     <script src="/assets/js/vendor/jquery.cookie.js"></script>
+     <script src="/assets/js/vendor/modernizr-3.6.0.min.js"></script>
+     <script src="/assets/js/vendor/wow.min.js"></script>
+     <!-- Including Javascript -->
+     <script src="/assets/js/bootstrap.min.js"></script>
+     <script src="/assets/js/plugins.js"></script>
+     <script src="/assets/js/popper.min.js"></script>
+     <script src="/assets/js/lazysizes.js"></script>
+     <script src="/assets/js/main.js"></script>
+</div>
+</body>
+
+<!-- belle/login.html   11 Nov 2019 12:22:27 GMT -->
+</html>

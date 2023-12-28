@@ -1,0 +1,102 @@
+<%- include('header') %>
+
+<!-- Table Start -->
+<div class="container-fluid pt-4 px-4">
+    <%if(productList){%>
+        <div class="row g-4">
+            <div class="bg-light rounded h-100 p-4">
+    
+    
+                <h6 class="mb-4">Users List</h6>
+    
+                
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">index</th>
+                                <th scope="col">Product name</th>
+                                <th scope="col">image</th>
+                                <th scope="col">price</th>
+                                <th scope="col">stock</th>
+                                <th scope="col">category</th>
+                                <th scope="col">description</th>
+                                <th scope="col">action</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <%productList.forEach((product,index)=>{%>
+                                <tr>
+                                    <td><%=index +1%></td>
+                                    <td><%=product.name%></td>
+                                    
+
+
+                                   <td>
+                                    <img  
+                                    src="<%=product.image[0]%>" 
+                                    class="img-fluid  mx-auto mb-4"
+                                    style="width: 100px; height: 100px;"
+                                    alt="">
+                                   </td>
+
+
+
+                                        <td><%=product.price%></td>
+                                        <td><%=product.stock%></td>
+                                        <td><%=product.categoryName%></td>
+                                        <td><%=product.description%></td>
+                                        
+                                        
+                                        
+                                        
+                                        
+                                        <td>
+                                            <% if (product.isAvailable == true) { %>
+                                                <button class="btn btn-info block-btn" data-user-id="<%= product._id %>">Available</button>
+                                            <% } else { %>
+                                                <button class="btn btn-info unblock-btn" data-user-id="<%= product._id %>">unAvailable</button>
+                                            <% } %>
+                                        </td>
+
+
+
+
+                                </tr>
+                            <%})%>
+                        </tbody>
+
+
+
+
+
+
+
+
+                    </table>
+                </div>
+            </div>
+        </div> 
+        
+        
+
+
+
+
+    <%}else{%>
+        <h1>no data</h1>
+        <%}%>
+    
+</div>
+
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+   
+
+
+
+
+   
+
+<%- include('footer') %>

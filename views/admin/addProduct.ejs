@@ -1,0 +1,125 @@
+<%-include('header')-%>
+
+
+
+    <!-- Form Start -->
+
+
+    <div class="container-fluid pt-4 px-4">
+        <div class="row g-4">
+
+
+
+
+
+            <div class="col-sm-12 col-xl-6">
+                <div class="bg-light rounded h-100 p-4">
+                    <h6 class="mb-4">Add Product</h6>
+                    <form action="/admin/productadded" method="post" enctype="multipart/form-data">
+
+                        <div class="form-floating mb-3">
+                            <input type="name" class="form-control" id="productName" placeholder="productname"
+                                name="productName" required>
+                            <label for="floatingInput">product name</label>
+                        </div>
+
+                        <div class="form-floating mb-3">
+                            <input type="name" class="form-control" id="productName" placeholder="productquantity"
+                                name="productStock" required>
+                            <label for="floatingInput">stock</label>
+                        </div>
+
+                        <div class="form-floating mb-3">
+                            <input type="number" class="form-control" id="productPrice" placeholder="productPrice"
+                                name="productPrice" required>
+                            <label for="productPrice">price</label>
+                        </div>
+
+                        <!-- <%if(locals.categoryList){%>
+                                <div class="form-floating mb-3">
+                                    <select class="form-select" name="productCategory" id="floatingSelect" aria-label="Floating label select example">
+                                        <% categoryList.forEach(category => { %>
+                                            <option name="productCategory" value="<%= category._id %>" ><%= category.name %></option>
+                                        <% }); %>
+                                    </select>
+                                    <label for="floatingSelect">Select Category</label>
+                                </div>
+                            <%}%> -->
+
+
+
+                        <% if (locals.categoryList) { %>
+                            <div class="form-floating mb-3">
+                                <select class="form-select" name="productCategory" id="floatingSelect"
+                                    aria-label="Floating label select example">
+                                    <% categoryList.forEach(category=> { %>
+                                        <option>
+                                            <%= category.name %>
+                                        </option>
+                                        <% }); %>
+                                </select>
+                                <label for="floatingSelect">Select Category</label>
+                            </div>
+                            <% } %>
+
+
+
+
+
+
+
+
+
+                                <div class="mb-3">
+                                    <label for="formFileMultiple" class="form-label">Multiple files input
+                                        example</label>
+                                    <!-- <input class="form-control" type="file" id="formFileMultiple" multiple> -->
+                                    <input class="form-control" type="file" name="images" id="formFileMultiple" multiple
+                                        required>
+                                </div>
+
+
+                                <div class="form-floating">
+                                    <textarea name="productDescription" class="form-control"
+                                        placeholder="Leave a comment here" id="floatingTextarea" style="height: 150px;"
+                                        required></textarea>
+                                    <label for="floatingTextarea">Description</label>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Submit</button>
+                    </form>
+                </div>
+            </div>
+
+
+
+
+
+
+
+        </div>
+    </div>
+    <!-- Form End -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <!-- Footer Start -->
+
+    <!-- Footer End -->
+    </div>
+    <!-- Content End -->
+
+
+    <!-- Back to Top -->
+    <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
+    </div>
+    <%-include('footer')-%>

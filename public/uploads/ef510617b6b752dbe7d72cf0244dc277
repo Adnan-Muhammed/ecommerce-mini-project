@@ -1,0 +1,4 @@
+const snanner=require("readline-sync");
+
+let size=snanner.question("enter limit");
+console.log(size);
