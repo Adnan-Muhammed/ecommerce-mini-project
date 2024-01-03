@@ -1,5 +1,5 @@
-const adminId="adnan@gmail.com";
-const adminPassword="adnan1234"
+const adminId=process.env.ADMIN_ID
+const adminPassword=process.env.PASSWORD
 
 
 const adminlogin=(req,res)=>{

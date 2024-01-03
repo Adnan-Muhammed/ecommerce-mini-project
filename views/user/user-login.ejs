@@ -1,5 +1,4 @@
 <%-include('header')-%>
-
     <!--Body Content-->
     <div id="page-content">
     	<!--Page Title-->
@@ -35,23 +34,29 @@
 
                             <%if(locals.isAlert3){     %>
                                 <div  class="card-header rounded bg-danger text-white   errorAlert" >
+
+
                                     <p>User is Blocked</p>
                                  </div>
                             <% } %>
 
                    
-                       <form method="post" action="/signin" id="CustomerLoginForm" accept-charset="UTF-8" class="contact-form">	
+                       <form method="post" action="/login" id="CustomerLoginForm" accept-charset="UTF-8" class="contact-form">	
                           <div class="row">
                             <div class="col-12 col-sm-12 col-md-12 col-lg-12">
                                 <div class="form-group">
                                     <label for="CustomerEmail">Email</label>
-                                    <input type="email" name="email_Id" placeholder="" id="CustomerEmail" class="" autocorrect="off" autocapitalize="off" autofocus="">
+                                    <input type="" name="email_Id" placeholder="" id="CustomerEmail" class="" autocorrect="off" autocapitalize="off" autofocus="">
+                                    <div class="class" style="color: red;"></div>
+                                
                                 </div>
                             </div>
                             <div class="col-12 col-sm-12 col-md-12 col-lg-12">
                                 <div class="form-group">
                                     <label for="CustomerPassword">Password</label>
-                                    <input type="password" value="" name="password" placeholder="" id="CustomerPassword" class="">                        	
+                                    <input type="password" value="" name="password" placeholder="" id="CustomerPassword" class="">                       
+                                    <div class="class" style="color: red;"></div>
+ 	
                                 </div>
                             </div>
                           </div>
@@ -86,6 +91,50 @@
         }
     },3000)
    </script>
+
+   
+    
+<script>
+    
+  document.getElementById("CustomerLoginForm").addEventListener("submit", function(event) {
+    event.preventDefault();
+
+    const email = document.getElementById("CustomerEmail").value.trim();
+    const password = document.getElementById("CustomerPassword").value.trim();
+
+    const emailFormat = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (email === "") {
+      document.querySelector("#CustomerEmail + .class").textContent = "Email field is empty. It's required.";
+    } else if (!email.match(emailFormat)) {
+      document.querySelector("#CustomerEmail + .class").textContent = "Please enter a valid email address.";
+    } else {
+      document.querySelector("#CustomerEmail + .class").textContent = "";
+    }
+
+    if (password === "") {
+      document.querySelector("#CustomerPassword + .class").textContent = "Password field is empty. It's required.";
+    } else if (password.length < 8) {
+      document.querySelector("#CustomerPassword + .class").textContent = "Password must be at least 8 characters long.";
+    } else {
+      document.querySelector("#CustomerPassword + .class").textContent = "";
+    }
+
+    // If there are no error messages, submit the form
+    const emailError = document.querySelector("#CustomerEmail + .class").textContent;
+    const passwordError = document.querySelector("#CustomerPassword + .class").textContent;
+
+    if (emailError === "" && passwordError === "") {
+      this.submit();
+    }
+  });
+</script>
+
+
+
+   
+   
+  
 
    
 </body>

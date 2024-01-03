@@ -1,11 +1,8 @@
 const express=require("express")
 const app=express()
 const path=require("path")
-// const bodyParser = require('body-parser');
 const session=require("express-session")
-const logger=require('morgan')
-// const nodemailer = require('nodemailer');
-// const otpGenerator = require('otp-generator');
+
 
 const userRoute=require('./router/userRouter')
 const adminRoute=require('./router/adminRouter')
@@ -40,22 +37,12 @@ app.use(session({
 
 
 
-app.set("view engine","ejs")
-app.set("views")
-
-
-
-
-
-
 
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views")); // Assuming your views are in a 'views' directory
 
-// app.use(logger('dev'));
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use(express.static('public'))
 
 
 
@@ -67,7 +54,8 @@ app.use('/',userRoute)
 app.use('/admin',adminRoute)
 
 
-const PORT=process.env.process||3030
+
+const PORT=process.env.PORT||3000
 app.listen(PORT,()=>{
 
 

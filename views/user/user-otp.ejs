@@ -1,4 +1,9 @@
 
+
+
+
+
+
 <%-include('header')-%>
 
     <!--Body Content-->
@@ -39,8 +44,8 @@
                             <div class="text-center col-12 col-sm-12 col-md-12 col-lg-12">
                                 <div id="timer"></div>
 
-                                <input type="submit" class="btn mb-3" value="Send" >
-                                <!-- <input type="submit" class="btn mb-3" id="submitButton" value="<%= (otp && typeof seconds !== 'undefined' && seconds > 0) ? 'Send' : 'Resend' %>"> -->
+                                <!-- <input type="submit" class="btn mb-3" value="" > -->
+                                <input type="submit" class="btn mb-3" id="submitButton" value="<%= (otp && typeof seconds !== 'undefined' && seconds > 0) ? 'Send' : 'Resend' %>">
 
 
                                 <p class="mb-4">
@@ -58,7 +63,67 @@
     </div>
     
 
-            
+
+            <script>
+                const timerElement = document.getElementById('timer');
+                let seconds = 30; // Set the initial timer value in seconds
+                let otpExpired = false; // Flag to track OTP expiration
+                
+                function updateTimer() {
+                    timerElement.innerText = `left: ${seconds} seconds`;
+                
+                    if (seconds > 0) {
+                        seconds--;
+                        setTimeout(updateTimer, 1000); // Update the timer every second
+                    } else {
+                        timerElement.innerText = 'its Expired';
+                        otpExpired = true;
+                        // Handle timer expiration actions here
+                        updateButtonLabel();
+                        updateResendLink();
+                    }
+                }
+                
+                function updateButtonLabel() {
+                    const submitButton = document.getElementById('submitButton');
+                    if (otpExpired) {
+                        submitButton.value = 'Resend';
+                    } else {
+                        submitButton.value = 'Send';
+                    }
+                }
+                
+                function updateResendLink() {
+                    const resendLink = document.getElementById('RecoverPassword');
+                    if (otpExpired) {
+                        resendLink.href = '/resendOtp';
+                    } else {
+                        // Set the default link when the timer is active (you can change '#' to your default link)
+                        resendLink.href = '#'; // Change this to the default link
+                    }
+                }
+                
+                // Start the timer when the page loads or as needed
+                updateTimer();
+                
+                const submitButton = document.getElementById('submitButton');
+                
+                submitButton.addEventListener('click', function(event) {
+                    if (otpExpired) {
+                        event.preventDefault(); // Prevent default form submission
+                        window.location.href = '/resendOtp'; // Redirect to /resendOtp
+                    } else {
+                        // No need to prevent default behavior if the label is "Send"
+                        // The form will submit to /otpverified by default
+                    }
+                });
+                
+                // Update button label and resend link when the page loads
+                updateButtonLabel();
+                updateResendLink();
+                </script>
+
+
 
 
 
@@ -132,7 +197,6 @@
  <script src="/assets/js/lazysizes.js"></script>
  <script src="/assets/js/main.js"></script>
 </div>
-
 </body>
 
 </html>  

@@ -2,14 +2,26 @@
 
 <!-- Table Start -->
 <div class="container-fluid pt-4 px-4">
-    <%if(locals.productList){%>
         <div class="row g-4">
-            <div class="bg-light rounded h-100 p-4">
-    
-    
-                <h6 class="mb-4">Users List</h6>
-    
+
+            <!-- <div class="bg-light rounded h-100 p-4 d-lg-inline-flex">
+                <form >
+                    <div class="row mb-3">
+                        <div class="col-sm-10 ">
+                            <input type="email" class="form-control" id="inputEmail3" >
+                            <button type="submit" class="btn btn-primary">Search Product</button>  
+                        </div>
+                    </div>     
+                </form>
+                </div> -->
+
                 
+
+
+
+            <div class="bg-light rounded h-100 p-4">
+                <%if(locals.productList){%>
+                <h6 class="mb-4">Users List</h6>
                 <div class="table-responsive">
                     <table class="table">
                         <thead>
@@ -24,15 +36,11 @@
                                 <th scope="col">action</th>
                             </tr>
                         </thead>
-
                         <tbody>
                             <%productList.forEach((product,index)=>{%>
                                 <tr>
                                     <td><%=index +1%></td>
                                     <td><%=product.name%></td>
-                                    
-
-
                                    <td>
                                     <img  
                                     src="<%=product.image[0]%>" 
@@ -40,18 +48,10 @@
                                     style="width: 100px; height: 100px;"
                                     alt="">
                                    </td>
-
-
-
                                         <td><%=product.price%></td>
                                         <td><%=product.stock%></td>
                                         <td><%=product.categoryName%></td>
                                         <td><%=product.description%></td>
-                                        
-                                        
-                                        
-                                        
-                                        
                                         <td>
                                             <% if (product.isAvailable == true) { %>
                                                 <button class="btn btn-info block-btn" data-user-id="<%= product._id %>">Available</button>
@@ -59,21 +59,12 @@
                                                 <button class="btn btn-info unblock-btn" data-user-id="<%= product._id %>">unAvailable</button>
                                             <% } %>
                                         </td>
-
-
-
-
+                                        <td>
+                                            <a href="/admin/productUpdate/<%= product._id %>"><button class="btn btn-info">Edit Product</button></a>
+                                        </td>
                                 </tr>
                             <%})%>
                         </tbody>
-
-
-
-
-
-
-
-
                     </table>
                 </div>
             </div>
@@ -91,7 +82,43 @@
 </div>
 
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script>
+    // Function to handle block action
+    document.querySelectorAll('.block-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const userId = this.getAttribute('data-user-id');
+            swal({
+                title: 'Are you sure?',
+                text: 'Do you want to block this user?',
+                icon: 'warning',
+                buttons: ['Cancel', 'Block'],
+                dangerMode: true,
+            }).then((willBlock) => {
+                if (willBlock) {
+                    window.location.href = `/admin/blocked/${userId}`;
+                }
+            });
+        });
+    });
 
+    // Function to handle unblock action
+    document.querySelectorAll('.unblock-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const userId = this.getAttribute('data-user-id');
+            swal({
+                title: 'Are you sure?',
+                text: 'Do you want to unblock this user?',
+                icon: 'warning',
+                buttons: ['Cancel', 'Unblock'],
+                dangerMode: true,
+            }).then((willUnblock) => {
+                if (willUnblock) {
+                    window.location.href = `/admin/unblocked/${userId}`;
+                }
+            });
+        });
+    });
+</script>
    
 
 

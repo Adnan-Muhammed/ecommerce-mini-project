@@ -5,36 +5,20 @@
             <!-- Form Start -->
             <div class="container-fluid pt-4 px-4">
                 <div class="row g-4">
-                   
-                  
-
-
-
                     <div class="col-sm-12 col-xl-6">
                         <div class="bg-light rounded h-100 p-4">
                             <h6 class="mb-4">Add Category</h6>
-                            <form action="/admin/categoryadded" method="post">
-
+                            <form id="categoryForm" action="/admin/newCategoryAdded" method="post">
                             <div class="form-floating mb-3">
                                 <input type="name" class="form-control" id="productName"
                                     placeholder="product name" name="categoryName">
                                 <label for="floatingInput">category name</label>
+                                <div class="error" style="color: red;"></div>
                             </div>
-                        
-                           
-                           
-                            
                                 <button type="submit" class="btn btn-primary">Submit</button>
                         </form>
                         </div>
                     </div>
-
-
-
-                   
-               
-                   
-                  
                 </div>
             </div>
             <!-- Form End -->
@@ -56,5 +40,43 @@
             <!-- Footer End -->
         </div>
         <!-- Content End -->
+
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                const form = document.querySelector('#categoryForm');
+                const errorDiv = document.querySelector('.error');
+
+        
+                form.addEventListener('submit', async (e) => {
+                    e.preventDefault(); // Prevent the default form submission
+        
+                    const categoryName = document.getElementById('productName').value.trim().toUpperCase();
+        
+                    try {
+                        const response = await fetch('/admin/categoryAdded', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({ categoryName })
+                        });
+        
+                        const data = await response.json();
+        
+                        if (data.exists) {
+                            // Category already exists, show a message or handle as needed
+                            errorDiv.textContent = 'Category already exists';
+
+                        } else {
+                            // Category doesn't exist, proceed with form submission
+                            form.submit(); // Submit the form
+                            // window.location.href = '';
+                        }
+                    } catch (error) {
+                        console.error('Error:', error);
+                    }
+                });
+            });
+        </script>
 
         <%-include('footer')-%>
