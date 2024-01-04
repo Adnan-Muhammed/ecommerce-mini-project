@@ -11,7 +11,11 @@ const home = async (req, res) => {
     try{
         let isLogged= null
         const product=await productDB.find()
-        console.log("its home page");
+        const uniqueCategories = [...new Set(product.map(product => product.categoryName))];
+
+        // const uniqueCategories=['jjj','ddd']
+
+        // console.log(uniqueCategories);
         if (req.session.user) {
             isLogged = req.session.user.name;
             console.log('userlog');
@@ -19,11 +23,13 @@ const home = async (req, res) => {
             console.log('userNewlog');
             isLogged = req.session.userNew.name;
         }
-    return res.render('user/home',{isLogged,product}); 
+    return res.render('user/home',{isLogged,product,uniqueCategories  }); 
     }catch(err){
         console.error(err);
         }
     }
+
+
 
 
     
@@ -401,5 +407,6 @@ module.exports = {
     userLogin,
     userLoginPost,
     // isUserBlocked,
+
     
 };

@@ -69,6 +69,38 @@ const productadded = async (req, res) => {
     });
 };
 
+// new codes
+const PRODUCTS_PER_PAGE = 8;
+const userSideProductlist = async (req, res) => {
+    try {
+        const page = parseInt(req.query.page) || 1;
+        const skip = (page - 1) * PRODUCTS_PER_PAGE;
+
+        // Fetch products from your database here, considering your actual data retrieval method
+        // For example:
+        const products = await productDB.find().skip(skip).limit(PRODUCTS_PER_PAGE);
+
+        // Calculate total product count (assuming you have a Product model)
+        const totalProductsCount = await productDB.countDocuments();
+
+        const totalPages = Math.ceil(totalProductsCount / PRODUCTS_PER_PAGE);
+
+        res.render('user/productlist', {
+            products,
+            totalPages,
+            currentPage: page
+        });
+    } catch (err) {
+        console.log('Error:', err);
+        return res.status(500).render('error', { message: 'Internal Server Error' });
+    }
+};
+
+
+const userSideproductDetails=(req,res)=>{
+    res.render('user/product-details-zoom')
+}
+
 
 
 
@@ -77,4 +109,7 @@ module.exports={
     addProduct,
     productadded,
     productlist,
+    //new codes
+    userSideProductlist,
+    userSideproductDetails,
 }
