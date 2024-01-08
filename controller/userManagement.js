@@ -1,21 +1,17 @@
 const session = require('express-session');
 const userDB = require('../models/user');
 const productDB = require('../models/product')
+const CategoryDB =require('../models/category')
 
+const fetchCategoryMiddleware = require('../middleware/fetchCategoryData');
 
-
-
-
-//homepage
 const home = async (req, res) => {
-    try{
-        let isLogged= null
-        const product=await productDB.find()
-        const uniqueCategories = [...new Set(product.map(product => product.categoryName))];
+    try {
+        console.log(84848);
+        let isLogged = null;
+        const product = await productDB.find();
+        const { primaryCategories, otherCategories } = await fetchCategoryMiddleware.fetchCategories();
 
-        // const uniqueCategories=['jjj','ddd']
-
-        // console.log(uniqueCategories);
         if (req.session.user) {
             isLogged = req.session.user.name;
             console.log('userlog');
@@ -23,16 +19,19 @@ const home = async (req, res) => {
             console.log('userNewlog');
             isLogged = req.session.userNew.name;
         }
-    return res.render('user/home',{isLogged,product,uniqueCategories  }); 
-    }catch(err){
+
+        return res.render('user/home', { isLogged, product, primaryCategories, otherCategories });
+    } catch (err) {
         console.error(err);
-        }
+        // Handle the error or pass it to a global error handler
+        return res.status(500).send('Internal Server Error');
     }
+};
 
 
 
 
-    
+
  //loginPage
 const userLogin=(req, res) => {
     if( req.session.passwordError){
@@ -111,9 +110,9 @@ const userSignupPost = async (req, res) => {
             res.redirect('/signuppage');
         } else {
             const user = {
-                name: req.body.name,
-                email: req.body.email,
-                password: req.body.password
+                name: name,
+                email: email,
+                password:password
             };
             req.session.userNew = {
                 email,
@@ -122,7 +121,6 @@ const userSignupPost = async (req, res) => {
             };
             console.log(req.session.userNew.email);
             await userDB.insertMany([user]);
-            // console.log(req.session.usersId);
             console.log(9999);
 
             const otp = otpGenerator.generate(6, {
@@ -382,7 +380,6 @@ const unblocking=  async (req,res)=>{
             const userIdToUpdate=req.params.id
             await userDB.find({_id:userIdToUpdate},{name:1,_id:0})
             await userDB.updateOne({ _id: userIdToUpdate }, { $set: { isBlocked: false } });
-            // req.session.Blocked=null
     res.redirect('/admin/userList')
         } catch (err){
             console.error(err);
@@ -406,7 +403,5 @@ module.exports = {
     otpVerificationPost,
     userLogin,
     userLoginPost,
-    // isUserBlocked,
 
-    
 };

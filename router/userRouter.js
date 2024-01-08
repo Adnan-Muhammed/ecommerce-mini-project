@@ -14,8 +14,8 @@ const userManagement=require('../controller/userManagement')
 router.get('/' ,userSessionHandling.isBlockedNow,userManagement.home)
 router.get('/loginpage',userSessionHandling.requireNotUser,userManagement.userLogin)  // first
 router.post('/login',userManagement.userLoginPost)
-router.post('/signup',userManagement.userSignupPost)
 router.get('/signuppage',userSessionHandling.requireNotUser,userManagement.userSignupGet)
+router.post('/signup',userManagement.userSignupPost)
 router.get('/otpPage', userSessionHandling.requireNotUser , userManagement.otpPage)
 router.post('/otpverified',  userSessionHandling.requireNotUser  , userManagement.otpVerificationPost)
 router.get('/resendOtp',userSessionHandling.requireNotUser,userManagement.resendOtp)
@@ -23,14 +23,16 @@ router.get('/logout',userManagement.logout)
 
 
 
-
-
-
-
-
 const productManagement=require('../controller/productManagement')
-router.get('/product',productManagement.userSideProductlist)
-router.get('/productDetail',productManagement.userSideproductDetails)
+router.get('/category/:id',userSessionHandling.isBlockedNow,    productManagement.productListUser)
+router.get('/productdetails/:id', userSessionHandling.isBlockedNow,  productManagement.productDetail)
+
+
+
+
+// router.get('/product',productManagement.userSideProductlist)
+// router.get('/productDetail',productManagement.userSideproductDetails)
+
 router.get('/aaa',(req,res)=>{
     res.render('user/aaa')
 })

@@ -22,6 +22,9 @@ const requireNotUser = (req, res, next) => {
 };
 
 //testing-=-=-
+
+
+
 const isBlockedNow=async(req,res,next)=>{
     try{
         if(req.session.user){
@@ -44,6 +47,31 @@ const isBlockedNow=async(req,res,next)=>{
     } catch(err){
     }
 }
+const isBlockedNow2=async(req,res,next)=>{
+    try{
+        if(req.session.userNew){
+            console.log('sessionAAA');
+            const {name,email,isBlocked}=req.session.userNew
+            const user=await userDB.findOne({email:email},{name:1,email:1,isBlocked:1})
+            console.log(user.isBlocked);
+            if(user.isBlocked==true){
+                console.log('isBlocked==true');
+                req.session.isBlocked=true
+                req.session.user=null
+                return res.redirect('/loginpage')
+            }
+            next()
+        }else{
+            req.session.userNew=null
+            console.log('sessionNot');
+            next()
+        }
+    } catch(err){
+    }
+}
+
+
+
 //testing-=-=-
 
 

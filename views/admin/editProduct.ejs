@@ -7,83 +7,68 @@
 
     <div class="container-fluid pt-4 px-4">
         <div class="row g-4">
-
-
-
-
-
+          <%if(locals.editProduct){%>
             <div class="col-sm-12 col-xl-6">
                 <div class="bg-light rounded h-100 p-4">
-                    <h6 class="mb-4">Add Product</h6>
-                  
-                    <form action="/admin/productedited" method="post" enctype="multipart/form-data">
-
+                    <h6 class="mb-4">Update Product</h6>
+                    <form action="/admin/productupdated/<%=editProduct._id%>" method="post" enctype="multipart/form-data">
                         <div class="form-floating mb-3">
-                          <input type="text" class="form-control" id="productName" placeholder="productname" name="productName">
-                          <label for="floatingInput">Product Name</label>
+                          <input type="text" class="form-control" id="productName" placeholder="<%=editProduct.name%>" name="productName" value="<%=editProduct.name%>">
+                          <label for="floatingInput"><%=editProduct.name%></label>
                           <div id="productNameError" class="error" style="color: red;"></div>
                         </div>
-                    
                         <div class="form-floating mb-3">
-                          <input type="number" class="form-control" id="productStock" placeholder="productquantity" name="productStock"
-                          min="1" >
-                          <label for="floatingInput">Stock</label>
+                          <input type="number" class="form-control" id="productStock" placeholder="<%=editProduct.stock%>" name="productStock"
+                          min="1" value="<%=editProduct.stock%>">
+                          <label for="floatingInput"><%=editProduct.stock%></label>
                           <div id="productStockError" class="error" style="color: red;"></div>
                         </div>
-                    
                         <div class="form-floating mb-3">
-                          <input type="number" class="form-control" id="productPrice" placeholder="productPrice" name="productPrice"
-                          min="1">
-                          <label for="productPrice">Price</label>
+                          <input type="number" class="form-control" id="productPrice" placeholder="<%=editProduct.price%>" name="productPrice"
+                          min="1" value="<%=editProduct.price%>">
+                          <label for="productPrice"><%=editProduct.price%></label>
                           <div id="productPriceError" class="error" style="color: red;"></div>
                         </div>
-                    
                         
-                    
-
-                        <% if (locals.categoryList) { %>
-                            <div class="form-floating mb-3">
-                                <select class="form-select" name="productCategory" id="floatingSelect"
-                                    aria-label="Floating label select example">
-                                    <% categoryList.forEach(category=> { %>
-                                        <option>
-                                            <%= category.name %>
-                                        </option>
-                                        <% }); %>
-                                </select>
-                                <label for="floatingSelect">Select Category</label>
-                            </div>
-                            <% } %>
-
-
-
-
                         <div class="mb-3">
                           <label for="formFileMultiple" class="form-label">Multiple files input example (Max 6 files)</label>
-                          <input class="form-control" type="file" name="images" id="formFileMultiple" multiple>
+                          <input class="form-control" type="file" name="images" id="formFileMultiple" multiple  value="<%=editProduct.image[0]%>">
                           <p id="imageError" class="error" style="color: red;"></p>
                         </div>
-
+                        <div class="image-row mb-3" style="display: flex; flex-direction: column; align-items: center;">
+                          <% if (editProduct.image && editProduct.image.length > 0) { %>
+                            <p>Images:</p>
+                            <div class="image-container" style="display: flex;">
+                              <% editProduct.image.forEach((image, index) => { %>
+                                <div class="image-wrapper" style="flex: 0 0 auto; margin-right: 10px; text-align: center;">
+                                  <div class="image-item" style="position: relative; display: inline-block;">
+                                    <img  
+                                      src="<%= image %>" 
+                                      class="img-fluid mx-auto mb-5"
+                                      style="width: 90px; height: 90px;"
+                                      alt="">
+                                      <a href="/admin/delete/<%=`${editProduct._id}${image.replace('/uploads', '')}`%>" class="btn btn-primary" style="position: absolute; bottom: -5px; left: 50%; transform: translateX(-50%);">Delete</a>
+                                    
+                                  </div>
+                                </div>
+                              <% }) %>
+                            </div>
+                          <% } else { %>
+                            <h1>No images found for this product</h1>
+                          <% } %>
+                        </div>
                         <div class="form-floating">
                             <textarea name="productDescription" class="form-control" placeholder="Leave a comment here" id="floatingTextarea"
-                              style="height: 150px;"></textarea>
-                            <label for="floatingTextarea">Description</label>
+                              style="height:80px;" value="<%=editProduct.description%>"> 
+                            </textarea>
+                            <label for="floatingTextarea"><%=editProduct.description%></label>
                             <div id="productDescriptionError" class="error" style="color: red;"></div>
                           </div>
-                    
                         <button type="submit" class="btn btn-primary">Submit</button>
                       </form>
-                    
-
                 </div>
             </div>
-
-
-
-
-
-
-
+            <%}%>
         </div>
     </div>
     <!-- Form End -->

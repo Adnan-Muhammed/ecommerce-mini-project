@@ -27,4 +27,12 @@ const  userSchema=new  mongoose.Schema(
 //model create
 const userDB=new mongoose.model('userCollection',userSchema)
 
+
+
+
+
+// Delete all documents except the ones identified by their _id
+
+
+
 module.exports=userDB

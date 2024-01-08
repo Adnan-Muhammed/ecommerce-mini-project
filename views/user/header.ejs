@@ -113,21 +113,27 @@
                         <!--Desktop Menu-->
                         <nav class="grid__item" id="AccessibleNav"><!-- for mobile -->
                             <ul id="siteNav" class="site-nav medium center hidearrow">
-                                <li class="lvl1 parent megamenu"><a href="/">Home <i class="anm anm-angle-down-l"></i></a>
-                                </li>
-                                <li class="lvl1 parent megamenu"><a href="product">Products <i class="anm anm-angle-down-l"></i></a>
-                                </li>
-                                
-                                <%if(locals.uniqueCategories){%>
-                                    <%uniqueCategories.forEach(data=>{%>
-                                            <li class="lvl1 parent megamenu"><a href="<%=data%>"><%=data%> <i class="anm anm-angle-down-l"></i></a>
+                                <li class="lvl1 parent megamenu" ><a href="/">Home <i class="anm anm-angle-down-l"></i></a></li>
+                                <%if(locals.primaryCategories){%>
+                                    <%primaryCategories.forEach(data=>{%>
+                                            <li class="lvl1 parent megamenu"><a href="/category/<%=data.toLowerCase()%>"><%=data%></a>
                                             </li>
                                     <%})%>
                                 <%}%>
-
-                            
-                            <li class="lvl1 parent dropdown"><a href="#">Products <i class="anm anm-angle-down-l"></i></a>
-                              
+                                  <% if (locals.otherCategories && locals.otherCategories.length > 0) { %>
+                                    <li class="lvl1 parent dropdown">
+                                        <a href="/">OTHER PRODUCTS <i class="anm anm-angle-down-l"></i></a>
+                                        <ul class="dropdown">
+                                            <% locals.otherCategories.forEach(data => { %>
+                                                <li>
+                                                    <a href="/<%= data.toLowerCase().replace(/\s/g, '') %>Products" class="site-nav">
+                                                        <%= data %>
+                                                    </a>
+                                                </li>
+                                            <% }) %>
+                                        </ul>
+                                    </li>
+                                <% } %>
                             </li>
                               
                             </li>
