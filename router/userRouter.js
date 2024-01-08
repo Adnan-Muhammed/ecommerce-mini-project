@@ -29,7 +29,7 @@ router.get('/logout',userManagement.logout)
 
 
 const productManagement=require('../controller/productManagement')
-router.get('/menCollection',productManagement.userSideProductlist)
+router.get('/product',productManagement.userSideProductlist)
 router.get('/productDetail',productManagement.userSideproductDetails)
 router.get('/aaa',(req,res)=>{
     res.render('user/aaa')
