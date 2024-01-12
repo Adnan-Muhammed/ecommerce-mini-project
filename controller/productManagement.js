@@ -40,8 +40,7 @@ const productListUser = async (req, res) => {
     const { primaryCategories, otherCategories } = await fetchCategoryMiddleware.fetchCategories();
     const categoryData = req.params.id.toUpperCase();
     const page = parseInt(req.query.page) || 1; // Get the page number from the query parameter, default to page 1
-    const limit = 2; // Number of items per page
-
+    const limit = 5; // Number of items per page
     try {
         const totalProductsCount = await productDB.countDocuments({ isAvailable: true, categoryName: categoryData });
         const totalPages = Math.ceil(totalProductsCount / limit);
@@ -105,7 +104,7 @@ const addProduct=async(req,res)=>{
 
 
 const productadded = async (req, res) => {
-    upload.array('images', 6)(req, res, async function (err) {
+    upload.array('images', 4)(req, res, async function (err) {
 
     if (err instanceof multer.MulterError) {
             return res.status(400).send({ message: 'Multer error' });
@@ -275,7 +274,7 @@ const productDetail=async(req,res)=>{
         const productId=req.params.id
         console.log(productId,1111);
         const productDetails=await productDB.findById(productId)
-        console.log(productDetail);
+        console.log(productDetails,444);
         console.log(222);
 
         res.render('user/product-detail',{productDetails,isLogged})

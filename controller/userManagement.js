@@ -55,6 +55,7 @@ const userLogin=(req, res) => {
 
 //loginPost
 const userLoginPost=  async (req,res)=>{
+    console.log(6666);
     try{
         const {email_Id,password}=req.body
         const user=await userDB.findOne({email:email_Id},{name:1,email:1,password:1,isBlocked:1})
@@ -143,14 +144,17 @@ const userSignupPost = async (req, res) => {
                 subject: 'Welcome to Our Platform!',
                 text: `your otp is  ${otp} . please don't share`
             };
-            transporter.sendMail(mailOptions, function (error, info) {
-                if (error) {
-                    console.log(error);
-                } else {
-                    console.log(otp, 1010101);
-                    console.log('Email sent: ' + info.response);
-                }
-            });
+// sent mail otp
+            // transporter.sendMail(mailOptions, function (error, info) {
+            //     if (error) {
+            //         console.log(error);
+            //     } else {
+            //         console.log(otp, 1010101);
+            //         console.log('Email sent: ' + info.response);
+            //     }
+            // });
+
+
             req.session.otp=otp
             console.log('its created');
             res.redirect('/otpPage');
@@ -351,7 +355,6 @@ const userlist = async (req, res) => {
             return res.status(500).render('error', { message: 'Internal Server Error' });
         }
 };
-
 
 
 

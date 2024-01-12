@@ -32,9 +32,9 @@
                                                 <td><%= data.name %></td>
                                                 <td>
                                                     <% if (data.isAvailable == true) { %>
-                                                        <button class="btn btn-info block-btn" data-user-id="<%= data._id %>">unAvailable</button>
+                                                        <button class="btn btn-info block-btn" data-user-id="<%= data._id %>">to unlist </button>
                                                     <% } else { %>
-                                                        <button class="btn btn-info unblock-btn" data-user-id="<%= data._id %>">Available</button>
+                                                        <button class="btn btn-info unblock-btn" data-user-id="<%= data._id %>">to list</button>
                                                     <% } %>
                                                 </td>
                                             </tr>
@@ -62,9 +62,9 @@
                                 const categoryId = this.getAttribute('data-user-id');
                                 swal({
                                     title: 'Are you sure?',
-                                    text: 'Do you want to unAvailable this category?',
+                                    text: 'Do you want  to unlist  this category?',
                                     icon: 'warning',
-                                    buttons: ['Cancel', 'unAvailable'],
+                                    buttons: ['Cancel', 'to unlist '],
                                     dangerMode: true,
                                 }).then((willBlock) => {
                                     if (willBlock) {
@@ -83,9 +83,9 @@
                                 const categoryId = this.getAttribute('data-user-id');
                                 swal({
                                     title: 'Are you sure?',
-                                    text: 'Do you want to Available this category?',
+                                    text: 'Do you want  to list this category?',
                                     icon: 'warning',
-                                    buttons: ['Cancel', 'Available'],
+                                    buttons: ['Cancel', 'to list'],
                                     dangerMode: true,
                                 }).then((willUnblock) => {
                                     if (willUnblock) {

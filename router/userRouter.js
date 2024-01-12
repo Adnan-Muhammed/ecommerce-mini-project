@@ -9,17 +9,21 @@ const router = express.Router();
 const userSessionHandling=require('../middleware/userSessionHandling')
 
 
-const userManagement=require('../controller/userManagement')
+const userManagement=require('../controller/userManagement')  
 // its working perfect-=-=-=-=-=-=-
 router.get('/' ,userSessionHandling.isBlockedNow,userManagement.home)
 router.get('/loginpage',userSessionHandling.requireNotUser,userManagement.userLogin)  // first
 router.post('/login',userManagement.userLoginPost)
 router.get('/signuppage',userSessionHandling.requireNotUser,userManagement.userSignupGet)
 router.post('/signup',userManagement.userSignupPost)
-router.get('/otpPage', userSessionHandling.requireNotUser , userManagement.otpPage)
+router.get('/otpPage', userSessionHandling.otpSession , userManagement.otpPage)
 router.post('/otpverified',  userSessionHandling.requireNotUser  , userManagement.otpVerificationPost)
-router.get('/resendOtp',userSessionHandling.requireNotUser,userManagement.resendOtp)
+router.get('/resendOtp',userSessionHandling.otpSession,userManagement.resendOtp)
 router.get('/logout',userManagement.logout)
+
+
+
+
 
 
 
@@ -30,8 +34,9 @@ router.get('/productdetails/:id', userSessionHandling.isBlockedNow,  productMana
 
 
 
-// router.get('/product',productManagement.userSideProductlist)
-// router.get('/productDetail',productManagement.userSideproductDetails)
+
+
+
 
 router.get('/aaa',(req,res)=>{
     res.render('user/aaa')

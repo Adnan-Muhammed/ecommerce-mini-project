@@ -8,6 +8,8 @@ const adminSessionMiddleware=require('../middleware/adminSessionHandling.js')
 
 const adminController=require('../controller/adminController.js')
 router.get('/',adminSessionMiddleware.requireNotAdmin,adminController.adminLogin)
+
+
 router.post('/admindashboard',   adminController.adminDashboardPost)
 router.get('/admindashboard',adminSessionMiddleware.requireAdmin,adminController.adminDashboardGet)
 router.get('/logout', adminController.adminLogout);
