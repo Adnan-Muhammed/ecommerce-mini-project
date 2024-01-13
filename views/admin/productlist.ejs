@@ -26,14 +26,15 @@
                     <table class="table">
                         <thead>
                             <tr>
-                                <th scope="col">index</th>
-                                <th scope="col">Product name</th>
-                                <th scope="col">image</th>
-                                <th scope="col">price</th>
-                                <th scope="col">stock</th>
-                                <th scope="col">category</th>
-                                <th scope="col">description</th>
-                                <th scope="col">action</th>
+                                <th scope="col">Index</th>
+                                <th scope="col">Name</th>
+                                <th scope="col">Image</th>
+                                <th scope="col">Price</th>
+                                <th scope="col">Stock</th>
+                                <th scope="col">Category</th>
+                                <th scope="col">Brand</th>
+                                <th scope="col">Description</th>
+                                <th scope="col">Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -51,16 +52,16 @@
                                         <td><%=product.price%></td>
                                         <td><%=product.stock%></td>
                                         <td><%=product.categoryName%></td>
+                                        <td>product.brand></td>
                                         <td><%=product.description%></td>
-                                        <td>
+
+                                        <td style="background-color: rgb(98, 169, 40); width: 90px;">
                                             <% if (product.isAvailable == 'false') { %>
-                                                <button class="btn btn-info block-btn" data-user-id="<%= product._id%>">List</button>
+                                                <a  class="btn btn-info block-btn mb-2" data-user-id="<%= product._id%>" >to List</a>
                                             <% } else { %>
-                                                <button class="btn btn-info unblock-btn" data-user-id="<%= product._id %>">unList</button>
+                                                <a class="btn btn-info unblock-btn mb-2" data-user-id="<%= product._id %>">to unList</a>
                                             <% } %>
-                                        </td>
-                                        <td>
-                                            <a href="/admin/productUpdate/<%= product._id %>"><button class="btn btn-info">Edit Product</button></a>
+                                            <a href="/admin/productUpdate/<%= product._id %>"><button class="btn btn-info">Edit</button></a>
                                         </td>
                                 </tr>
                             <%})%>

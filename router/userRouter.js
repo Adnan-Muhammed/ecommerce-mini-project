@@ -34,7 +34,9 @@ router.get('/productdetails/:id', userSessionHandling.isBlockedNow,  productMana
 
 
 
-
+router.post('/priceSort',(req,res)=>{
+    console.log(req.body.pricing)
+})
 
 
 
