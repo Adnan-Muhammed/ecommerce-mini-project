@@ -38,6 +38,7 @@ const determineIsLogged = (session) => {
 const productListUser = async (req, res) => {
     const isLogged = determineIsLogged(req.session);
     const { primaryCategories, otherCategories } = await fetchCategoryMiddleware.fetchCategories();
+    const categoryName=req.params.id
     const categoryData = req.params.id.toUpperCase();
     const page = parseInt(req.query.page) || 1; // Get the page number from the query parameter, default to page 1
     const limit = 5; // Number of items per page
@@ -56,7 +57,9 @@ const productListUser = async (req, res) => {
             primaryCategories,
             otherCategories,
             totalPages,
-            currentPage: page
+            currentPage: page,
+            categoryName,
+            
         });
     } catch (err) {
         console.error(err);
@@ -276,7 +279,6 @@ const productDetail=async(req,res)=>{
         const productDetails=await productDB.findById(productId)
         console.log(productDetails,444);
         console.log(222);
-
         res.render('user/product-detail',{productDetails,isLogged})
     }catch(err){
 
@@ -286,8 +288,63 @@ const productDetail=async(req,res)=>{
 
 
 
+
+
+
+
 const userSideproductDetails=(req,res)=>{
     res.render('user/product-details-zoom')
+}
+
+
+
+const priceSortAscending=async (req,res)=>{
+    console.log('its ascending');
+    const category=req.params.id.toUpperCase()
+    console.log(category,222);
+    console.log(req.body.priceValue);
+    const priceString=req.body.priceValue
+    console.log(priceString);
+    const regex = /₹(\d+)\s*-\s*₹(\d+)/;
+    const match = priceString.match(regex);
+    const minValue = parseInt(match[1], 10);
+    const maxValue = parseInt(match[2], 10);
+    try{
+        // const categoryFilter = { categoryName:category };
+        // const priceRangeFilter = { price: { $gte: 150, $lte: 500 } };
+        // const documents = await collection.find({ ...categoryFilter, ...priceRangeFilter })
+        // const sortedPriceProduct=await productDB.find({categoryName:category,price:{$gte:minValue, $lte:maxValue}})
+        // console.log(sortedPriceProduct);
+
+        const pipeline = [
+            {
+                $match: {
+                    categoryName:category ,
+                    price: { $gte: minValue, $lte: maxValue },
+                },
+            },
+            {
+                $sort: {
+                    price: 1, // 1 for ascending, -1 for descending
+                },
+            },
+        ];
+        // const sortedProduct = await productDB.aggregate([pipeline]).toArray();
+        // console.log(sortedProduct);
+        const cursor = await productDB.aggregate(pipeline);
+        const sortedProducts = await cursor
+        console.log(sortedProducts);
+
+    }catch(err){
+        console.error(err);
+    }
+
+
+}
+const priceSortDescending=(req,res)=>{
+    console.log('its descending');
+    console.log(req.body);
+    console.log(req.params.id.toUpperCase())
 }
 
 
@@ -307,6 +364,9 @@ module.exports={
     productUpdate,
     productUpdatePost,
     productImgDelete,
-    productDetail
+    productDetail,
+    //new
+    priceSortAscending,
+    priceSortDescending,
     
 }

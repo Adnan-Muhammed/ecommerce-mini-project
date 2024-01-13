@@ -619,20 +619,50 @@
 	/*-----------------------------------
 	 13. Price Range Slider
 	-------------------------------------*/
-	function price_slider(){
-		$("#slider-range").slider({
-			range: true,
-			min: 150,
-			max: 2000,
-			values: [150, 500],
-			slide: function(event, ui) {
-				$("#amount").val("₹" + ui.values[0] + " - ₹" + ui.values[1]);
-			}
-		});
-		$("#amount").val("₹" + $("#slider-range").slider("values", 0) +
-		" - ₹" + $("#slider-range").slider("values", 1));
-	}
-	price_slider();
+	// function price_slider(){
+	// 	$("#slider-range").slider({
+	// 		range: true,
+	// 		min: 150,
+	// 		max: 1800,
+	// 		values: [150, 700],
+	// 		run:()=>{
+	// 			console.log(666);
+	// 		},
+	// 		slide: function(event, ui) {
+	// 			console.log(ui.values);
+	// 			$("#amount").val("₹" + ui.values[0] + " - ₹" + ui.values[1]);
+	// 		}
+	// 	});
+
+	// 	$("#amount").val("₹" + $("#slider-range").slider("values", 0) +
+	// 	" - ₹" + $("#slider-range").slider("values", 1));
+	// }
+	// price_slider();
+	
+		function price_slider() {
+			$("#slider-range").slider({
+				range: true,
+				min: 150,
+				max: 1800,
+				values: [150, 700],
+				slide: function(event, ui) {
+					// Update the input field dynamically during the slide event
+					$("#amount").val("₹" + ui.values[0] + " - ₹" + ui.values[1]);
+				},
+				change: function(event, ui) {
+					// Handle changes after the user stops sliding
+					console.log("Slider values changed:", ui.values);
+				}
+			});
+	
+			// Initialize the input field with the initial slider values
+			$("#amount").val("₹" + $("#slider-range").slider("values", 0) +
+				" - ₹" + $("#slider-range").slider("values", 1));
+		}
+	
+		price_slider();
+
+	
 	
 	/*-----------------------------------
 	 14. Color Swacthes

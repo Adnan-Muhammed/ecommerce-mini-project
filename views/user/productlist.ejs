@@ -29,14 +29,54 @@
     <!--End Collection Banner-->
     <div clets="containe-fluid" >
       <div class="row">
+        <!-- <nav class="grid__item" id="AccessibleNav">for mobile -->
+            <ul id="siteNav" class="site-nav medium center hidearrow">
+
+
+                    <li class="lvl1 parent dropdown">
+                        <a >price sort
+                            <i class="anm anm-angle-down-l"></i>
+                        </a>
+                        <ul class="dropdown">
+                                <li>
+                                    <div class="widget-title">
+                                        <!-- <form action="" method="post" class="price-filter"> -->
+                                            <div class="price-filter">
+                                                <div id="slider-range" class="ui-slider ui-slider-horizontal ui-widget ui-widget-content ui-corner-all">
+                                                    <div class="ui-slider-range ui-widget-header ui-corner-all"></div>
+                                                    <span class="ui-slider-handle ui-state-default ui-corner-all" tabindex="0"></span>
+                                                    <span class="ui-slider-handle ui-state-default ui-corner-all" tabindex="0"></span>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-6">
+                                                        <p class="no-margin"><input id="amount" name="priceValue"  type="text" style="background-color: black; color: burlywood;"  ></p>
+                                                    </div>
+                                                    <div  class="col-6 text-right margin-25px-top">
+                                                        <button id="btn-1" class="btn btn-secondary btn--small">High to Low</button>
+                                                        <button id="btn-2" class="btn btn-secondary btn--small">Low to High</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        <!-- </form> -->
+                                    </div>
+                                </li>
+                        </ul>
+                    </li>              
+            </ul>
+
+           
+        <!-- </nav> -->
+
               <div class="productList product-load-more" >
                     <div class="grid-products grid--view-items">
                             <div class="row" style="display: flex; justify-content: center; align-items: center; overflow: hidden;">
+                                
                             <%if(locals.product){%>
                                 <%if(product.length>0){%>
-                                    <div class="col-lg-2 col-md-4 col-sm-4 col-5  item  m-2 rounded-top rounded-bottom "   style="background-color: lightblue; ">
-                                        <div class="sidebar_tags">
-                                        <div class="sidebar_widget filterBox filter-widget">
+                                    <!-- <div class="col-lg-2 col-md-4 col-sm-4 col-5  item  m-2 rounded-top rounded-bottom "   style="background-color: lightblue; ">
+                                        <div class="sidebar_tags"> -->
+
+                                        <!-- <div class="sidebar_widget filterBox filter-widget">
                                             <div class="widget-title"><h2>Brands</h2></div>
                                             <ul>
                                                 <li>
@@ -56,8 +96,11 @@
                                                   <label for="check6"><span><span></span></span>Monark</label>
                                                 </li>
                                             </ul>
-                                        </div>
-                                        <div class="sidebar_widget filterBox filter-widget">
+                                        </div> -->
+
+
+
+                                        <!-- <div class="sidebar_widget filterBox filter-widget">
                                             <div class="widget-title">
                                                 <h2>Price</h2>
                                             </div>
@@ -77,9 +120,9 @@
                                                     </div>
                                                 </div>
                                             </form>
-                                        </div>
-                                       </div>
-                                    </div>
+                                        </div> -->
+                                       <!-- </div>
+                                    </div> -->
 
 
 
@@ -168,6 +211,11 @@
                 </div>
             </div>
 
+            
+           
+            
+            
+
 
 
 
@@ -187,9 +235,53 @@
 
 
 
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const inputString = document.getElementById('amount').value;
+
+        document.getElementById('btn-1').addEventListener('click', function() {
+            fetchData('/category/<%=categoryName%>/ascending');
+        });
+
+        document.getElementById('btn-2').addEventListener('click', function() {
+            fetchData('/category/<%=categoryName%>/descending');
+        });
+
+        const fetchData = async (url) => {
+    try {
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ priceValue: inputString }), // Use 'priceValue' instead of 'inputString'
+        });
+
+
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        // handle the response data as needed
+        console.log(data);
+    } catch (error) {
+        console.error('Error:', error);
+    }
+};
+
+    });
+</script>
+<script src="path/to/jquery.js"></script>
+<script src="path/to/jquery-ui.js"></script>
+
+
 
 
 <%-include('footer')-%>
+
+
 
     </body>
     </html>

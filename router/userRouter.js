@@ -34,9 +34,24 @@ router.get('/productdetails/:id', userSessionHandling.isBlockedNow,  productMana
 
 
 
-router.post('/priceSort',(req,res)=>{
-    console.log(req.body.pricing)
-})
+// router.post('/priceSort',(req,res)=>{
+//     console.log(req.body.pricing)
+// })
+
+// router.post('/category/:id/descending',(req,res)=>{
+//     console.log(7777111);
+//     console.log('descending');
+//     console.log(req.body.priceValue);
+// })
+
+// router.post('/category/:id/ascending',(req,res)=>{
+//     console.log(777711);
+//     console.log('ascending');
+//     console.log(req.body.priceValue);
+// })
+
+router.post('/category/:id/ascending',userSessionHandling.isBlockedNow,productManagement.priceSortAscending)
+router.post('/category/:id/descending',userSessionHandling.isBlockedNow,productManagement.priceSortDescending)
 
 
 

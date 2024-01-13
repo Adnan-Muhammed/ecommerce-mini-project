@@ -32,7 +32,6 @@
                                 <th scope="col">Price</th>
                                 <th scope="col">Stock</th>
                                 <th scope="col">Category</th>
-                                <th scope="col">Brand</th>
                                 <th scope="col">Description</th>
                                 <th scope="col">Action</th>
                             </tr>
@@ -52,10 +51,9 @@
                                         <td><%=product.price%></td>
                                         <td><%=product.stock%></td>
                                         <td><%=product.categoryName%></td>
-                                        <td>product.brand></td>
                                         <td><%=product.description%></td>
 
-                                        <td style="background-color: rgb(98, 169, 40); width: 90px;">
+                                        <td style="width: 90px;">
                                             <% if (product.isAvailable == 'false') { %>
                                                 <a  class="btn btn-info block-btn mb-2" data-user-id="<%= product._id%>" >to List</a>
                                             <% } else { %>
