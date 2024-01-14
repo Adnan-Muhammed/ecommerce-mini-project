@@ -252,46 +252,46 @@
 
 
 
-
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        const minValue = document.getElementById('minValue').value.trim();
-        const maxValue = document.getElementById('maxValue').value.trim();
 
         document.getElementById('btn-1').addEventListener('click', function() {
-            fetchData('/category/<%=categoryName%>/ascending');
+            const minValue = document.getElementById('minValue').value.trim();
+            const maxValue = document.getElementById('maxValue').value.trim();
+            fetchData('/category/<%=categoryName%>/ascending', minValue, maxValue);
         });
 
         document.getElementById('btn-2').addEventListener('click', function() {
-            fetchData('/category/<%=categoryName%>/descending');
+            const minValue = document.getElementById('minValue').value.trim();
+            const maxValue = document.getElementById('maxValue').value.trim();
+            fetchData('/category/<%=categoryName%>/descending', minValue, maxValue);
         });
 
-        const fetchData = async (url) => {
-    try {
-        const response = await fetch(url, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ minValue,maxValue }), // Use 'priceValue' instead of 'inputString'
-        });
+        const fetchData = async (url, minValue, maxValue) => {
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ minValue, maxValue }),
+                });
 
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
 
-
-        if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-
-        const data = await response.json();
-        // handle the response data as needed
-        console.log(data);
-    } catch (error) {
-        console.error('Error:', error);
-    }
-};
+                const data = await response.json();
+                // handle the response data as needed
+                console.log(data);
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        };
 
     });
 </script>
+
 
 
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
