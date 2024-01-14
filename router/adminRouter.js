@@ -38,6 +38,7 @@ router.get('/addproduct',adminSessionMiddleware.requireAdmin, productManagement.
 router.post('/productadded',adminSessionMiddleware.requireAdmin,productManagement.productadded);//post
 router.get('/productlist',adminSessionMiddleware.requireAdmin,productManagement.productListAdmin);
 router.get('/unlist/:id',adminSessionMiddleware.requireAdmin,  productManagement.productUnlist)
+router.get('/delete/:id',adminSessionMiddleware.requireAdmin,  productManagement.productDelete)
 router.get('/list/:id',adminSessionMiddleware.requireAdmin,productManagement.productList)
 router.get('/productUpdate/:id',adminSessionMiddleware.requireAdmin,productManagement.productUpdate)
 router.get('/delete/:id/uploads/:imgUrl',   adminSessionMiddleware.requireAdmin,productManagement.productImgDelete)

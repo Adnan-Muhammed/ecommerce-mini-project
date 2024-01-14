@@ -334,8 +334,8 @@ input:-ms-input-placeholder, textarea:-ms-input-placeholder { opacity:1; -ms-fil
 	
 	#siteNav > li.dropdown { position:relative; }
 	#siteNav > li .dropdown,
-	#siteNav > li .dropdown ul { list-style:none; border:1px solid #eeeeee; opacity:0; visibility:hidden; background-color: #fff; position:absolute; top:59px; left:0; z-index:999; box-shadow:2px 2px 1px 0px rgba(0,0,0,0.3); -ms-transition:all 0.3s ease-in-out; -webkit-transition:all 0.3s ease-in-out; transition:all 0.3s ease-in-out; padding:0; }
-	#siteNav > li:hover > .dropdown,
+	#siteNav > li .dropdown ul { list-style:none; border:1px solid #eeeeee; opacity:0; visibility:hidden; width:220px; position:absolute; top:59px; left:0; z-index:999; box-shadow:2px 2px 1px 0px rgba(0,0,0,0.3); -ms-transition:all 0.3s ease-in-out; -webkit-transition:all 0.3s ease-in-out; transition:all 0.3s ease-in-out; padding:0; }
+  #siteNav > li:hover > .dropdown,
 	#siteNav > li .dropdown li:hover > ul { top:35px; opacity:1; visibility:visible; }
 	#siteNav > li ul.dropdown li { border-top:1px solid #eeeeee; position:relative; }
 	#siteNav > li ul.dropdown li:first-child { border:0; }

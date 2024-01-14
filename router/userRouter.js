@@ -50,7 +50,7 @@ router.get('/productdetails/:id', userSessionHandling.isBlockedNow,  productMana
 //     console.log(req.body.priceValue);
 // })
 
-router.post('/category/:id/ascending', ()=>console.log(90909090),userSessionHandling.isBlockedNow,productManagement.priceSortAscending)
+router.post('/category/:id/ascending',userSessionHandling.isBlockedNow,productManagement.priceSortAscending)
 router.post('/category/:id/descending',userSessionHandling.isBlockedNow,productManagement.priceSortDescending)
 
 

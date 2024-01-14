@@ -43,40 +43,40 @@
                         </a>
                         <ul class="dropdown">
                                 <li>
-                                    <div id="" class="wrapper mt-2 mb-2 p-2" style="width: 280px;height: 90px;  border-radius: 10px;  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.1);">
-                                        <div class="price-input mb-0" style="width: 100%; display: flex;  ">
-                                            <div class="field" style="display: flex; width: 300px; height: 30px; align-items: center; ">
-                                                <span style="font-size: 14px;">Min</span>
-                                                <input type="number" name="maxValue" id="minValue" class="input-min" value="7500" style="width: calc(100% - 50px); height: 100%; outline: none; font-size: 14px; margin-left: 3px; border-radius: 5px; text-align: center; border: 1px solid #999; -moz-appearance: textfield;">
-                                            </div>
-                                          <!-- <div class="separator" style="width: 10px; display: flex; font-size: 19px; align-items: center; justify-content: center;">-</div> -->
-                                          <div class="field" style="display: flex; width: 300px; height: 30px; align-items: center; padding-inline-end: -8px;">
-                                            <span style="font-size: 14px;">Max</span>
-                                            <input type="number" id="maxValue" class="input-max" value="7500" style="width: calc(100% - 50px); height: 100%; outline: none; font-size: 14px; margin-left: 3px; border-radius: 5px; text-align: center; border: 1px solid #999; -moz-appearance: textfield;">
-                                        </div>
-                                        </div>
-                                    
-                                        <!-- Buttons added here -->
-                                        <div style="display: flex; justify-content:space-evenly;  " class="mt-2">
-                                            <button type="button" class="btn" id="btn-1" style=" background-color: #17a2b8; color: white; border: none; border-radius: 5px; cursor: pointer; width: 100px; height: 30px;padding: 0px;">
-                                                <p style="margin: 0; padding: 0;border: 0; font-size: 12px; color: cornsilk;">Low to High</p>
-                                                </button>
 
-                                                <button type="button" class="btn" id="btn-2" style=" background-color: #17a2b8; color: white; border: none; border-radius: 5px; cursor: pointer; width: 100px; height: 30px;padding: 0px;">
-                                                    <p style="margin: 0; padding: 0;border: 0; font-size: 12px; color: cornsilk;">High to Low</p>
-                                                    </button>
+                                    <div class="price-filter">
+                                        <div id="slider-range" class="ui-slider ui-slider-horizontal ui-widget ui-widget-content ui-corner-all">
+                                            <div class="ui-slider-range ui-widget-header ui-corner-all"></div>
+                                            <span class="ui-slider-handle ui-state-default ui-corner-all" tabindex="0"></span>
+                                            <span class="ui-slider-handle ui-state-default ui-corner-all" tabindex="0"></span>
                                         </div>
-                                      </div>
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <p class="no-margin"><input id="amount" name="priceValue" type="text" style="background-color: darkslategray; color: beige;"></p>
+                                            </div>
+                                            <div class="col-6 text-right margin-20px-top " >
+                                                <button class="btn btn-secondary btn--small" id="btn-1"  style="background-color: darkslategray; ">
+                                                    <p style="font-size: 11px; color: beige; ">High to Low</p>
+                                                </button>
+                                                <button class="btn btn-secondary btn--small" id="btn-2"  style="background-color: darkslategray;">
+                                                    <p style="font-size: 11px;  color: beige;">Low to High</p>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
                                  
                                 </li>
                         </ul>
                         <li class="lvl1 parent dropdown">
                             <a >Search
-                                <i class="anm anm-angle-down-l"></i>
                             </a>
-                            <ul class="dropdown">
-                                <div class="form-group has-search">
-                                    <input  class="fa fa-search form-control-feedback" type="text" class="form-control" placeholder="Search" style="width: 300px;">
+                            <ul class="dropdown" style="background-color: rgb(249, 251, 251); width: 150px;">
+                                <div class="form-group has-search"  >
+                                    <input  class="fa fa-search form-control-feedback" type="text" class="form-control" placeholder="Search" style="border: 0cm; color: rgb(15, 5, 5);">
+                                    <button class="btn btn-secondary btn--small"   style="background-color: darkslategray;">
+                                        <p style="font-size: 11px;  color: beige;">Enter</p>
+                                    </button>
                                     </div>
                             </ul>
                     </li>              
@@ -147,7 +147,7 @@
 
 
 
-
+                                        <!-- <h1>hbjv</h1> -->
                                     <% product.forEach((product) => { %>
                                         <!-- <div class="col-6 col-sm-6 col-md-3 col-lg-3     item  m-2 rounded-top rounded-bottom "   style="background-color: lightblue; "> -->
                                         <div class="col-lg-2 col-md-4 col-sm-4 col-5  item  m-2 rounded-top rounded-bottom "   style="background-color: lightblue; ">
@@ -220,8 +220,11 @@
                     <% if (totalPages > 1) { %>
                         <ul class="pagination ">
                             <% for (let i = 1; i <= totalPages; i++) { %>
-                                <li class="btn-dark page-item <%= i === currentPage ? 'active' : '' %>">
-                                    <a class="page-link" href="?page=<%= i %>"><%= i %></a>
+                                <li class="btn-dark page-item <%= i === currentPage ? 'active' : '' %>"  style="background-color: aliceblue;">
+                                    <a class="page-link" style="margin: 2px; "  href="?page=<%= i %>">
+                                        <!-- <%= i %> -->
+                                        <p style="font-size: 15px; color: black;" ><%= i %></p>
+                                    </a>
                                 </li>
                             <% } %>
                         </ul>
@@ -256,34 +259,32 @@
     document.addEventListener('DOMContentLoaded', function() {
 
         document.getElementById('btn-1').addEventListener('click', function() {
-            const minValue = document.getElementById('minValue').value.trim();
-            const maxValue = document.getElementById('maxValue').value.trim();
-            fetchData('/category/<%=categoryName%>/ascending', minValue, maxValue);
+            const value = document.getElementById('amount').value.trim();
+            fetchData('/category/<%=categoryName%>/ascending', value);
         });
 
         document.getElementById('btn-2').addEventListener('click', function() {
-            const minValue = document.getElementById('minValue').value.trim();
-            const maxValue = document.getElementById('maxValue').value.trim();
-            fetchData('/category/<%=categoryName%>/descending', minValue, maxValue);
+            const value = document.getElementById('amount').value.trim();
+            fetchData('/category/<%=categoryName%>/descending', value);
         });
 
-        const fetchData = async (url, minValue, maxValue) => {
+        const fetchData = async (url, value) => {
             try {
                 const response = await fetch(url, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ minValue, maxValue }),
+                    body: JSON.stringify({ value }),
                 });
 
                 if (!response.ok) {
                     throw new Error(`HTTP error! Status: ${response.status}`);
                 }
 
-                const data = await response.json();
+                const ascendingProducts = await response.json();
                 // handle the response data as needed
-                console.log(data);
+                console.log(ascendingProducts);
             } catch (error) {
                 console.error('Error:', error);
             }

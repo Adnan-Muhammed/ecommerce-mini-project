@@ -132,16 +132,18 @@ const productadded = async (req, res) => {
                     image: newImages, 
                 };
                 await productDB.insertMany([newProduct])
+                
                 req.session.productAdded=newProduct
             }else{
+                const productId=req.params.id
+                const existingProduct=await productDB.findById(productId)
                 const updateProduct = {
                     name: req.body.productName,
                     price: req.body.productPrice,
                     stock: req.body.productStock,
-                    description: req.body.productDescription,
-                    image: newImages, 
+                    description: (req.body.productDescription)?req.body.productDescription:existingProduct.description,
+                    image: newImages.length > 0 ? newImages : existingProduct.image,
                 };
-                const productId=req.params.id
                 console.log(productId);
                 const editing = await productDB.findByIdAndUpdate(
                     productId,
@@ -201,6 +203,20 @@ const productUnlist=async(req,res)=>{
         const  productishere = await productDB.find({_id:productId})
         console.log(productishere);
         const nowproduct=await productDB.updateOne({ _id: productId }, { $set: { isAvailable: false } });
+        console.log(nowproduct);
+        res.redirect('/admin/productlist')
+    }catch(err){
+        console.error(err);
+    }
+}
+const productDelete=async(req,res)=>{
+    try{
+        console.log('deleting');
+        const productId=req.params.id
+        console.log(productId);
+        const  productishere = await productDB.find({_id:productId})
+        console.log(productishere);
+        const nowproduct=await productDB.deleteOne({ _id: productId });
         console.log(nowproduct);
         res.redirect('/admin/productlist')
     }catch(err){
@@ -303,13 +319,14 @@ const priceSortAscending=async (req,res)=>{
     const category=req.params.id.toUpperCase()
     console.log(category,222);
     console.log(req.body);
-    const priceString=req.body.priceValue
+    const priceString=req.body.value
     console.log(priceString);
     const regex = /₹(\d+)\s*-\s*₹(\d+)/;
     const match = priceString.match(regex);
     console.log(match);
-    const minValue = parseInt(match, 10);
-    const maxValue = parseInt(match, 10);
+    const minValue = parseInt(match[1], 10);
+    const maxValue = parseInt(match[2], 10);
+    console.log(minValue,maxValue);
     try{
         // const categoryFilter = { categoryName:category };
         // const priceRangeFilter = { price: { $gte: 150, $lte: 500 } };
@@ -332,9 +349,15 @@ const priceSortAscending=async (req,res)=>{
         ];
         // const sortedProduct = await productDB.aggregate([pipeline]).toArray();
         // console.log(sortedProduct);
-        const cursor = await productDB.aggregate(pipeline);
-        const sortedProducts = await cursor
-        console.log(sortedProducts);
+        const sortedProducts =  await productDB.aggregate(pipeline);
+        
+        // console.log(sortedProducts);
+
+        if(res.json({sortedProducts})){
+            console.log('its send');
+        }else{
+            console.log('else');
+        }
 
     }catch(err){
         console.error(err);
@@ -344,7 +367,7 @@ const priceSortAscending=async (req,res)=>{
 }
 const priceSortDescending=(req,res)=>{
     console.log('its descending');
-    console.log(req.body.maxValue);
+    console.log(req.body.value);
     console.log(req.params.id.toUpperCase())
 }
 
@@ -361,6 +384,7 @@ module.exports={
     userSideproductDetails,
     productListUser,
     productUnlist,
+    productDelete,
     productList,
     productUpdate,
     productUpdatePost,
