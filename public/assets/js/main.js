@@ -649,10 +649,7 @@
 					// Update the input field dynamically during the slide event
 					$("#amount").val("₹" + ui.values[0] + " - ₹" + ui.values[1]);
 				},
-				change: function(event, ui) {
-					// Handle changes after the user stops sliding
-					console.log("Slider values changed:", ui.values);
-				}
+				
 			});
 	
 			// Initialize the input field with the initial slider values

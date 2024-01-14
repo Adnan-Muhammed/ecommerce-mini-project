@@ -1,5 +1,7 @@
 <%-include('header')-%>
-
+<style>
+    
+</style>
 
 
 <div id="page-content">
@@ -24,7 +26,9 @@
             </div>
         </div>
     </div>
-</div>
+ </div>
+
+
   
     <!--End Collection Banner-->
     <div clets="containe-fluid" >
@@ -39,28 +43,42 @@
                         </a>
                         <ul class="dropdown">
                                 <li>
-                                    <div class="widget-title">
-                                        <!-- <form action="" method="post" class="price-filter"> -->
-                                            <div class="price-filter">
-                                                <div id="slider-range" class="ui-slider ui-slider-horizontal ui-widget ui-widget-content ui-corner-all">
-                                                    <div class="ui-slider-range ui-widget-header ui-corner-all"></div>
-                                                    <span class="ui-slider-handle ui-state-default ui-corner-all" tabindex="0"></span>
-                                                    <span class="ui-slider-handle ui-state-default ui-corner-all" tabindex="0"></span>
-                                                </div>
-                                                <div class="row">
-                                                    <div class="col-6">
-                                                        <p class="no-margin"><input id="amount" name="priceValue"  type="text" style="background-color: black; color: burlywood;"  ></p>
-                                                    </div>
-                                                    <div  class="col-6 text-right margin-25px-top">
-                                                        <button id="btn-1" class="btn btn-secondary btn--small">High to Low</button>
-                                                        <button id="btn-2" class="btn btn-secondary btn--small">Low to High</button>
-                                                    </div>
-                                                </div>
+                                    <div id="" class="wrapper mt-2 mb-2 p-2" style="width: 280px;height: 90px;  border-radius: 10px;  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.1);">
+                                        <div class="price-input mb-0" style="width: 100%; display: flex;  ">
+                                            <div class="field" style="display: flex; width: 300px; height: 30px; align-items: center; ">
+                                                <span style="font-size: 14px;">Min</span>
+                                                <input type="number" name="maxValue" id="minValue" class="input-min" value="7500" style="width: calc(100% - 50px); height: 100%; outline: none; font-size: 14px; margin-left: 3px; border-radius: 5px; text-align: center; border: 1px solid #999; -moz-appearance: textfield;">
                                             </div>
-                                        <!-- </form> -->
-                                    </div>
+                                          <!-- <div class="separator" style="width: 10px; display: flex; font-size: 19px; align-items: center; justify-content: center;">-</div> -->
+                                          <div class="field" style="display: flex; width: 300px; height: 30px; align-items: center; padding-inline-end: -8px;">
+                                            <span style="font-size: 14px;">Max</span>
+                                            <input type="number" id="maxValue" class="input-max" value="7500" style="width: calc(100% - 50px); height: 100%; outline: none; font-size: 14px; margin-left: 3px; border-radius: 5px; text-align: center; border: 1px solid #999; -moz-appearance: textfield;">
+                                        </div>
+                                        </div>
+                                    
+                                        <!-- Buttons added here -->
+                                        <div style="display: flex; justify-content:space-evenly;  " class="mt-2">
+                                            <button type="button" class="btn" id="btn-1" style=" background-color: #17a2b8; color: white; border: none; border-radius: 5px; cursor: pointer; width: 100px; height: 30px;padding: 0px;">
+                                                <p style="margin: 0; padding: 0;border: 0; font-size: 12px; color: cornsilk;">Low to High</p>
+                                                </button>
+
+                                                <button type="button" class="btn" id="btn-2" style=" background-color: #17a2b8; color: white; border: none; border-radius: 5px; cursor: pointer; width: 100px; height: 30px;padding: 0px;">
+                                                    <p style="margin: 0; padding: 0;border: 0; font-size: 12px; color: cornsilk;">High to Low</p>
+                                                    </button>
+                                        </div>
+                                      </div>
+                                 
                                 </li>
                         </ul>
+                        <li class="lvl1 parent dropdown">
+                            <a >Search
+                                <i class="anm anm-angle-down-l"></i>
+                            </a>
+                            <ul class="dropdown">
+                                <div class="form-group has-search">
+                                    <input  class="fa fa-search form-control-feedback" type="text" class="form-control" placeholder="Search" style="width: 300px;">
+                                    </div>
+                            </ul>
                     </li>              
             </ul>
 
@@ -237,7 +255,8 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        const inputString = document.getElementById('amount').value;
+        const minValue = document.getElementById('minValue').value.trim();
+        const maxValue = document.getElementById('maxValue').value.trim();
 
         document.getElementById('btn-1').addEventListener('click', function() {
             fetchData('/category/<%=categoryName%>/ascending');
@@ -254,7 +273,7 @@
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ priceValue: inputString }), // Use 'priceValue' instead of 'inputString'
+            body: JSON.stringify({ minValue,maxValue }), // Use 'priceValue' instead of 'inputString'
         });
 
 
@@ -273,8 +292,16 @@
 
     });
 </script>
-<script src="path/to/jquery.js"></script>
-<script src="path/to/jquery-ui.js"></script>
+
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+
+
+
+
+
+
 
 
 

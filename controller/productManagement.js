@@ -302,13 +302,14 @@ const priceSortAscending=async (req,res)=>{
     console.log('its ascending');
     const category=req.params.id.toUpperCase()
     console.log(category,222);
-    console.log(req.body.priceValue);
+    console.log(req.body);
     const priceString=req.body.priceValue
     console.log(priceString);
     const regex = /₹(\d+)\s*-\s*₹(\d+)/;
     const match = priceString.match(regex);
-    const minValue = parseInt(match[1], 10);
-    const maxValue = parseInt(match[2], 10);
+    console.log(match);
+    const minValue = parseInt(match, 10);
+    const maxValue = parseInt(match, 10);
     try{
         // const categoryFilter = { categoryName:category };
         // const priceRangeFilter = { price: { $gte: 150, $lte: 500 } };
@@ -343,7 +344,7 @@ const priceSortAscending=async (req,res)=>{
 }
 const priceSortDescending=(req,res)=>{
     console.log('its descending');
-    console.log(req.body);
+    console.log(req.body.maxValue);
     console.log(req.params.id.toUpperCase())
 }
 
