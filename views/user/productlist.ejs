@@ -1,12 +1,9 @@
 <%-include('header')-%>
-<style>
-    
-</style>
 
 
 <div id="page-content">
   <!--Collection Banner-->
-  <div class="slideshow slideshow-wrapper pb-4">
+    <div class="slideshow slideshow-wrapper pb-4">
     <div class="home-slideshow">
         <div class="slide">
             <div class="blur-up lazyload">
@@ -28,25 +25,22 @@
     </div>
  </div>
 
-
-  
     <!--End Collection Banner-->
     <div clets="containe-fluid" >
       <div class="row">
         <!-- <nav class="grid__item" id="AccessibleNav">for mobile -->
             <ul id="siteNav" class="site-nav medium center hidearrow">
-
-
                     <li class="lvl1 parent dropdown">
                         <a >price sort
                             <i class="anm anm-angle-down-l"></i>
                         </a>
                         <ul class="dropdown">
                                 <li>
-
                                     <div class="price-filter">
                                         <div id="slider-range" class="ui-slider ui-slider-horizontal ui-widget ui-widget-content ui-corner-all">
-                                            <div class="ui-slider-range ui-widget-header ui-corner-all"></div>
+                                            <div class="ui-slider-range ui-widget-header ui-corner-all">
+
+                                            </div>
                                             <span class="ui-slider-handle ui-state-default ui-corner-all" tabindex="0"></span>
                                             <span class="ui-slider-handle ui-state-default ui-corner-all" tabindex="0"></span>
                                         </div>
@@ -64,8 +58,6 @@
                                             </div>
                                         </div>
                                     </div>
-                                    
-                                 
                                 </li>
                         </ul>
                         <li class="lvl1 parent dropdown">
@@ -77,82 +69,16 @@
                                     <button class="btn btn-secondary btn--small"   style="background-color: darkslategray;">
                                         <p style="font-size: 11px;  color: beige;">Enter</p>
                                     </button>
-                                    </div>
+                                </div>
                             </ul>
-                    </li>              
+                        </li>              
             </ul>
-
-           
-        <!-- </nav> -->
-
               <div class="productList product-load-more" >
                     <div class="grid-products grid--view-items">
-                            <div class="row" style="display: flex; justify-content: center; align-items: center; overflow: hidden;">
-                                
-                            <%if(locals.product){%>
-                                <%if(product.length>0){%>
-                                    <!-- <div class="col-lg-2 col-md-4 col-sm-4 col-5  item  m-2 rounded-top rounded-bottom "   style="background-color: lightblue; ">
-                                        <div class="sidebar_tags"> -->
-
-                                        <!-- <div class="sidebar_widget filterBox filter-widget">
-                                            <div class="widget-title"><h2>Brands</h2></div>
-                                            <ul>
-                                                <li>
-                                                  <input type="checkbox" value="allen-vela" id="check1">
-                                                  <label for="check1"><span><span></span></span>Allen Vela</label>
-                                                </li>
-                                                <li>
-                                                  <input type="checkbox" value="vanelas" id="check4">
-                                                  <label for="check4"><span><span></span></span>Vanelas</label>
-                                                </li>
-                                                <li>
-                                                  <input type="checkbox" value="pagini" id="check5">
-                                                  <label for="check5"><span><span></span></span>Pagini</label>
-                                                </li>
-                                                <li>
-                                                  <input type="checkbox" value="monark" id="check6">
-                                                  <label for="check6"><span><span></span></span>Monark</label>
-                                                </li>
-                                            </ul>
-                                        </div> -->
-
-
-
-                                        <!-- <div class="sidebar_widget filterBox filter-widget">
-                                            <div class="widget-title">
-                                                <h2>Price</h2>
-                                            </div>
-                                            <form action="#" method="post" class="price-filter">
-                                                <div id="slider-range" class="ui-slider ui-slider-horizontal ui-widget ui-widget-content ui-corner-all">
-                                                    <div class="ui-slider-range ui-widget-header ui-corner-all"></div>
-                                                    <span class="ui-slider-handle ui-state-default ui-corner-all" tabindex="0"></span>
-                                                    <span class="ui-slider-handle ui-state-default ui-corner-all" tabindex="0"></span>
-                                                </div>
-                                                <div class="row">
-                                                    <div class="col-6">
-                                                        <p style="margin-bottom: 0;"><input id="amount" type="text"></p>
-                                                    </div>
-                                                    <div class="col-6 text-right"  style="width: 30px;">
-                                                        <button class="btn btn-secondary btn--small">High to Low</button>
-                                                        <button class="btn btn-secondary btn--small">Low to High</button>
-                                                    </div>
-                                                </div>
-                                            </form>
-                                        </div> -->
-                                       <!-- </div>
-                                    </div> -->
-
-
-
-
-
-
-                                        <!-- <h1>hbjv</h1> -->
+                            <div class="row" style="display: flex; justify-content: center; align-items: center; overflow: hidden;" id="orginalList1">
                                     <% product.forEach((product) => { %>
-                                        <!-- <div class="col-6 col-sm-6 col-md-3 col-lg-3     item  m-2 rounded-top rounded-bottom "   style="background-color: lightblue; "> -->
-                                        <div class="col-lg-2 col-md-4 col-sm-4 col-5  item  m-2 rounded-top rounded-bottom "   style="background-color: lightblue; ">
+                                        <div class="col-lg-2 col-md-4 col-sm-4 col-5  item  m-2 rounded-top rounded-bottom "     style="background-color: lightblue; ">
 
-                                            <!-- start product image -->
                                             <div class="product-image mt-2 rounded-top rounded-bottom ">
                                                 <a href="/productdetails/<%=product._id%>">
                                                     <img class="primary blur-up lazyload " data-src="<%=product.image[0]%>" src="<%=product.image[0]%>"   alt="image" title="product" >/>
@@ -169,19 +95,14 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <!--start product details -->
                                             <div class="product-details text-center">
-                                                <!-- product name -->
                                                 <div class="product-name">
-                                                    <!-- <a href="#">Triangle Sleeveless Dress in Multi</a> -->
                                                     <p><%=product.name%></p>
                                                 </div>
-                                                <!-- End product name -->
-                                                <!-- product price -->
+                                                
                                                 <div class="product-price">
                                                     <span class="price"><%=product.price%></span>
                                                 </div>
-                                                <!-- End product price -->
                                                 
                                                 <div class="product-review">
                                                     <i class="font-13 fa fa-star-o"></i>
@@ -191,30 +112,13 @@
                                                     <i class="font-13 fa fa-star-o"></i>
                                                 </div>
                                             </div>
-                                            <!-- End product details -->
                                         </div>
                                     <% }) %>
-                                <%}else{%>
-                                    <h1>no data</h1>
-                                <%}%>
-                            <%}%>
                         </div>
-
-<!-- testing -->
-                        
                     </div>
-
-                    </div>
-
                 </div>
-                <!-- <div class="infinitpaginOuter">
-                    <div class="infinitpagin">	
-                        <a href="#" class="btn loadMore">Load More</a>
-                    </div>
-                </div> -->
-
-                <!-- Pagination -->
-            <!-- Pagination section in the EJS file -->
+                </div>
+                
             <div class="infinitpaginOuter" style="display: flex; justify-content: center;">
                 <div class="infinitpagin  ">	
                     <% if (totalPages > 1) { %>
@@ -222,7 +126,6 @@
                             <% for (let i = 1; i <= totalPages; i++) { %>
                                 <li class="btn-dark page-item <%= i === currentPage ? 'active' : '' %>"  style="background-color: aliceblue;">
                                     <a class="page-link" style="margin: 2px; "  href="?page=<%= i %>">
-                                        <!-- <%= i %> -->
                                         <p style="font-size: 15px; color: black;" ><%= i %></p>
                                     </a>
                                 </li>
@@ -231,19 +134,6 @@
                     <% } %>
                 </div>
             </div>
-
-            
-           
-            
-            
-
-
-
-
-
-
-
-
 
             <!--End Main Content-->
         </div>
@@ -283,33 +173,67 @@
                 }
 
                 const ascendingProducts = await response.json();
-                // handle the response data as needed
                 console.log(ascendingProducts);
+
+                const productListContainer = document.getElementById('orginalList1');
+                productListContainer.innerHTML = '<h1>hai</h1>'; // Clear existing content
+
+                ascendingProducts.forEach(product => {
+                productListContainer.innerHTML += 
+                ` <div class="row" style="display: flex; justify-content: center; align-items: center; overflow: hidden;" id="orginalList1">
+                                    
+                    <div class="col-lg-2 col-md-4 col-sm-4 col-5  item  m-2 rounded-top rounded-bottom "     style="background-color: lightblue; ">
+
+                        <div class="product-image mt-2 rounded-top rounded-bottom ">
+                            <a href="/productdetails/${product._id}">
+                                <img class="primary blur-up lazyload " data-src="${product.image[0]}" src="${product.image[0]}"   alt="image" title="product" >/>
+                                <img class="hover blur-up lazyload "  data-src="${product.image[1]}" src="${product.image[0]}" alt="image" title="product" >/>
+                            </a>
+                            <form class="variants add" action="#" onclick="window.location.href='cart.html'"method="post">
+                                <button class="btn btn-addto-cart" type="button">Add to cart</button>
+                            </form>
+                            <div class="button-set">
+                                <div class="wishlist-btn">
+                                    <a class="wishlist add-to-wishlist" href="#" title="Add to Wishlist">
+                                        <i class="icon anm anm-heart-l"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="product-details text-center">
+                            <div class="product-name">
+                                <p>${product.name}</p>
+                            </div>
+                                                
+                            <div class="product-price">
+                                <span class="price">${product.price}</span>
+                            </div>
+                                                
+                            <div class="product-review">
+                                <i class="font-13 fa fa-star-o"></i>
+                                <i class="font-13 fa fa-star-o"></i>
+                                <i class="font-13 fa fa-star-o"></i>
+                                <i class="font-13 fa fa-star-o"></i>
+                                <i class="font-13 fa fa-star-o"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>`
+                })
             } catch (error) {
                 console.error('Error:', error);
             }
         };
+        });
+    
 
-    });
+    
 </script>
 
 
 
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 
-
-
-
-
-
-
-
-
-
-
 <%-include('footer')-%>
-
-
-
     </body>
     </html>

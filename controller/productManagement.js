@@ -75,20 +75,35 @@ const productListUser = async (req, res) => {
 
 const productListAdmin=async (req,res)=>{
     try{
-        const productList=await productDB.find()
+        const page = parseInt(req.query.page) || 1; // Get page number from query parameter
+        const productsPerPage = 5;
+        const skip = (page - 1) *productsPerPage;
+
+        const productList = await productDB.find().skip(skip).limit(productsPerPage);
+        const totalProductsCount = await productDB.countDocuments();
+
+        const totalPages = Math.ceil(totalProductsCount / productsPerPage);
+        
+        // const productList=await productDB.find()
         console.log(productList.length);
         if(productList.length>0){
             // console.log('listed',productList);
-            res.render('admin/productlist',{productList})
+            res.render('admin/productlist',{
+                productList,
+                totalPages,
+            currentPage: page
+            })
         }else{
             console.log('NO DATA');
             res.render('admin/categorylist')
         }
-  
     }catch (err){
         console.error('sorry');
     }
 }
+
+
+
 
 
 
@@ -141,7 +156,7 @@ const productadded = async (req, res) => {
                     name: req.body.productName,
                     price: req.body.productPrice,
                     stock: req.body.productStock,
-                    description: (req.body.productDescription)?req.body.productDescription:existingProduct.description,
+                    description: (req.body.productDescription.length>0)?req.body.productDescription:existingProduct.description,
                     image: newImages.length > 0 ? newImages : existingProduct.image,
                 };
                 console.log(productId);
@@ -354,6 +369,7 @@ const priceSortAscending=async (req,res)=>{
         // console.log(sortedProducts);
 
         if(res.json({sortedProducts})){
+            console.log(sortedProducts);
             console.log('its send');
         }else{
             console.log('else');
@@ -362,13 +378,54 @@ const priceSortAscending=async (req,res)=>{
     }catch(err){
         console.error(err);
     }
-
-
 }
-const priceSortDescending=(req,res)=>{
+
+
+
+
+const priceSortDescending=async (req,res)=>{
     console.log('its descending');
-    console.log(req.body.value);
-    console.log(req.params.id.toUpperCase())
+    const category=req.params.id.toUpperCase()
+    console.log(category,222);
+    console.log(req.body);
+    const priceString=req.body.value
+    console.log(priceString);
+    const regex = /₹(\d+)\s*-\s*₹(\d+)/;
+    const match = priceString.match(regex);
+    console.log(match);
+    const minValue = parseInt(match[1], 10);
+    const maxValue = parseInt(match[2], 10);
+    console.log(minValue,maxValue);
+    try{
+       
+
+        const pipeline = [
+            {
+                $match: {
+                    categoryName:category ,
+                    price: { $gte: minValue, $lte: maxValue },
+                },
+            },
+            {
+                $sort: {
+                    price: -1, // 1 for ascending, -1 for descending
+                },
+            },
+        ];
+       
+        const sortedProducts =  await productDB.aggregate(pipeline);
+        
+
+        if(res.json({sortedProducts})){
+            console.log(sortedProducts);
+            console.log('its send');
+        }else{
+            console.log('else');
+        }
+
+    }catch(err){
+        console.error(err);
+    }
 }
 
 

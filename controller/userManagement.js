@@ -322,15 +322,6 @@ const userlist = async (req, res) => {
             const totalPages = Math.ceil(totalUsersCount / usersPerPage);
 
             if (users.length > 0) {
-                // const updated = req.session.updated;
-                // req.session.updated = null;
-
-                // const created = req.session.useradded;
-                // req.session.useradded = null;
-
-                // const deleted = req.session.deleted;
-                // req.session.deleted = null;
-
                 return res.render('admin/userlist', { 
                     users, 
                     // updated, 
