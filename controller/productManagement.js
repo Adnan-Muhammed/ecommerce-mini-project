@@ -329,6 +329,7 @@ const userSideproductDetails=(req,res)=>{
 
 
 
+
 const priceSortAscending=async (req,res)=>{
     console.log('its ascending');
     const category=req.params.id.toUpperCase()
@@ -343,48 +344,35 @@ const priceSortAscending=async (req,res)=>{
     const maxValue = parseInt(match[2], 10);
     console.log(minValue,maxValue);
     try{
-        // const categoryFilter = { categoryName:category };
-        // const priceRangeFilter = { price: { $gte: 150, $lte: 500 } };
-        // const documents = await collection.find({ ...categoryFilter, ...priceRangeFilter })
-        // const sortedPriceProduct=await productDB.find({categoryName:category,price:{$gte:minValue, $lte:maxValue}})
-        // console.log(sortedPriceProduct);
-
         const pipeline = [
             {
-                $match: {
-                    categoryName:category ,
-                    price: { $gte: minValue, $lte: maxValue },
-                },
+              $match: {
+                categoryName: category,
+                price: { $gte: minValue, $lte: maxValue },
+                isAvailable: true
+              },
             },
             {
-                $sort: {
-                    price: 1, // 1 for ascending, -1 for descending
-                },
+              $sort: {
+                price: 1, // 1 for ascending, -1 for descending
+              },
             },
-        ];
-        // const sortedProduct = await productDB.aggregate([pipeline]).toArray();
-        // console.log(sortedProduct);
+          ];
         const sortedProducts =  await productDB.aggregate(pipeline);
-        
-        // console.log(sortedProducts);
-        
         if( res.json({sortedProducts}) ){
             console.log(sortedProducts);
             console.log('its send');
         }else{
             console.log('else');
         }
-
     }catch(err){
         console.error(err);
     }
 }
 
 
-
-
 const priceSortDescending=async (req,res)=>{
-    console.log('its descending');
+    console.log('its ascending');
     const category=req.params.id.toUpperCase()
     console.log(category,222);
     console.log(req.body);
@@ -397,36 +385,34 @@ const priceSortDescending=async (req,res)=>{
     const maxValue = parseInt(match[2], 10);
     console.log(minValue,maxValue);
     try{
-       
-
         const pipeline = [
             {
-                $match: {
-                    categoryName:category ,
-                    price: { $gte: minValue, $lte: maxValue },
-                },
+              $match: {
+                categoryName: category,
+                price: { $gte: minValue, $lte: maxValue },
+                isAvailable: true
+              },
             },
             {
-                $sort: {
-                    price: -1, // 1 for ascending, -1 for descending
-                },
+              $sort: {
+                price: -1, // 1 for ascending, -1 for descending
+              },
             },
-        ];
-       
+          ];
         const sortedProducts =  await productDB.aggregate(pipeline);
-        
-
-        if(res.json({sortedProducts})){
+        if( res.json({sortedProducts}) ){
             console.log(sortedProducts);
             console.log('its send');
         }else{
             console.log('else');
         }
-
     }catch(err){
         console.error(err);
     }
 }
+
+
+
 
 
 

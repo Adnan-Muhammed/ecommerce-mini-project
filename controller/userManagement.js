@@ -243,14 +243,14 @@ const resendOtp = async (req, res) => {
             subject: 'Welcome to Our Platform!',
             text: `your otp is  ${newOTP} . please don't share`
         };
-        transporter.sendMail(mailOptions, function(error, info) {
-            if (error) {
-                console.log(error);
-            } else {
-                console.log(newOTP , 1010101);
-                console.log('Email sent: ' + info.response);
-            }
-        });
+        // transporter.sendMail(mailOptions, function(error, info) {
+        //     if (error) {
+        //         console.log(error);
+        //     } else {
+        //         console.log(newOTP , 1010101);
+        //         console.log('Email sent: ' + info.response);
+        //     }
+        // });
         req.session.otp=newOTP
         res.redirect('/otpPage'); // Redirect after sending the new OTP
     } catch (error) {
@@ -324,9 +324,7 @@ const userlist = async (req, res) => {
             if (users.length > 0) {
                 return res.render('admin/userlist', { 
                     users, 
-                    // updated, 
-                    // created, 
-                    // deleted, 
+                  
                     totalPages,
                     currentPage: page
                 });
@@ -334,9 +332,7 @@ const userlist = async (req, res) => {
                 console.log('No data found');
                 return res.render('admin/userlist', { 
                     users: [], 
-                    // updated: null, 
-                    // created: null, 
-                    // deleted: null, 
+                   
                     totalPages: 0,
                     currentPage: 0
                 });

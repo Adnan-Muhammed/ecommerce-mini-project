@@ -76,7 +76,7 @@
               <div class="productList product-load-more" >
                     <div class="grid-products grid--view-items">
                         <h1>khgj</h1>
-                        <div class="row" style="display: flex; justify-content: center; align-items: center; overflow: hidden;" id="orginalList1">
+                        <div class="row" style="display: flex; justify-content: center; align-items: center; overflow: hidden;" id="orginalList">
                             <% product.forEach((product) => { %>
                                 <div class="product-item" style="width: 18%; border: 1px solid #ddd; padding: 15px; margin: 1%; text-align: center; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
                                     <div class="product-image mt-2 rounded-top rounded-bottom" style="position: relative; overflow: hidden;">
@@ -143,7 +143,7 @@
                 </div>
                 </div>
                 
-            <div class="infinitpaginOuter" style="display: flex; justify-content: center;">
+            <div id="orginalPagination" class="infinitpaginOuter" style="display: flex; justify-content: center;">
                 <div class="infinitpagin  ">	
                     <% if (totalPages > 1) { %>
                         <ul class="pagination ">
@@ -204,8 +204,10 @@
                 console.log(ascendingProducts.sortedProducts);
 
                 // if(ascendingProducts.sortedProducts){
-                    const productListContainer = document.getElementById('orginalList1');
+                    const productListContainer = document.getElementById('orginalList');
                     productListContainer.innerHTML = '' ; // Clear existing content
+                    const paginationContainer = document.getElementById('orginalPagination')
+                    paginationContainer.innerHTML = '';
                 // }
                 const sortedProductsArray = ascendingProducts.sortedProducts;
                 console.log(sortedProductsArray);

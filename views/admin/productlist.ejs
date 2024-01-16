@@ -54,7 +54,7 @@
                                         <td><%=product.description%></td>
 
                                         <td style="width: 90px;">
-                                            <% if (product.isAvailable == 'false') { %>
+                                            <% if (product.isAvailable == false) { %>
                                                 <a  class="btn btn-info block-btn mb-2" data-user-id="<%= product._id%>"  >to List</a>
                                             <% } else { %>
                                                 <a class="btn btn-info unblock-btn mb-2" data-user-id="<%= product._id %>" style="width: 90px;" >to unList</a>
