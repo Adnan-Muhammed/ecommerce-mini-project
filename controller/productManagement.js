@@ -367,8 +367,8 @@ const priceSortAscending=async (req,res)=>{
         const sortedProducts =  await productDB.aggregate(pipeline);
         
         // console.log(sortedProducts);
-
-        if(res.json({sortedProducts})){
+        
+        if( res.json({sortedProducts}) ){
             console.log(sortedProducts);
             console.log('its send');
         }else{

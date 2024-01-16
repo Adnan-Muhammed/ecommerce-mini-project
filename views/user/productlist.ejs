@@ -75,8 +75,9 @@
             </ul>
               <div class="productList product-load-more" >
                     <div class="grid-products grid--view-items">
-                            <div class="row" style="display: flex; justify-content: center; align-items: center; overflow: hidden;" id="orginalList1">
-                                    <% product.forEach((product) => { %>
+                        <h1>khgj</h1>
+                        <div class="row" style="display: flex; justify-content: center; align-items: center; overflow: hidden;" id="orginalList1">
+                            <% product.forEach((product) => { %>
                                         <div class="col-lg-2 col-md-4 col-sm-4 col-5  item  m-2 rounded-top rounded-bottom "     style="background-color: lightblue; ">
 
                                             <div class="product-image mt-2 rounded-top rounded-bottom ">
@@ -174,52 +175,56 @@
 
                 const ascendingProducts = await response.json();
                 console.log(ascendingProducts);
+                // const ascendingProducts = JSON.stringify(ascendingProducts1, null, 2)
+                console.log(ascendingProducts.length);
+                console.log(ascendingProducts.sortedProducts);
 
-                const productListContainer = document.getElementById('orginalList1');
-                productListContainer.innerHTML = '<h1>hai</h1>'; // Clear existing content
+                // if(ascendingProducts.sortedProducts){
+                    const productListContainer = document.getElementById('orginalList1');
+                    productListContainer.innerHTML = '' ; // Clear existing content
+                // }
+                const sortedProductsArray = ascendingProducts.sortedProducts;
+                console.log(sortedProductsArray);
+                console.log(111);
+               
+                sortedProductsArray.forEach(product => {
+    productListContainer.innerHTML += 
+    `   
+                   
+        <div class="product-image mt-2 rounded-top rounded-bottom ">
+            <a href="/productdetails/${product._id}">
+                <img class="primary blur-up lazyload " data-src="${product.image[0]}" src="${product.image[0]}" alt="image" title="product" style="width:100px;" />
+            </a>
+            <form class="variants add" action="#" onclick="window.location.href='cart.html'" method="post">
+                <button class="btn btn-addto-cart" type="button">Add to cart</button>
+            </form>
+            <div class="button-set">
+                <div class="wishlist-btn">
+                    <a class="wishlist add-to-wishlist" href="#" title="Add to Wishlist">
+                        <i class="icon anm anm-heart-l"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
 
-                ascendingProducts.forEach(product => {
-                productListContainer.innerHTML += 
-                ` <div class="row" style="display: flex; justify-content: center; align-items: center; overflow: hidden;" id="orginalList1">
-                                    
-                    <div class="col-lg-2 col-md-4 col-sm-4 col-5  item  m-2 rounded-top rounded-bottom "     style="background-color: lightblue; ">
+        <div class="product-details text-center">
+            <div class="product-name">
+                <p>${product.name}</p>
+            </div>
+            <div class="product-price">
+                <span class="price">${product.price}</span>
+            </div>
+            <div class="product-review">
+                <i class="font-13 fa fa-star-o"></i>
+                <i class="font-13 fa fa-star-o"></i>
+                <i class="font-13 fa fa-star-o"></i>
+                <i class="font-13 fa fa-star-o"></i>
+                <i class="font-13 fa fa-star-o"></i>
+            </div>
 
-                        <div class="product-image mt-2 rounded-top rounded-bottom ">
-                            <a href="/productdetails/${product._id}">
-                                <img class="primary blur-up lazyload " data-src="${product.image[0]}" src="${product.image[0]}"   alt="image" title="product" >/>
-                                <img class="hover blur-up lazyload "  data-src="${product.image[1]}" src="${product.image[0]}" alt="image" title="product" >/>
-                            </a>
-                            <form class="variants add" action="#" onclick="window.location.href='cart.html'"method="post">
-                                <button class="btn btn-addto-cart" type="button">Add to cart</button>
-                            </form>
-                            <div class="button-set">
-                                <div class="wishlist-btn">
-                                    <a class="wishlist add-to-wishlist" href="#" title="Add to Wishlist">
-                                        <i class="icon anm anm-heart-l"></i>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="product-details text-center">
-                            <div class="product-name">
-                                <p>${product.name}</p>
-                            </div>
-                                                
-                            <div class="product-price">
-                                <span class="price">${product.price}</span>
-                            </div>
-                                                
-                            <div class="product-review">
-                                <i class="font-13 fa fa-star-o"></i>
-                                <i class="font-13 fa fa-star-o"></i>
-                                <i class="font-13 fa fa-star-o"></i>
-                                <i class="font-13 fa fa-star-o"></i>
-                                <i class="font-13 fa fa-star-o"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>`
-                })
+    </div>`;
+});
+
             } catch (error) {
                 console.error('Error:', error);
             }
