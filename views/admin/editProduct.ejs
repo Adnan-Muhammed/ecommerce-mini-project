@@ -58,9 +58,9 @@
                           <% } %>
                         </div>
                         <div class="form-floating">
-                            <textarea name="productDescription" class="form-control" placeholder="Leave a comment here" id="floatingTextarea"
+                            <textarea name="productDescription" value="" class="form-control" placeholder="Leave a comment here" id="floatingTextarea"
                               style="height:80px;" value="<%=editProduct.description%>"> 
-                            </textarea>
+                        </textarea>
                             <label for="floatingTextarea"><%=editProduct.description%></label>
                             <div id="productDescriptionError" class="error" style="color: red;"></div>
                           </div>
@@ -134,7 +134,7 @@
         }
 
         // Validate Description
-        const productDescription = form.querySelector('textarea[name="productDescription"]').value.trim();
+        const productDescription = form.querySelector('input[name="productDescription"]').value.trim();
         if (productDescription === '') {
           valid = false;
           displayError('Description is required.', 'productDescriptionError');

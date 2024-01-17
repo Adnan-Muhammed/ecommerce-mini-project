@@ -61,12 +61,12 @@
                                 </li>
                         </ul>
                         <li class="lvl1 parent dropdown">
-                            <a >Search
+                            <a>Search
                             </a>
                             <ul class="dropdown" style="background-color: rgb(249, 251, 251); width: 150px;">
                                 <div class="form-group has-search"  >
-                                    <input  class="fa fa-search form-control-feedback" type="text" class="form-control" placeholder="Search" style="border: 0cm; color: rgb(15, 5, 5);">
-                                    <button class="btn btn-secondary btn--small"   style="background-color: darkslategray;">
+                                    <input  class="fa fa-search form-control-feedback" type="text"   value=""  id="search-value"  class="form-control" placeholder="Search" style="border: 0cm; color: rgb(15, 5, 5);">
+                                    <button class="btn btn-secondary btn--small"  id="search-btn"  style="background-color: darkslategray;">
                                         <p style="font-size: 11px;  color: beige;">Enter</p>
                                     </button>
                                 </div>
@@ -75,7 +75,6 @@
             </ul>
               <div class="productList product-load-more" >
                     <div class="grid-products grid--view-items">
-                        <h1>khgj</h1>
                         <div class="row" style="display: flex; justify-content: center; align-items: center; overflow: hidden;" id="orginalList">
                             <% product.forEach((product) => { %>
                                 <div class="product-item" style="width: 18%; border: 1px solid #ddd; padding: 15px; margin: 1%; text-align: center; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
@@ -170,6 +169,8 @@
 
 
 
+
+<!-- price sorting script -->
 <script>
     document.addEventListener('DOMContentLoaded', function() {
 
@@ -198,86 +199,77 @@
                 }
 
                 const ascendingProducts = await response.json();
-                console.log(ascendingProducts);
-                // const ascendingProducts = JSON.stringify(ascendingProducts1, null, 2)
-                console.log(ascendingProducts.length);
-                console.log(ascendingProducts.sortedProducts);
-
-                // if(ascendingProducts.sortedProducts){
-                    const productListContainer = document.getElementById('orginalList');
-                    productListContainer.innerHTML = '' ; // Clear existing content
-                    const paginationContainer = document.getElementById('orginalPagination')
-                    paginationContainer.innerHTML = '';
-                // }
                 const sortedProductsArray = ascendingProducts.sortedProducts;
-                console.log(sortedProductsArray);
-                console.log(111);
+
+
+                const productListContainer = document.getElementById('orginalList');
+                productListContainer.innerHTML = '' ; 
+                const paginationContainer = document.getElementById('orginalPagination')
+                paginationContainer.innerHTML = '';
                
                 sortedProductsArray.forEach(product => {
-    productListContainer.innerHTML += 
-    `   
-    <div class="product-item" style="width: 18%; border: 1px solid #ddd; padding: 15px; margin: 1%; text-align: center; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
-    <div class="product-image mt-2 rounded-top rounded-bottom" style="position: relative; overflow: hidden;">
-
-        <!-- Add to Cart button -->
-        <form class="variants add" action="#" onclick="window.location.href='cart.html'" method="post" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); opacity: 0; transition: opacity 0.3s;">
-            <button class="btn btn-addto-cart" type="button" style="background-color: #3498db; color: #fff; padding: 8px 16px; border: none; border-radius: 5px; cursor: pointer;">Add to Cart</button>
-        </form>
-
-        <a href="/productdetails/${product._id}">
-            <img class="primary lazyload" data-src="${product.image[0]}" src="${product.image[0]}" alt="image" title="product" style="width: 100%; height: 200px; object-fit: cover; border-radius: 8px; transition: transform 0.3s ease-in-out; opacity: 1;" />
-
-            <!-- Hover effect -->
-            <div class="overlay" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.3); opacity: 0; transition: opacity 0.3s ease-in-out;">
-                <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: #fff;">
-                    <p style="font-size: 14px;">Add to Cart</p>
+                    productListContainer.innerHTML +=  
+                    `   
+                <div class="product-item" style="width: 18%; border: 1px solid #ddd; padding: 15px; margin: 1%; text-align: center; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+                <div class="product-image mt-2 rounded-top rounded-bottom" style="position: relative; overflow: hidden;">
+            
+                    <!-- Add to Cart button -->
+                    <form class="variants add" action="#" onclick="window.location.href='cart.html'" method="post" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); opacity: 0; transition: opacity 0.3s;">
+                        <button class="btn btn-addto-cart" type="button" style="background-color: #3498db; color: #fff; padding: 8px 16px; border: none; border-radius: 5px; cursor: pointer;">Add to Cart</button>
+                    </form>
+            
+                    <a href="/productdetails/${product._id}">
+                        <img class="primary lazyload" data-src="${product.image[0]}" src="${product.image[0]}" alt="image" title="product" style="width: 100%; height: 200px; object-fit: cover; border-radius: 8px; transition: transform 0.3s ease-in-out; opacity: 1;" />
+            
+                        <!-- Hover effect -->
+                        <div class="overlay" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.3); opacity: 0; transition: opacity 0.3s ease-in-out;">
+                            <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: #fff;">
+                                <p style="font-size: 14px;">Add to Cart</p>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            
+                <div class="product-details text-center" style="margin-top: 10px;">
+                    <div>
+                        <button style="background-color: rgba(0, 255, 255, 0.621); color: brown;">add to cart</button>
+                    </div>
+                    <div class="product-name">
+                        <p style="font-weight: bold; font-size: 14px; color: #333; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${product.name}</p>
+                    </div>
+                    <div class="product-price">
+                        <span class="price" style="font-size: 16px; color: #27ae60; font-weight: bold;">${product.price}</span>
+                    </div>
+                    <div class="product-review" style="color: #f39c12; margin-top: 5px;">
+                        <i class="font-16 fa fa-star"></i>
+                        <i class="font-16 fa fa-star"></i>
+                        <i class="font-16 fa fa-star"></i>
+                        <i class="font-16 fa fa-star"></i>
+                        <i class="font-16 fa fa-star"></i>
+                    </div>
                 </div>
             </div>
-        </a>
-    </div>
-
-    <div class="product-details text-center" style="margin-top: 10px;">
-        <div>
-            <button style="background-color: rgba(0, 255, 255, 0.621); color: brown;">add to cart</button>
-        </div>
-        <div class="product-name">
-            <p style="font-weight: bold; font-size: 14px; color: #333; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${product.name}</p>
-        </div>
-        <div class="product-price">
-            <span class="price" style="font-size: 16px; color: #27ae60; font-weight: bold;">${product.price}</span>
-        </div>
-        <div class="product-review" style="color: #f39c12; margin-top: 5px;">
-            <i class="font-16 fa fa-star"></i>
-            <i class="font-16 fa fa-star"></i>
-            <i class="font-16 fa fa-star"></i>
-            <i class="font-16 fa fa-star"></i>
-            <i class="font-16 fa fa-star"></i>
-        </div>
-    </div>
-</div>
-
-<style>
-    .product-item:hover .variants.add {
-        opacity: 1;
-    }
-
-    .product-item:hover .overlay {
-        opacity: 1;
-    }
-
-    .product-item:hover img:first-child {
-        opacity: 0;
-    }
-
-    .product-item:hover img:last-child {
-        opacity: 1;
-    }
-</style>       
-        
-    `
-
-    
-});
+            
+            <style>
+                .product-item:hover .variants.add {
+                    opacity: 1;
+                }
+            
+                .product-item:hover .overlay {
+                    opacity: 1;
+                }
+            
+                .product-item:hover img:first-child {
+                    opacity: 0;
+                }
+            
+                .product-item:hover img:last-child {
+                    opacity: 1;
+                }
+            </style>            
+              
+                `
+                });
 
             } catch (error) {
                 console.error('Error:', error);
@@ -285,9 +277,124 @@
         };
         });
     
-
-    
 </script>
+
+
+
+
+
+
+<!-- search filter  by name-->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+
+        const searchInput = document.getElementById('search-value');
+        const searchButton = document.getElementById('search-btn');
+
+        searchButton.addEventListener('click', function () {                       
+            let searchTerm = searchInput.value.trim();                            
+            fetchData('/category/<%=categoryName%>/searchProduct',  {searchTerm });   
+        });
+
+        const fetchData = async (url,  searchTerm ) => {
+
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify( searchTerm ),
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+
+                const searchProducts = await response.json();
+                const searchProductsArray = searchProducts.searchProducts;
+
+                const productListContainer = document.getElementById('orginalList');
+                productListContainer.innerHTML = ''; // Clear existing content
+                const paginationContainer = document.getElementById('orginalPagination')
+                paginationContainer.innerHTML = '';
+               
+                searchProductsArray.forEach(product => {
+                    productListContainer.innerHTML +=  
+                        `  
+                        <div class="product-item" style="width: 18%; border: 1px solid #ddd; padding: 15px; margin: 1%; text-align: center; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+                <div class="product-image mt-2 rounded-top rounded-bottom" style="position: relative; overflow: hidden;">
+            
+                    <!-- Add to Cart button -->
+                    <form class="variants add" action="#" onclick="window.location.href='cart.html'" method="post" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); opacity: 0; transition: opacity 0.3s;">
+                        <button class="btn btn-addto-cart" type="button" style="background-color: #3498db; color: #fff; padding: 8px 16px; border: none; border-radius: 5px; cursor: pointer;">Add to Cart</button>
+                    </form>
+            
+                    <a href="/productdetails/${product._id}">
+                        <img class="primary lazyload" data-src="${product.image[0]}" src="${product.image[0]}" alt="image" title="product" style="width: 100%; height: 200px; object-fit: cover; border-radius: 8px; transition: transform 0.3s ease-in-out; opacity: 1;" />
+            
+                        <!-- Hover effect -->
+                        <div class="overlay" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.3); opacity: 0; transition: opacity 0.3s ease-in-out;">
+                            <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: #fff;">
+                                <p style="font-size: 14px;">Add to Cart</p>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            
+                <div class="product-details text-center" style="margin-top: 10px;">
+                    <div>
+                        <button style="background-color: rgba(0, 255, 255, 0.621); color: brown;">add to cart</button>
+                    </div>
+                    <div class="product-name">
+                        <p style="font-weight: bold; font-size: 14px; color: #333; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${product.name}</p>
+                    </div>
+                    <div class="product-price">
+                        <span class="price" style="font-size: 16px; color: #27ae60; font-weight: bold;">${product.price}</span>
+                    </div>
+                    <div class="product-review" style="color: #f39c12; margin-top: 5px;">
+                        <i class="font-16 fa fa-star"></i>
+                        <i class="font-16 fa fa-star"></i>
+                        <i class="font-16 fa fa-star"></i>
+                        <i class="font-16 fa fa-star"></i>
+                        <i class="font-16 fa fa-star"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <style>
+                .product-item:hover .variants.add {
+                    opacity: 1;
+                }
+            
+                .product-item:hover .overlay {
+                    opacity: 1;
+                }
+            
+                .product-item:hover img:first-child {
+                    opacity: 0;
+                }
+            
+                .product-item:hover img:last-child {
+                    opacity: 1;
+                }
+            </style>  
+                    
+                    `
+                });
+
+            } catch (error) {
+                console.error('Error:', error);
+            }
+
+        };
+    });
+</script>
+
+
+
+
+
 
 
 

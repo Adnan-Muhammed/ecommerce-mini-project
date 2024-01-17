@@ -52,6 +52,10 @@ router.get('/productdetails/:id', userSessionHandling.isBlockedNow,  productMana
 
 router.post('/category/:id/ascending',userSessionHandling.isBlockedNow,productManagement.priceSortAscending)
 router.post('/category/:id/descending',userSessionHandling.isBlockedNow,productManagement.priceSortDescending)
+router.post('/category/:id/searchProduct',userSessionHandling.isBlockedNow,productManagement.searchProduct)
+
+
+
 
 
 

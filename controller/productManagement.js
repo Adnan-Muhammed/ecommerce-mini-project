@@ -145,25 +145,30 @@ const productadded = async (req, res) => {
                     categoryName: req.body.productCategory,
                     description: req.body.productDescription,
                     image: newImages, 
+                    
                 };
+
+
+                console.log(101,req.body.productDescription.trim(),999);
                 await productDB.insertMany([newProduct])
                 
                 req.session.productAdded=newProduct
             }else{
                 const productId=req.params.id
                 const existingProduct=await productDB.findById(productId)
+
+                
                 const updateProduct = {
                     name: req.body.productName,
                     price: req.body.productPrice,
                     stock: req.body.productStock,
-                    description: (req.body.productDescription.length>0)?req.body.productDescription:existingProduct.description,
+                    description: (req.body.productDescription.trim() !== "")?req.body.productDescription:existingProduct.description,
                     image: newImages.length > 0 ? newImages : existingProduct.image,
                 };
-                console.log(productId);
+                console.log(existingProduct.description);
                 const editing = await productDB.findByIdAndUpdate(
                     productId,
                     updateProduct,
-                    // { new: true } 
                   );
             }
             
@@ -412,6 +417,43 @@ const priceSortDescending=async (req,res)=>{
 }
 
 
+const searchProduct = async (req,res)=>{
+    console.log('its search');
+    const category=req.params.id.toUpperCase()
+    console.log(category,222);
+
+    const searchValue=req.body.searchTerm
+    console.log(searchValue);
+  
+    try{
+        const pipeline = [
+            {
+              $match: {
+                categoryName: category,
+                // price: { $gte: minValue, $lte: maxValue },
+                isAvailable: true,
+                name:searchValue,
+              },
+            },
+            {
+              $sort: {
+                price: 1, // 1 for ascending, -1 for descending
+              },
+            },
+          ];
+        const searchProducts =  await productDB.aggregate(pipeline);
+        if( res.json({searchProducts}) ){
+            // console.log(searchProducts);
+            console.log(9999956865345);
+            console.log('its send');
+        }else{
+            console.log('else');
+        }
+    }catch(err){
+        console.error(err);
+    }
+}
+
 
 
 
@@ -436,5 +478,6 @@ module.exports={
     //new
     priceSortAscending,
     priceSortDescending,
+    searchProduct,
     
 }
