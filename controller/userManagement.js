@@ -2,6 +2,8 @@ const session = require('express-session');
 const userDB = require('../models/user');
 const productDB = require('../models/product')
 const CategoryDB =require('../models/category')
+const bcrypt = require('bcrypt');
+
 
 const fetchCategoryMiddleware = require('../middleware/fetchCategoryData');
 
@@ -53,84 +55,110 @@ const userLogin=(req, res) => {
     }
 
 
-//loginPost
-const userLoginPost=  async (req,res)=>{
+const userLoginPost = async (req, res) => {
     console.log(6666);
-    try{
-        const {email_Id,password}=req.body
-        const user=await userDB.findOne({email:email_Id},{name:1,email:1,password:1,isBlocked:1})
-        if(user.isBlocked==false){
-            if(user.password==password){
-                req.session.user={
-                    name:user.name,
-                    email:user.email,
-                    isBlocked:user.isBlocked,
-                }
-                console.log('welcome to home');
-                return res.redirect('/')
-            }
-            if(user.password!=password){
-            const isPasswordError="yes"
-            req.session.passwordError= isPasswordError//true
-            return res.redirect('/loginpage')
-            }
-        }else{
-            req.session.Blocked=true
-            return res.redirect('/loginpage')
+
+    try {
+        const { email_Id, password } = req.body;
+        const user = await userDB.findOne({ email: email_Id }, { name: 1, email: 1, password: 1, isBlocked: 1 });
+
+        if(!user){
+            req.session.invalid=true
+            return res.redirect('/loginpage');
         }
+        if (user && user.isBlocked === false) {
+            // Use bcrypt.compare to compare hashed password
+            const passwordMatch = await bcrypt.compare(password, user.password);
+
+            if (passwordMatch) {
+                req.session.user = {
+                    name: user.name,
+                    email: user.email,
+                    isBlocked: user.isBlocked,
+                };
+
+                console.log('Welcome to home');
+                return res.redirect('/');
+            } else {
+                req.session.passwordError = true;
+                return res.redirect('/loginpage');
+            }
+        } else {
+            req.session.Blocked = true;
+            return res.redirect('/loginpage');
+        }
+    } catch (error) {
+        console.error('Invalid user:', error);
+        
     }
-    catch{
-        console.log('invalid  no user');
-        const isValid="no"
-        req.session.invalid=isValid
-        console.log(1111);
-        return res.redirect('/loginpage')
-    }
-}
+};
+
+
+
+
+
 
 
 // signupPage
 const userSignupGet=(req,res)=>{
         console.log(777777);
-         res.render('user/user-register')
+        if(req.session.userExist){
+            console.log(4545);
+            req.session.userExist =null
+            return res.render('user/user-register',{isAlert:'user is Exist'})
+        }
+        else{
+            console.log(22220909);
+            return res.render('user/user-register')
+        }
 }
 
 
 
 //signupPost
-const otpGenerator = require('otp-generator')
+const otpGenerator = require('otp-generator');
 const nodemailer = require('nodemailer');
+
 const userSignupPost = async (req, res) => {
     try {
         console.log('signuppost');
         const { email, name, password } = req.body;
         console.log(email, name, password);
+
         const userData = await userDB.findOne({ email: email });
+
         if (userData) {
-            req.session.userExist = userData.name;
+            req.session.userExist = userData.email;
             res.redirect('/signuppage');
         } else {
-            const user = {
-                name: name,
-                email: email,
-                password:password
-            };
-            req.session.userNew = {
-                email,
-                name,
-                password
-            };
-            console.log(req.session.userNew.email);
-            await userDB.insertMany([user]);
-            console.log(9999);
-
+            // Hash the password using bcrypt
+            const hashedPassword = await bcrypt.hash(password, 10);
             const otp = otpGenerator.generate(6, {
                 upperCaseAlphabets: false,
                 lowerCaseAlphabets: false,
                 specialChars: false,
-              });
+            });
             console.log(otp);
-            // Email sending code here on successful signup
+            const user = {
+                name: name,
+                email: email,
+                password: hashedPassword, // Save the hashed password in the database
+                otp:otp,
+            };
+
+            req.session.userNew = {
+                email,
+                name,
+                password: hashedPassword,
+                
+            };
+
+            console.log(req.session.userNew.email);
+            await userDB.insertMany([user]);
+            console.log(9999);
+
+            
+
             const transporter = nodemailer.createTransport({
                 service: 'gmail',
                 auth: {
@@ -138,25 +166,25 @@ const userSignupPost = async (req, res) => {
                     pass: "tgua inbn eelw qljg"
                 }
             });
+
             const mailOptions = {
                 from: 'adnan.shajahan@gmail.com',
-                to: email, // Use the signup email here
+                to: email,
                 subject: 'Welcome to Our Platform!',
-                text: `your otp is  ${otp} . please don't share`
+                text: `Your OTP is ${otp}. Please don't share it.`,
             };
-// sent mail otp
+
+            // Uncomment the following lines to send the email with OTP
             // transporter.sendMail(mailOptions, function (error, info) {
             //     if (error) {
             //         console.log(error);
             //     } else {
-            //         console.log(otp, 1010101);
             //         console.log('Email sent: ' + info.response);
             //     }
             // });
 
-
-            req.session.otp=otp
-            console.log('its created');
+            // req.session.otp = otp;
+            console.log('User created successfully');
             res.redirect('/otpPage');
         }
     } catch (error) {
@@ -169,15 +197,25 @@ const userSignupPost = async (req, res) => {
 //otpPage
 
 
+
+
+
+
+
 const otpPage = async (req, res) => {
     console.log('otppage');
-    const otp = req.session.otp; // Retrieve OTP from session
+    const email = req.session.userNew.email; // Retrieve OTP from session
+    const otp= await userDB.findOne({ email: email },{otp:1,_id:0});
+    console.log(otp);
     // req.session.userNew=otp
     console.log(req.session.userNew.email);
     if (otp) {
-        setTimeout(() => {
-            delete req.session.otp;
-            console.log('req.session.otp has been deleted after a few seconds.');
+        setTimeout(async() => {
+            // delete req.session.otp;
+            // console.log('req.session.otp has been deleted after a few seconds.');
+            await userDB.updateOne({ email: email }, { $set: { otp: null } });
+            const otpNow=await userDB.findOne({ email: email }, { otp:1,_id:0 });
+            console.log(otpNow,1111);
         }, 30000);
         res.render('user/user-otp', { otp: otp }); // Pass otp variable to the template
     } else {
@@ -187,18 +225,26 @@ const otpPage = async (req, res) => {
 
 
 
+
+
 //otpverificationPost
-const otpVerificationPost = (req, res) => {
+
+const otpVerificationPost = async(req, res) => {
     try {
         console.log(191919191);
-        console.log(req.session.otp, 777777);
+        const email = req.session.userNew.email; // Retrieve OTP from session
+        const otpValue= await userDB.findOne({ email: email },{otp:1,_id:0});
+        const otp=otpValue.otp
         const enteredOTP = req.body.otpform; // Assuming the input name in the form is 'otpform'
-        if (req.session.otp == null || req.session.otp === undefined) {
-            return res.render('user/user-otp', { error: 'Invalid, it\'s expired' });
+        console.log(65656);
+        console.log(otp ,777,enteredOTP);
+        if (otp == null || otp === undefined) {
+            console.log(404,'its', null);
+            return res.render('user/user-otp', { error: 'Invalid, it\'s expiredkhgvj' });
         } else {
-            const otp = req.session.otp; // Retrieve OTP from session
-
-            if (enteredOTP !== otp) {
+            // const otp = req.session.otp; // Retrieve OTP from session
+            if (enteredOTP != otp) {
+                console.log(enteredOTP ,505,  otp);
                 return res.render('user/user-otp', { error: 'Incorrect OTP', otp: otp });
             } else {
                 req.session.userNew.otp=otp
@@ -221,15 +267,18 @@ const otpVerificationPost = (req, res) => {
 const resendOtp = async (req, res) => {
     try {
         // Retrieve user data from session storage
-        const { email, name, password } = req.session.userData;
+        const { email, name, password } = req.session.userNew;
         console.log(505);
         // Generate a new OTP
-        const newOTP = otpGenerator.generate(6, {
+        const otp = otpGenerator.generate(6, {
             upperCaseAlphabets: false,
             lowerCaseAlphabets: false,
             specialChars: false,
         });
+
+        await userDB.updateOne({ email: email }, { $set: { otp: otp } });
         // Email sending code for the new OTP
+        
         const transporter = nodemailer.createTransport({
             service: 'gmail',
             auth: {
@@ -241,23 +290,26 @@ const resendOtp = async (req, res) => {
             from: 'adnan.shajahan@gmail.com',
             to: email, // Use the signup email here
             subject: 'Welcome to Our Platform!',
-            text: `your otp is  ${newOTP} . please don't share`
+            text: `your otp is  ${otp} . please don't share`
         };
         // transporter.sendMail(mailOptions, function(error, info) {
         //     if (error) {
         //         console.log(error);
         //     } else {
-        //         console.log(newOTP , 1010101);
+        //         console.log(otp , 1010101);
         //         console.log('Email sent: ' + info.response);
         //     }
         // });
-        req.session.otp=newOTP
+        // req.session.otp=otp
         res.redirect('/otpPage'); // Redirect after sending the new OTP
     } catch (error) {
         console.error(error);
         res.send('An error occurred while resending OTP.');
     }
 };
+
+
+
 
 
 const logout= async (req,res)=>{

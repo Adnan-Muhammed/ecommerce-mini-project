@@ -2,7 +2,6 @@ const mongoose=require('../database/mongodbConnect')
 
 //schema setup
 
-
 const  userSchema=new  mongoose.Schema(
     {
         name:{
@@ -21,7 +20,11 @@ const  userSchema=new  mongoose.Schema(
         isBlocked:{
             type:Boolean,
             default:false
-        }   
+        },
+        otp:{
+            type:String,
+            
+        } 
     }
 )
 //model create
