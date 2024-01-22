@@ -142,7 +142,23 @@
                 </div>
                 </div>
                 
-            <div id="orginalPagination" class="infinitpaginOuter" style="display: flex; justify-content: center;">
+            <!-- <div id="orginalPagination" class="infinitpaginOuter" style="display: flex; justify-content: center;">
+                <div class="infinitpagin  ">	
+                    <% if (totalPages > 1) { %>
+                        <ul class="pagination ">
+                            <% for (let i = 1; i <= totalPages; i++) { %>
+                                <li class="btn-dark page-item <%= i === currentPage ? 'active' : '' %>"  style="background-color: aliceblue;">
+                                    <a class="page-link" style="margin: 2px; "  href="?page=<%= i %>">
+                                        <p style="font-size: 15px; color: black;" ><%= i %></p>
+                                    </a>
+                                </li>
+                            <% } %>
+                        </ul>
+                    <% } %>
+                </div>
+            </div> -->
+
+            <div class="infinitpaginOuter" style="display: flex; justify-content: center;">
                 <div class="infinitpagin  ">	
                     <% if (totalPages > 1) { %>
                         <ul class="pagination ">
@@ -173,7 +189,7 @@
 <!-- price sorting script -->
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-
+        
         document.getElementById('btn-1').addEventListener('click', function() {
             const value = document.getElementById('amount').value.trim();
             fetchData('/category/<%=categoryName%>/ascending', value);
@@ -198,15 +214,22 @@
                     throw new Error(`HTTP error! Status: ${response.status}`);
                 }
 
-                const ascendingProducts = await response.json();
-                const sortedProductsArray = ascendingProducts.sortedProducts;
+                const {sortedProducts ,totalPages, currentPage} = await response.json();
+                const sortedProductsArray = sortedProducts;
+
 
 
                 const productListContainer = document.getElementById('orginalList');
-                productListContainer.innerHTML = '' ; 
                 const paginationContainer = document.getElementById('orginalPagination')
-                paginationContainer.innerHTML = '';
-               
+
+                // paginationContainer.innerHTML +='<h1>jhugj</h1>';
+
+                // paginationContainer.innerHTML +='';
+                // its impossible
+
+
+
+                productListContainer.innerHTML = '' ; 
                 sortedProductsArray.forEach(product => {
                     productListContainer.innerHTML +=  
                     `   
@@ -271,6 +294,39 @@
                 `
                 });
 
+
+                // how its 
+
+
+//                 if (totalPages > 1) {
+//         paginationContainer.innerHTML += `
+//     <div class="infinitpaginOuter" style="display: flex; justify-content: center;">
+//         <div class="infinitpagin">	
+//             ${
+//                 totalPages > 1 ? 
+//                 `<ul class="pagination">
+//                     ${Array.from({ length: totalPages }, (_, i) => `
+//                         <li class="btn-dark page-item ${i + 1 === currentPage ? 'active' : ''}" style="background-color: aliceblue;">
+//                             <a class="page-link" style="margin: 2px;" href="?ascendingpage=${i + 1}">
+//                                 <p style="font-size: 15px; color: black;">${i + 1}</p>
+//                             </a>
+//                         </li>`).join('')
+//                     }
+//                 </ul>` 
+//                 : ''
+//             }
+//         </div>
+//     </div>
+// `;
+//     }
+
+
+               
+
+
+
+
+
             } catch (error) {
                 console.error('Error:', error);
             }
@@ -278,6 +334,8 @@
         });
     
 </script>
+
+
 
 
 
