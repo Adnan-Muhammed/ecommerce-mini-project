@@ -55,7 +55,8 @@ const productListUser = async (req, res) => {
         const products = await productDB.find({ isAvailable: true, categoryName: categoryData })
             .skip(offset)
             .limit(limit);
-
+            console.log('haaai');
+            console.log(4444);
         res.render('user/productlist', {
             isLogged,
             product: products,
@@ -387,10 +388,8 @@ const userSideproductDetails=(req,res)=>{
 
 
 
-const priceSortAscending=async (req,res)=>{
-   
+const priceSortAscending=async (req,res)=>{  
     console.log('its ascending');
-
     console.log(req.body);
     const priceString=req.body.value
     console.log(priceString);
@@ -439,14 +438,6 @@ const priceSortAscending=async (req,res)=>{
 
         const offset = (page - 1) * limit;
 
-
-
-
-
-
-
-
-
         const pipeline2 = [
             {
               $match: {
@@ -462,18 +453,11 @@ const priceSortAscending=async (req,res)=>{
             },
             
           ];
-
-
-
         const sortedProducts = await productDB.aggregate(pipeline2)
             .skip(offset)
             .limit(limit);
-
-
             console.log('hello');
-            res.json({sortedProducts,totalPages,currentPage: page})
-
-           
+            res.json({sortedProducts,totalPages,currentPage: page}) 
     }catch(err){
         console.error(err);
     }
