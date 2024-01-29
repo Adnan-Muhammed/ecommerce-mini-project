@@ -10,69 +10,104 @@
     <!--End Page Title-->
     
     <div class="container">
-        <div class="row">
-            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 mb-3">
-                <!-- <div class="customer-box returning-customer">
-                    <h3><i class="icon anm anm-user-al"></i> Returning customer? <a href="#customer-login" id="customer" class="text-white text-decoration-underline" data-toggle="collapse">Click here to login</a></h3> -->
-                    <div id="customer-login" class="collapse customer-content">
-                        <div class="customer-info">
-                            <p class="coupon-text">If you have shopped with us before, please enter your details in the boxes below. If you are a new customer, please proceed to the Billing &amp; Shipping section.</p>
-
-
-
-                            <form>
-                                <div class="row">
-                                    <div class="form-group col-xl-6 col-lg-6 col-md-6 col-sm-12">
-                                        <label for="exampleInputEmail1">Email address <span class="required-f">*</span></label>
-                                        <input type="email" class="no-margin" id="exampleInputEmail1">
-                                    </div>
-                                    <div class="form-group col-xl-6 col-lg-6 col-md-6 col-sm-12">
-                                        <label for="exampleInputPassword1">Password <span class="required-f">*</span></label>
-                                        <input type="password" id="exampleInputPassword1">
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <div class="form-check width-100 margin-20px-bottom">
-                                            <label class="form-check-label">
-                                                <input type="checkbox" class="form-check-input" value=""> Remember me!
-                                            </label>
-                                            <a href="#" class="float-right">Forgot your password?</a>
-                                        </div>
-                                        <button type="submit" class="btn btn-primary mt-3">Submit</button>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 mb-3">
-                
-            </div>
-
-
-
-        </div>
+        
 
         <div class="row billing-fields">
             <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 sm-margin-30px-bottom">
                 <div class="create-ac-content bg-light-gray padding-20px-all">
                     <div class="customer-box customer-coupon">
-                        <h3 class="font-15 xs-font-13"><i class=""></i>  <a href="#your-address" class="text-white text-decoration-underline" data-toggle="collapse">Billing Address</a></h3>
+                        <h3 class="font-15 xs-font-13"><i class=""></i>  <a href="#your-address" class="text-white text-decoration-underline" data-toggle="collapse">Your Address</a></h3>
                         <h3 class="font-15 xs-font-13"><i class=""></i>  <a href="#add-address" class="text-white text-decoration-underline" data-toggle="collapse">Add Address</a></h3>
 
                         <div id="add-address" class="collapse coupon-checkout-content">
                             <div class="discount-coupon">
-                                <form>
+
+
+                                <form  id="address-form" action="/address-added" method="POST">
+                                        <h2 class="login-title mb-3">Billing details</h2>
+                                        <div class="row">
+                                            <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
+                                                <label for="input-firstname">First Name <span class="required-f">*</span></label>
+                                                <input name="firstname" value="" id="input-firstname" type="text">
+                                                <div class="error" style="color: red;"></div>
+
+
+                                            </div>
+                                           
+                                        </div>
+                                        <div class="row">
+
+                                            <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
+                                                <label for="input-telephone">Telephone <span class="required-f">*</span></label>
+                                                <input name="telephone" value="" id="input-telephone" type="tel">
+                                                <div class="error" style="color: red;"></div>
+
+                                            </div>
+
+
+                                            <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
+                                                <label for="input-email">E-Mail <span class="required-f">*</span></label>
+                                                <input name="email" value="" id="input-email" type="email">
+                                                <div class="error" style="color: red;"></div>
+
+                                            </div>                    
+                                        </div>
+            
+                                        <div class="row">
+                                            <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
+                                                <label for="input-address-1">Address <span class="required-f">*</span></label>
+                                                <input name="address_1" value="" id="input-address-1" type="text">
+                                                <div class="error" style="color: red;"></div>
+
+                                            </div>
+
+                                            <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
+                                                <label for="input-city">City <span class="required-f">*</span></label>
+                                                <input name="city" value="" id="input-city" type="text">
+                                                <div class="error" style="color: red;"></div>
+
+                                            </div>
+
+                                        </div>
+                                       
+                                        <div class="row">
+                                            <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
+                                                <label for="input-postcode">Post Code <span class="required-f">*</span></label>
+                                                <input name="postcode" value="" id="input-postcode" type="text">
+                                                <div class="error" style="color: red;"></div>
+
+                                            </div>
+
+                                            <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
+                                                <label for="input-zone">Region / State <span class="required-f">*</span></label>
+                                                <input name="state" value="" id="input-state" type="text">
+                                                <div class="error" style="color: red;"></div>
+
+                                            </div>
+                                            <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
+                                                <button class="btn" style="background-color: cadetblue;" type="submit">Submit</button>
+                                            </div>
+                                        </div>
+
+                                </form> 
+                            </div>
+                        </div>
+
+
+
+
+                        <div id="your-address" class="collapse coupon-checkout-content">
+                            <div class="discount-coupon">
                                         <h2 class="login-title mb-3">Billing details</h2>
                                         <div class="row">
                                             <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
                                                 <label for="input-firstname">First Name <span class="required-f">*</span></label>
                                                 <input name="firstname" value="" id="input-firstname" type="text">
                                             </div>
-                                            
+                                            <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
+                                                <label for="input-lastname">Last Name <span class="required-f">*</span></label>
+                                                <input name="lastname" value="" id="input-lastname" type="text">
+                                            </div>
                                         </div>
                                         <div class="row">
 
@@ -100,7 +135,6 @@
                                             </div>
 
                                         </div>
-                                       
                                         <div class="row">
                                             <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
                                                 <label for="input-postcode">Post Code <span class="required-f">*</span></label>
@@ -111,65 +145,14 @@
                                                 <label for="input-zone">Region / State <span class="required-f">*</span></label>
                                                 <input name="stateName" value="Kerala" id="state-name" type="text">
                                             </div>
-                                            <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
-                                                <a  href="/place-order" class="btn" style="background-color: cadetblue;" value="Place order" type="submit">Submit</a>
-                                            </div>
+                                           
                                         </div>
-
-                                </form> 
                             </div>
                         </div>
 
 
 
-
-                        <div id="your-address" class="collapse coupon-checkout-content">
-                            <div class="discount-coupon">
-                                <h2 class="login-title mb-3">Billing details</h2>
-                                <div class="row">
-                                    <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
-                                        <label for="input-firstname">First Name <span class="required-f">*</span></label>
-                                        <span id="readonly-firstname">John</span>
-                                    </div>
-                                    
-                                </div>
-                                <div class="row">
-                                    <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
-                                        <label for="input-telephone">Telephone <span class="required-f">*</span></label>
-                                        <span id="readonly-telephone">123-456-7890</span>
-                                    </div>
-                                    <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
-                                        <label for="input-email">E-Mail <span class="required-f">*</span></label>
-                                        <span id="readonly-email">john@example.com</span>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
-                                        <label for="input-address-1">Address <span class="required-f">*</span></label>
-                                        <span id="readonly-address">123 Main Street</span>
-                                    </div>
-                                    <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
-                                        <label for="input-city">City <span class="required-f">*</span></label>
-                                        <span id="readonly-city">Cityville</span>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
-                                        <label for="input-postcode">Post Code <span class="required-f">*</span></label>
-                                        <span id="readonly-postcode">12345</span>
-                                    </div>
-                                    <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
-                                        <label for="input-zone">Region / State <span class="required-f">*</span></label>
-                                        <span id="readonly-state">Kerala</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
                         
-
-
-
-
                     </div>
 
 
@@ -343,6 +326,92 @@
     
 </div>
 <%-include('footer')-%>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const form = document.getElementById("address-form");
+
+        form.addEventListener('submit', function (event) {
+            let valid = true;
+
+            // Reset previous error messages
+            const errorMessages = form.querySelectorAll('.error');
+            errorMessages.forEach(function (error) {
+                error.textContent = '';
+            });
+
+            // Validate User Name
+            const name = form.querySelector('#input-firstname').value.trim();
+            if (name === '') {
+                valid = false;
+                displayError('input-firstname', 'User Name is required.');
+            }
+
+            // Validate Email
+            const email = form.querySelector("#input-email").value.trim();
+            if (email === '') {
+                valid = false;
+                displayError('input-email', 'Email is required.');
+            } else if (!isValidEmail(email)) {
+                valid = false;
+                displayError('input-email', 'Enter a valid email address.');
+            }
+
+            const telephone = form.querySelector("#input-telephone").value.trim();
+            if (telephone === '') {
+                valid = false;
+                displayError('input-telephone', 'Contact number is required.');
+            } else if (isNaN(telephone) || telephone.length !== 10) {
+                valid = false;
+                displayError('input-telephone', 'Enter a valid 10-digit number.');
+            }
+
+            const postcode = form.querySelector("#input-postcode").value.trim();
+            if (postcode === '') {
+                valid = false;
+                displayError('input-postcode', 'Postcode is required.');
+            } else if (isNaN(postcode) || postcode.length !== 6) {
+                valid = false;
+                displayError('input-postcode', 'Enter a valid postcode.');
+            }
+
+            
+
+            const cityName = form.querySelector('#input-city').value.trim();
+            if (cityName === '') {
+                valid = false;
+                displayError('input-city', 'City is required.');
+            }
+
+            const stateName = form.querySelector('#input-state').value.trim();
+            if (stateName === '') {
+                valid = false;
+                displayError('input-state', 'Region/State is required.');
+            }
+
+            
+
+            const address = form.querySelector('#input-address-1').value.trim();
+            if (address === '') {
+                valid = false;
+                displayError('input-address-1', 'Address is required.');
+            }
+
+            if (!valid) {
+                event.preventDefault();
+            }
+        });
+
+        const isValidEmail = email => {
+            const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+            return re.test(String(email).toLowerCase());
+        };
+
+        function displayError(field, message) {
+            const errorDiv = form.querySelector(`#${field}`).nextElementSibling;
+            errorDiv.textContent = message;
+        }
+    });
+</script>
 
 
 </body>

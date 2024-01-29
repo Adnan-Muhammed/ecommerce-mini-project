@@ -76,8 +76,15 @@
         document.addEventListener('DOMContentLoaded', function () {
     const form = document.getElementById('CustomerLoginForm');
 
+
+
+
     form.addEventListener('submit', function (event) {
         let valid = true;
+
+
+
+
 
         // Reset previous error messages
         const errorMessages = form.querySelectorAll('.error');
@@ -85,12 +92,16 @@
             error.textContent = '';
         });
 
+
+
         // Validate User Name
         const name = form.querySelector('#name').value.trim();
         if (name === '') {
             valid = false;
             displayError('name', 'User Name is required.');
         }
+
+        
 
         // Validate Email
         const email = form.querySelector('#CustomerEmail').value.trim();
@@ -139,6 +150,14 @@ if (confirmpassword === '') {
 });
 
     </script>
+
+
+
+
+
+
+
+
 <script>
 
 setTimeout(()=>{
