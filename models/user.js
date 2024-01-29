@@ -23,8 +23,11 @@ const  userSchema=new  mongoose.Schema(
         },
         otp:{
             type:String,
-            
-        } 
+        },
+        billingDetails: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'billingDetailsCollection',
+          },
     }
 )
 //model create

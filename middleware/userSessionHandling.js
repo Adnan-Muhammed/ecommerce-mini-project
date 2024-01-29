@@ -67,18 +67,36 @@ const  isBlockedNow=async (req,res,next)=>{
 
 const otpSession=(req,res,next)=>{
     if(!req.session.userNew){
+        console.log('no user session');
         return res.redirect('/')
     }
-    if(req.session.userNew?.otp){
+    if( req.session.userNew?.otp){
+        console.log('no otp session');
        return res.redirect('/')
     }else{
         next()  
 }
 }
 
+
+
+const userlogged = (req, res, next) => {
+    //for cart page
+console.log('userSessionHandling middleware');
+    // console.log(req.session.cartId);
+    console.log('is getting here also');
+    if (req.session.userNew || req.session.user) {
+        next();
+    } else {
+        res.redirect('/loginPage');
+    }
+};
+
+
 module.exports={
     requireUser,
     requireNotUser,
     isBlockedNow,
     otpSession,
+    userlogged,
 }

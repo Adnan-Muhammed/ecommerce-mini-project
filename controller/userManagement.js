@@ -1,4 +1,3 @@
-const session = require('express-session');
 const userDB = require('../models/user');
 const productDB = require('../models/product')
 const CategoryDB =require('../models/category')
@@ -67,29 +66,43 @@ const userLoginPost = async (req, res) => {
             return res.redirect('/loginpage');
         }
         if (user && user.isBlocked === false) {
+
+            
             // Use bcrypt.compare to compare hashed password
             const passwordMatch = await bcrypt.compare(password, user.password);
-
             if (passwordMatch) {
                 req.session.user = {
                     name: user.name,
                     email: user.email,
                     isBlocked: user.isBlocked,
                 };
+                if(!req.session.cartId){
+                    console.log('Welcome to home');
+                    return res.redirect('/');
+                }else{
+                    console.log('session is here');
+                    console.log(req.session.cartId);
+                    const cartSession = req.session.cartId
+                    req.session.cartId=null
+                    console.log(99);
+                    return res.redirect('/cart/'+cartSession)
 
-                console.log('Welcome to home');
-                return res.redirect('/');
-            } else {
+
+                }
+                
+            }
+            
+            
+            else {
                 req.session.passwordError = true;
                 return res.redirect('/loginpage');
             }
         } else {
-            req.session.Blocked = true;
+            req.session.Blocked = true;// for alert message
             return res.redirect('/loginpage');
         }
     } catch (error) {
         console.error('Invalid user:', error);
-        
     }
 };
 
@@ -118,6 +131,7 @@ const userSignupGet=(req,res)=>{
 //signupPost
 const otpGenerator = require('otp-generator');
 const nodemailer = require('nodemailer');
+const router = require('../router/userRouter');
 
 const userSignupPost = async (req, res) => {
     try {
@@ -189,7 +203,7 @@ const userSignupPost = async (req, res) => {
         }
     } catch (error) {
         console.error(error);
-        res.send('An error occurred during signup.');
+        // res.send('An error occurred during signup.');
     }
 };
 
@@ -316,6 +330,7 @@ const logout= async (req,res)=>{
     try{
         delete req.session.user 
         delete req.session.userNew
+        delete req.session.cartId
         console.log('logout');
         res.redirect('/')
     }catch (err){
@@ -323,9 +338,6 @@ const logout= async (req,res)=>{
     }
 }
 // its correct
-
-
-
 
 
 

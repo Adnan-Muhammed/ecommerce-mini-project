@@ -6,6 +6,8 @@ const session=require("express-session")
 
 const userRoute=require('./router/userRouter')
 const adminRoute=require('./router/adminRouter')
+const cartRoute=require('./router/cartRouter')
+const checkoutRoute=require('./router/checkout')
 
 
 
@@ -52,6 +54,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/',userRoute)
 app.use('/admin',adminRoute)
+app.use(cartRoute)
+app.use(checkoutRoute)
 
 
 

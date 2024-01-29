@@ -5,6 +5,7 @@ const multer = require('multer');
 const path = require('path');
 const upload = multer({ dest: 'public/uploads/' }); 
 const fetchCategoryMiddleware =require('../middleware/fetchCategoryData')
+const mongoose = require('mongoose');
 
 
 const determineIsLogged = (session) => {
@@ -39,38 +40,6 @@ const determineIsLogged = (session) => {
 
 
 
-const productListUser = async (req, res) => {
-    const isLogged = determineIsLogged(req.session);
-    const { primaryCategories, otherCategories } = await fetchCategoryMiddleware.fetchCategories();
-    const categoryName=req.params.id
-    const categoryData = req.params.id.toUpperCase();
-    const page = parseInt(req.query.page) || 1; // Get the page number from the query parameter, default to page 1
-    const limit = 5; // Number of items per page
-    try {
-        const totalProductsCount = await productDB.countDocuments({ isAvailable: true, categoryName: categoryData });
-        console.log(`total products count is ${totalProductsCount}`);
-        const totalPages = Math.ceil(totalProductsCount / limit);
-        const offset = (page - 1) * limit;
-
-        const products = await productDB.find({ isAvailable: true, categoryName: categoryData })
-            .skip(offset)
-            .limit(limit);
-            console.log('haaai');
-            console.log(4444);
-        res.render('user/productlist', {
-            isLogged,
-            product: products,
-            primaryCategories,
-            otherCategories,
-            totalPages,
-            currentPage: page,
-            categoryName,
-            
-        });
-    } catch (err) {
-        console.error(err);
-    }
-}
 
 
 
@@ -196,32 +165,7 @@ const productadded = async (req, res) => {
 
 
 
-// new codes
-const PRODUCTS_PER_PAGE = 8;
-const userSideProductlist = async (req, res) => {
-    try {
-        const page = parseInt(req.query.page) || 1;
-        const skip = (page - 1) * PRODUCTS_PER_PAGE;
 
-        // Fetch products from your database here, considering your actual data retrieval method
-        // For example:
-        const products = await productDB.find().skip(skip).limit(PRODUCTS_PER_PAGE);
-
-        // Calculate total product count (assuming you have a Product model)
-        const totalProductsCount = await productDB.countDocuments();
-
-        const totalPages = Math.ceil(totalProductsCount / PRODUCTS_PER_PAGE);
-
-        res.render('user/productlist', {
-            products,
-            totalPages,
-            currentPage: page
-        });
-    } catch (err) {
-        console.log('Error:', err);
-        return res.status(500).render('error', { message: 'Internal Server Error' });
-    }
-};
 
 //productUnlist admin
 const productUnlist=async(req,res)=>{
@@ -317,24 +261,28 @@ const productImgDelete=async(req,res)=>{
 const productDetail=async(req,res)=>{
     console.log(1818);
     const isLogged = determineIsLogged(req.session);
+    const { primaryCategories, otherCategories } = await fetchCategoryMiddleware.fetchCategories();
     try{
         console.log(isLogged);
         const productId=req.params.id
         console.log(productId,1111);
-        const productDetails=await productDB.findById(productId)
+
+         // Extract the valid ObjectId from the provided string
+    const validObjectId =new mongoose.Types.ObjectId(productId);
+
+    // Use the valid ObjectId to query the database
+    const productDetails = await productDB.findById(validObjectId);
+
+        // const productDetails=await productDB.findById(productId)
         console.log(productDetails,444);
         console.log(222);
-        res.render('user/product-detail',{productDetails,isLogged})
+        res.render('user/product-detail',{productDetails,isLogged, primaryCategories, otherCategories})
     }catch(err){
+        console.error(err);
+        res.status(400).send('Invalid product ID');
 
     }
 }
-
-
-
-
-
-
 
 
 const userSideproductDetails=(req,res)=>{
@@ -344,46 +292,45 @@ const userSideproductDetails=(req,res)=>{
 
 
 
-// const priceSortAscending=async (req,res)=>{
-    
-//     console.log('its ascending');
-//     const category=req.params.id.toUpperCase()
-//     console.log(category,222);
-//     console.log(req.body);
-//     const priceString=req.body.value
-//     console.log(priceString);
-//     const regex = /₹(\d+)\s*-\s*₹(\d+)/;
-//     const match = priceString.match(regex);
-//     console.log(match);
-//     const minValue = parseInt(match[1], 10);
-//     const maxValue = parseInt(match[2], 10);
-//     console.log(minValue,maxValue);
-//     try{
-//         const pipeline = [
-//             {
-//               $match: {
-//                 categoryName: category,
-//                 price: { $gte: minValue, $lte: maxValue },
-//                 isAvailable: true
-//               },
-//             },
-//             {
-//               $sort: {
-//                 price: 1, // 1 for ascending, -1 for descending
-//               },
-//             },
-//           ];
-//         const sortedProducts =  await productDB.aggregate(pipeline);
-//         if( res.json({sortedProducts}) ){
-//             console.log(sortedProducts);
-//             console.log('its send');
-//         }else{
-//             console.log('else');
-//         }
-//     }catch(err){
-//         console.error(err);
-//     }
-// }
+
+
+
+
+
+
+//orginal
+const productListUser = async (req, res) => {
+    const isLogged = determineIsLogged(req.session);
+    const { primaryCategories, otherCategories } = await fetchCategoryMiddleware.fetchCategories();
+    const categoryName=req.params.id
+    const categoryData = req.params.id.toUpperCase();
+    const page = parseInt(req.query.page) || 1; // Get the page number from the query parameter, default to page 1
+    const limit = 5; // Number of items per page
+    try {
+        const totalProductsCount = await productDB.countDocuments({ isAvailable: true, categoryName: categoryData });
+        console.log(`total products count is ${totalProductsCount}`);
+        const totalPages = Math.ceil(totalProductsCount / limit);
+        const offset = (page - 1) * limit;
+
+        const products = await productDB.find({ isAvailable: true, categoryName: categoryData })
+            .skip(offset)
+            .limit(limit);
+            console.log('haaai');
+            console.log(4444);
+        res.render('user/productlist', {
+            isLogged,
+            product: products,
+            primaryCategories,
+            otherCategories,
+            totalPages,
+            currentPage: page,
+            categoryName,
+            
+        });
+    } catch (err) {
+        console.error(err);
+    }
+}
 
 
 
@@ -403,7 +350,7 @@ const priceSortAscending=async (req,res)=>{
 
     const categoryData=req.params.id.toUpperCase()
     console.log(categoryData,222);
-    const page = parseInt(req.query.ascendingpage) || 1; // Get the page number from the query parameter, default to page 1
+    const page = parseInt(req.query.page) || 1; // Get the page number from the query parameter, default to page 1
     console.log(page,999);
     const limit = 5; // Number of items per page
 
@@ -464,56 +411,8 @@ const priceSortAscending=async (req,res)=>{
 }
 
 
-
-
-
-// const priceSortAscending = async (req, res) => {
-//     const page = parseInt(req.query.page) || 1;
-//     const limit = 5;
-//     const category = req.params.id.toUpperCase();
-//     const priceString = req.body.value;
-
-//     const regex = /₹(\d+)\s*-\s*₹(\d+)/;
-//     const match = priceString.match(regex);
-//     const minValue = parseInt(match[1], 10);
-//     const maxValue = parseInt(match[2], 10);
-
-//     try {
-//         const countValue = await productDB.countDocuments({
-//             categoryName: category,
-//             price: { $gte: minValue, $lte: maxValue },
-//             isAvailable: true,
-//         });
-
-//         const totalPages = Math.ceil(countValue / limit);
-//         const offset = (page - 1) * limit;
-
-//         const sortedProducts = await productDB
-//             .find({
-//                 categoryName: category,
-//                 price: { $gte: minValue, $lte: maxValue },
-//                 isAvailable: true,
-//             })
-//             .sort({ price: 1 })
-//             .skip(offset)
-//             .limit(limit)
-//             .toArray();
-
-//         res.json({ sortedProducts, totalPages, currentPage: page });
-//     } catch (err) {
-//         console.error(err);
-//         res.status(500).send('Internal Server Error');
-//     }
-// };
-
-
-
-
-
-const priceSortDescending=async (req,res)=>{
+const priceSortDescending=async (req,res)=>{  
     console.log('its ascending');
-    const category=req.params.id.toUpperCase()
-    console.log(category,222);
     console.log(req.body);
     const priceString=req.body.value
     console.log(priceString);
@@ -523,13 +422,21 @@ const priceSortDescending=async (req,res)=>{
     const minValue = parseInt(match[1], 10);
     const maxValue = parseInt(match[2], 10);
     console.log(minValue,maxValue);
+
+
+    const categoryData=req.params.id.toUpperCase()
+    console.log(categoryData,222);
+    const page = parseInt(req.query.page) || 1; // Get the page number from the query parameter, default to page 1
+    console.log(page,999);
+    const limit = 5; // Number of items per page
+
     try{
         const pipeline = [
             {
               $match: {
-                categoryName: category,
+                categoryName: categoryData,
                 price: { $gte: minValue, $lte: maxValue },
-                isAvailable: true
+                isAvailable: true,
               },
             },
             {
@@ -537,18 +444,58 @@ const priceSortDescending=async (req,res)=>{
                 price: -1, // 1 for ascending, -1 for descending
               },
             },
+            {
+              $count: "documentCount",
+            },
           ];
-        const sortedProducts =  await productDB.aggregate(pipeline);
-        if( res.json({sortedProducts}) ){
-            console.log(sortedProducts);
-            console.log('its send');
-        }else{
-            console.log('else');
-        }
+          const totalProductsCount = await productDB.aggregate(pipeline)
+          console.log(totalProductsCount);
+          const countValue = totalProductsCount[0].documentCount;
+          console.log(countValue);
+          console.log(`filtered products count is ${countValue}`);
+
+
+          const totalPages = Math.ceil(countValue / limit);
+          console.log(totalPages);
+          console.log(7876);
+
+        const offset = (page - 1) * limit;
+
+        const pipeline2 = [
+            {
+              $match: {
+                categoryName: categoryData,
+                price: { $gte: minValue, $lte: maxValue },
+                isAvailable: true,
+              },
+            },
+            {
+              $sort: {
+                price: -1, // 1 for ascending, -1 for descending
+              },
+            },
+            
+          ];
+        const sortedProducts = await productDB.aggregate(pipeline2)
+            .skip(offset)
+            .limit(limit);
+            console.log('hello');
+            res.json({sortedProducts,totalPages,currentPage: page}) 
     }catch(err){
         console.error(err);
     }
 }
+
+
+
+
+
+
+
+
+
+
+
 
 
 const searchProduct = async (req,res)=>{
@@ -599,7 +546,7 @@ module.exports={
     productadded,
     productListAdmin,
     //new codes
-    userSideProductlist,
+    // userSideProductlist,
     userSideproductDetails,
     productListUser,
     productUnlist,

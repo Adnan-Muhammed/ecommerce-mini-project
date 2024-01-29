@@ -45,16 +45,17 @@
                                 <div class="form-group">
                                     <label for="password">Password</label>
                                     <input type="password" value="" name="password" placeholder="" id="CustomerPassword" class="">   
-                                                        	
+                                    <div class="error"style="color: red; "></div>                     	
                                 </div>
                             </div>
                             <div class="col-12 col-sm-12 col-md-12 col-lg-12">
                                 <div class="form-group">
-                                    <label for="password">Confirm Password</label>
-                                    <input type="password" value="" name="" placeholder="" id="ConfirmPassword" class="">   
-                                    <div class="error"style="color: red; "></div>                     	
+                                    <label for="confirmPassword">Confirm Password</label>
+                                    <input type="password" value="" name="confirmPassword" placeholder="" id="ConfirmPassword" class="">   
+                                    <div class="error" style="color: red;"></div>                     	
                                 </div>
                             </div>
+                            
                             
                             </div>
                           </div>
@@ -110,14 +111,16 @@
             valid = false;
             displayError('CustomerPassword', 'Password must be at least 8 characters.');
         }
+
+        
         const confirmpassword = form.querySelector('#ConfirmPassword').value.trim();
-        if (password === '') {
-            valid = false;
-            displayError('CustomerPassword', 'Password is required.');
-        } else if (confirmpassword!=password) {
-            valid = false;
-            displayError('ConfirmPassword', 'is not same to password ');
-        }
+if (confirmpassword === '') {
+    valid = false;
+    displayError('ConfirmPassword', 'Confirm Password is required.');
+} else if (confirmpassword != password) {
+    valid = false;
+    displayError('ConfirmPassword', 'Confirm Password is not the same as the password.');
+}
 
         if (!valid) {
             event.preventDefault();

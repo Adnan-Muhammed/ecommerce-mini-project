@@ -17,112 +17,69 @@
 					</div>
                 	<form action="#" method="post" class="cart style2">
                 		<table>
+
+
                             <thead class="cart__row cart__header">
                                 <tr>
-                                    <th colspan="2" class="text-center">Product</th>
+                                    <th colspan="2" class="text-center" >Product</th>
                                     <th class="text-center">Price</th>
                                     <th class="text-center">Quantity</th>
-                                    <th class="text-right">Total</th>
+                                    <th  class="text-right">Total</th>
                                     <th class="action">&nbsp;</th>
                                 </tr>
                             </thead>
-                    		<tbody>
-                                <tr class="cart__row border-bottom line1 cart-flex border-top">
-                                    <td class="cart__image-wrapper cart-flex-item">
-                                        <!-- <a href="#"><img class="cart__image" src="/public/assets/images/product-images/product-image30.jpg" alt="Elastic Waist Dress - Navy / Small"></a> -->
-                                        <a href="#"><img class="cart__image"  src="/public/assets/images/product-images/product-image1.jpg"   alt="3/4 Sleeve Kimono Dress"></a>
+                    		
+                                   <tbody>
+                                    <% locals.cartItems.forEach(item => { %>
+                                        <tr class="cart__row border-bottom line1 cart-flex border-top">
+                                            <td class="cart__image-wrapper cart-flex-item">
+                                                <a href="#">
+                                                    <img class="cart__image"
+                                                         class="img-fluid  mx-auto mb-4" 
+                                                         src="<%= item.images[0] %>"
+                                                         style="width: 100px; height: 100px;"  
+                                                         alt="<%= item.productId %>">
+                                                </a>
+                                            </td>
+                                            <td class="cart__meta small--text-left cart-flex-item">
+                                                <div class="list-view-item__title">
+                                                    <a href="#"><%= item.name %> </a>
+                                                </div>
+                                                <!-- Add other details you want to display -->
+                                            </td>
+                                            <td style=" text-align: center;" class="cart__price-wrapper cart-flex-item">
+                                                <span  class="money">$<%= item.unitPrice %></span>
+                                            </td>
+                                            <!-- Add other columns as needed -->
+                            
+                                            <td class="cart__update-wrapper cart-flex-item text-right">
+                                                <div class="cart__qty text-center">
+                                                    <div class="qtyField"  >
+                                                        <a class="qtyBtn minus" href="javascript:void(0);"><i class="icon icon-minus"></i></a>
+                                                        <input data-product-id2="<%= item.productId %>"   data-stock="<%= item.stock %>" class="cart__qty-input qty" type="text" name="updates[]" id="qty" max="<%= item.stock %>" value="<%=item.quantity%>" pattern="[0-9]*">
+                                                        <a class="qtyBtn plus" href="javascript:void(0);"><i class="icon icon-plus"></i></a>
+                                                    </div>
+                                                </div>
 
-                                    </td>
-                                    <td class="cart__meta small--text-left cart-flex-item">
-                                        <div class="list-view-item__title">
-                                            <a href="#">Elastic Waist Dress </a>
-                                        </div>
-                                        
-                                        <div class="cart__meta-text">
-                                            Color: Navy<br>Size: Small<br>
-                                        </div>
-                                    </td>
-                                    <td class="cart__price-wrapper cart-flex-item">
-                                        <span class="money">$735.00</span>
-                                    </td>
-                                    <td class="cart__update-wrapper cart-flex-item text-right">
-                                        <div class="cart__qty text-center">
-                                            <div class="qtyField">
-                                                <a class="qtyBtn minus" href="javascript:void(0);"><i class="icon icon-minus"></i></a>
-                                                <input class="cart__qty-input qty" type="text" name="updates[]" id="qty" value="1" pattern="[0-9]*">
-                                                <a class="qtyBtn plus" href="javascript:void(0);"><i class="icon icon-plus"></i></a>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="text-right small--hide cart-price">
-                                        <div><span class="money">$735.00</span></div>
-                                    </td>
-                                    <td class="text-center small--hide"><a href="#" class="btn btn--secondary cart__remove" title="Remove tem"><i class="icon icon anm anm-times-l"></i></a></td>
-                                </tr>
-                                <tr class="cart__row border-bottom line1 cart-flex border-top">
-                                    <td class="cart__image-wrapper cart-flex-item">
-                                        <!-- <a href="#"><img class="cart__image" src="/public/assets/images/product-images/home7-product5.jpg" alt="3/4 Sleeve Kimono Dress"></a> -->
-                                        <a href="#"><img class="cart__image"  src="/public/assets/images/product-images/product-image1.jpg"   alt="3/4 Sleeve Kimono Dress"></a>
-
-                                        
-                                    </td>
-                                    <td class="cart__meta small--text-left cart-flex-item">
-                                        <div class="list-view-item__title">
-                                            <a href="#">3/4 Sleeve Kimono Dress</a>
-                                        </div>
-                                        <div class="cart__meta-text">
-                                            Color: Gray<br>Size: Large<br>
-                                        </div>
-                                    </td>
-                                    <td class="cart__price-wrapper cart-flex-item">
-                                        <span class="money">$735.00</span>
-                                    </td>
-                                    <td class="cart__update-wrapper cart-flex-item text-right">
-                                        <div class="cart__qty text-center">
-                                            <div class="qtyField">
-                                                <a class="qtyBtn minus" href="javascript:void(0);"><i class="icon icon-minus"></i></a>
-                                                <input class="cart__qty-input qty" type="text" name="updates[]" id="qty" value="1" pattern="[0-9]*">
-                                                <a class="qtyBtn plus" href="javascript:void(0);"><i class="icon icon-plus"></i></a>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="text-right small--hide cart-price">
-                                        <div><span class="money">$735.00</span></div>
-                                    </td>
-                                    <td class="text-center small--hide"><a href="#" class="btn btn--secondary cart__remove" title="Remove tem"><i class="icon icon anm anm-times-l"></i></a></td>
-                                </tr>
-                                <tr class="cart__row border-bottom line1 cart-flex border-top">
-                                    <td class="cart__image-wrapper cart-flex-item">
-                                        <a href="#"><img class="cart__image" src="/public/assets/images/product-images/home7-product4.jpg" alt="Minerva Dress black"></a>
-                                    </td>
-                                    <td class="cart__meta small--text-left cart-flex-item">
-                                        <div class="list-view-item__title">
-                                            <a href="#">Minerva Dress black</a>
-                                        </div>
-                                    </td>
-                                    <td class="cart__price-wrapper cart-flex-item">
-                                        <span class="money">$526.00</span>
-                                    </td>
-                                    <td class="cart__update-wrapper cart-flex-item text-right">
-                                        <div class="cart__qty text-center">
-                                            <div class="qtyField">
-                                                <a class="qtyBtn minus" href="javascript:void(0);"><i class="icon icon-minus"></i></a>
-                                                <input class="cart__qty-input qty" type="text" name="updates[]" id="qty" value="1" pattern="[0-9]*">
-                                                <a class="qtyBtn plus" href="javascript:void(0);"><i class="icon icon-plus"></i></a>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="text-right small--hide cart-price">
-                                        <div><span class="money">$735.00</span></div>
-                                    </td>
-                                    <td class="text-center small--hide"><a href="#" class="btn btn--secondary cart__remove" title="Remove tem"><i class="icon icon anm anm-times-l"></i></a></td>
-                                </tr>
-                            </tbody>
-                    		<tfoot>
+                                     
+                                            </td>
+                            
+                                            <td  class="text-right small--hide cart-price">
+                                                <div ><span class="money">$<%= item.price %></span></div>
+                                            </td>
+                            
+                                            <td class="text-center small--hide">
+                                                <a href="" class="btn btn--secondary cart__remove" title="Remove tem"   data-product-id="<%= item.productId %>"><i class="icon icon anm anm-times-l"></i></a>
+                                            </td>
+                                        </tr>
+                                    <% }); %>
+                                </tbody>
+                                   <tfoot>
                                 <tr>
-                                    <td colspan="3" class="text-left"><a href="http://annimexweb.com/" class="btn btn-secondary btn--small cart-continue">Continue shopping</a></td>
+                                    <!-- <td colspan="3" class="text-left"><a href="http://annimexweb.com/" class="btn btn-secondary btn--small cart-continue">Continue shopping</a></td> -->
                                     <td colspan="3" class="text-right">
 	                                    <button type="submit" name="clear" class="btn btn-secondary btn--small  small--hide">Clear Cart</button>
+
                                     	<button type="submit" name="update" class="btn btn-secondary btn--small cart-continue ml-2">Update Cart</button>
                                     </td>
                                 </tr>
@@ -131,6 +88,8 @@
                     </form>                   
                	</div>
                 
+
+
                 
                 <div class="container mt-4">
                     <div class="row">
@@ -146,7 +105,7 @@
                                 </div>
                             </form>
                         </div>
-                        <div class="col-12 col-sm-12 col-md-4 col-lg-4 mb-4">
+                        <!-- <div class="col-12 col-sm-12 col-md-4 col-lg-4 mb-4">
                         	<h5>Estimate Shipping and Tax</h5>
 							<form action="#" method="post">
                                 <div class="form-group">
@@ -167,17 +126,18 @@
                                     <div><input type="button" class="btn btn-secondary btn--small" value="Calculate shipping"></div>
                                 </div>
                             </form>
-                        </div>
+                        </div> -->
                         
                         <div class="col-12 col-sm-12 col-md-4 col-lg-4 cart__footer">
                             <div class="solid-border">	
                               <div class="row border-bottom pb-2">
                                 <span class="col-12 col-sm-6 cart__subtotal-title">Subtotal</span>
-                                <span class="col-12 col-sm-6 text-right"><span class="money">$735.00</span></span>
+                                <span class="col-12 col-sm-6 text-right"><span class="money">$<%= totalprice %></span></span>
+
                               </div>
                               <div class="row border-bottom pb-2 pt-2">
                                 <span class="col-12 col-sm-6 cart__subtotal-title">Tax</span>
-                                <span class="col-12 col-sm-6 text-right">$10.00</span>
+                                <span class="col-12 col-sm-6 text-right">$<%= tax.toFixed(2) %></span>
                               </div>
                               <div class="row border-bottom pb-2 pt-2">
                                 <span class="col-12 col-sm-6 cart__subtotal-title">Shipping</span>
@@ -185,7 +145,7 @@
                               </div>
                               <div class="row border-bottom pb-2 pt-2">
                                 <span class="col-12 col-sm-6 cart__subtotal-title"><strong>Grand Total</strong></span>
-                                <span class="col-12 col-sm-6 cart__subtotal-title cart__subtotal text-right"><span class="money">$1001.00</span></span>
+                                <span class="col-12 col-sm-6 cart__subtotal-title cart__subtotal text-right"><span class="money">$<%= grandTotal.toFixed(2) %></span></span>
                               </div>
                               <div class="cart__shipping">Shipping &amp; taxes calculated at checkout</div>
                               <p class="cart_tearm">
@@ -194,9 +154,9 @@
                                   I agree with the terms and conditions
 								</label>
                               </p>
-                              <input type="submit" name="checkout" id="cartCheckout" class="btn btn--small-wide checkout" value="Proceedkbhkg To Checkout" disabled="disabled">
-                              <div class="paymnet-img"><img src="/assets/images/payment-img.jpg" alt="Payment"></div>
-                              <p><a href="#;">Checkout with Multiple Addresses</a></p>
+                              <input href="/checkout" style="background-color: cadetblue;"  name="checkot" id="cartCheckout" class="btn btn--small-wide checkout" value="Proceed To Checkout" disabled="disabled">
+                              <!-- <div class="paymnet-img"><img src="/assets/images/payment-img.jpg" alt="Payment"></div>
+                              <p><a href="#;">Checkout with Multiple Addresses</a></p> -->
                             </div>
         
                         </div>
@@ -233,5 +193,126 @@
     // Call the function to enable the button and set up the click event listener
     goToNextPage();
   </script>
+
+  <!-- Add this script at the end of your HTML file, just before the closing </body> tag -->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const removeButtons = document.querySelectorAll('.cart__remove');
+  
+      removeButtons.forEach(button => {
+        button.addEventListener('click', function (event) {
+          event.preventDefault();
+  
+          // Get the product ID from the data attribute or other suitable method
+          const productId = button.dataset.productId;
+  
+          // Make a fetch request to the server to remove the product
+          fetch(`/remove/${productId}`, {
+            method: 'GET',
+          })
+
+
+          .then(response => {
+            if (!response.ok) {
+              throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            // Optionally handle the response, e.g., refresh the cart page
+            window.location.reload();
+          })
+
+
+
+          .catch(error => {
+            console.error('Error removing product:', error);
+          });
+        });
+      });
+    });
+  </script>
+
+
+
+
+
+<!-- Include this script in your HTML file -->
+<!-- <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      // Attach an event listener to the "Update Cart" button
+      const updateCartBtn = document.getElementById('updateCartBtn');
+      updateCartBtn.addEventListener('click', function () {
+        // Get the quantities and product IDs from the form
+        const quantities = document.querySelectorAll('.cart__qty-input');
+        const productIds = document.querySelectorAll('.cart__remove');
+  
+        // Prepare the data to be sent to the server
+        const updateData = Array.from(quantities).map((qty, index) => ({
+          quantity: qty.value,
+          productId: productIds[index].dataset.productId, // Assuming you have a data-product-id attribute
+        }));
+  
+        // Send an AJAX request to the server
+        fetch('/update-cart', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ updateData }),
+        })
+          .then(response => response.json())
+          .then(data => {
+            // Handle the response from the server if needed
+            console.log(data);
+          })
+          .catch(error => console.error('Error:', error));
+      });
+    });
+  </script> -->
+  
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const updateCartButton = document.querySelector('[name="update"]');
+        
+        if (updateCartButton) {
+            updateCartButton.addEventListener("click", function(event) {
+                event.preventDefault();
+                
+                // Get all quantity inputs
+                const quantityInputs = document.querySelectorAll('.cart__qty-input');
+                
+                // Prepare data to send to the server
+                const updateData = Array.from(quantityInputs).map(input => ({
+                    productId: input.getAttribute('data-product-id2'),
+
+                    quantity: input.value
+                }));
+                
+                // Send a fetch request to update the cart on the server
+                fetch('/update-cart', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ updates: updateData })
+                })
+                .then(response => {
+            if (!response.ok) {
+              throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            // Optionally handle the response, e.g., refresh the cart page
+            window.location.reload();
+          })
+
+
+                .catch(error => {
+                    console.error('Error updating cart:', error);
+                });
+            });
+        }
+    });
+</script>
+
+
+  
 </body>
 </html>

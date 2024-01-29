@@ -47,4 +47,13 @@ router.get('/delete/:id/uploads/:imgUrl',   adminSessionMiddleware.requireAdmin,
 router.post('/productUpdated/:id',adminSessionMiddleware.requireAdmin,productManagement.productadded)
 
 
+// router.get('/order',(req,res)=>{
+//     res.render('admin/order')
+// })
+
+
+router.get('/orderlist',(req,res)=>{
+    const order={_id:22}
+    res.render('admin/orderlist',{order})
+})
 module.exports = router;

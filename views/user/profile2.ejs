@@ -1,0 +1,80 @@
+<%-include('header')-%>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-REPLACE_WITH_YOUR_INTEGRITY_CHECK" crossorigin="anonymous" />
+    <section style="background-color: #000000;">
+        <div class="container py-5">
+
+          <div class="row">
+            <div class="col-lg-4">
+              <div class="card mb-4">
+                <div class="card-body text-center">
+                  <img src="https://cdn1.iconfinder.com/data/icons/public-company-solid/32/employee_employe_workman_user_profiles_avatar_people_human_persons_icon_1-512.png" alt="avatar"
+                    class="rounded-circle img-fluid" style="width: 150px;">
+                  <h5 class="my-3"> user.name </h5> 
+                </div>
+              </div>
+              <div class="card mb-4 mb-lg-0">
+                <div class="card-body p-0">
+                  <ul class="list-group list-group-flush rounded-3">
+                    <li class="list-group-item d-flex justify-content-between align-items-center p-3">
+                      <p class="mb-0"><a href="/userprofile">MY PROFILE</a></p>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center p-3">
+                      <p class="mb-0"> <a href="/editUser">EDIT PROFILE</a> </p>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center p-3">
+                      <p class="mb-0"> <a href="/userAddAddress">ADDRESS</a> </p>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center p-3">
+                      <p class="mb-0"> <a href="/orderDetails">ORDER STATUS</a> </p>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center p-3">
+                      <p class="mb-0"> <a href="/changePassword">CHANGE PASSWORD</a> </p>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center p-3">
+                      <p class="mb-0"> <a href="/wallet">WALLET</a> </p>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center p-3">
+                      <p class="mb-0"> <a href="/referralCode">REFER AND EARN</a> </p>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-8">
+              <div class="card mb-4">
+                <div class="card-body">
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <p class="mb-0">Full Name</p>
+                    </div>
+                    <div class="col-sm-9">
+                      <p class="text-muted mb-0">= user.name </p>
+                    </div>
+                  </div>
+                  <hr>
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <p class="mb-0">Email</p>
+                    </div>
+                    <div class="col-sm-9">
+                      <p class="text-muted mb-0">= user.email </p>
+                    </div>
+                  </div>
+                  <hr>
+                  <div class="row">
+                    <!-- <div class="col-sm-3">
+                      <p class="mb-0">Mobile</p>
+                    </div> -->
+                    <div class="col-sm-9">
+                      <p class="text-muted mb-0"></p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <%-include('footer')-%>

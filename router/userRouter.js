@@ -3,9 +3,6 @@ const router = express.Router();
 
 
 
-
-// userRouter.js
-//new 
 const userSessionHandling=require('../middleware/userSessionHandling')
 
 
@@ -28,31 +25,20 @@ router.get('/logout',userManagement.logout)
 
 
 const productManagement=require('../controller/productManagement')
+
+
 router.get('/category/:id',userSessionHandling.isBlockedNow,    productManagement.productListUser)
+router.post('/category/:id/ascending/',userSessionHandling.isBlockedNow,productManagement.priceSortAscending)
+
+
+
+router.post('/category/:id/descending',userSessionHandling.isBlockedNow,productManagement.priceSortDescending)
+router.post('/category/:id/searchProduct',userSessionHandling.isBlockedNow,productManagement.searchProduct)
 router.get('/productdetails/:id', userSessionHandling.isBlockedNow,  productManagement.productDetail)
 
 
 
 
-// router.post('/priceSort',(req,res)=>{
-//     console.log(req.body.pricing)
-// })
-
-// router.post('/category/:id/descending',(req,res)=>{
-//     console.log(7777111);
-//     console.log('descending');
-//     console.log(req.body.priceValue);
-// })
-
-// router.post('/category/:id/ascending',(req,res)=>{
-//     console.log(777711);
-//     console.log('ascending');
-//     console.log(req.body.priceValue);
-// })
-
-router.post('/category/:id/ascending',userSessionHandling.isBlockedNow,productManagement.priceSortAscending)
-router.post('/category/:id/descending',userSessionHandling.isBlockedNow,productManagement.priceSortDescending)
-router.post('/category/:id/searchProduct',userSessionHandling.isBlockedNow,productManagement.searchProduct)
 
 
 
@@ -62,11 +48,19 @@ router.post('/category/:id/searchProduct',userSessionHandling.isBlockedNow,produ
 router.get('/aaa',(req,res)=>{
     res.render('user/aaa')
 })
-router.get('/cart',(req,res)=>{
-    res.render('user/cart')
+router.get('/myprofile',(req,res)=>{
+    res.render('user/profile')
 })
-router.get('/checkout',(req,res)=>{
-    res.render('user/checkout')
+router.get('/myprofile2',(req,res)=>{
+    res.render('user/profile2')
+})
+router.get('/myprofile/wallet',(req,res)=>{
+    res.render('user/wallet')
+})
+
+
+router.get('/place-order',(req,res)=>{
+    res.render('user/orderPlaced')
 })
 
 module.exports = router;
