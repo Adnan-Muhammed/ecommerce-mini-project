@@ -1,3 +1,5 @@
+
+
 <%-include('header')-%>
 <!--Body Content-->
     <div id="page-content">
@@ -44,7 +46,7 @@
                                                 </div>
                                             </td>
                                             <td style=" text-align: center;" class="cart__price-wrapper cart-flex-item">
-                                                <span  class="money">$<%= item.unitPrice %></span>
+                                                <span id="unitPrice" data-product-unitPrice class="money">$<%= item.unitPrice %></span>
                                             </td>
                                             <td style=" text-align: center;" class="cart__price-wrapper cart-flex-item">
                                                 <span  class="money"><%= item.stock %></span>
@@ -237,7 +239,9 @@
         const qtyInput = document.querySelector(`.qty[data-product-id="${productId}"]`);
         const alertDiv = document.querySelector(`#alertDiv[data-product-id="${productId}"]`);
         const totalPriceElement = document.querySelector(`#productPrice[data-product-id="${productId}"]`);
-        const subTotal = document.querySelector('#subTotal');
+        const subTotalElement = document.querySelector('#subTotal');
+
+
 
         const qtyValue = parseInt(qtyInput.value);
 
@@ -265,8 +269,19 @@
         .then(response => response.json())
         .then(data => {
 
+
+
+
+
             const divseted='<p style="color: darkred;">Out of stock</p>';
             const hello=`<span class="money">$${data.price.price}</span>`;
+
+
+            
+
+            // subTotalElement.innerHTML = `<span class="money">$${updatedSubtotal.toFixed(2)}</span>`;
+            subTotalElement.innerHTML = "<h1>khygj</h1>"
+
             console.log(hello);
             console.log(divseted);
             console.log(1234567890);
@@ -282,6 +297,24 @@
             } else {
                 alertDiv.innerHTML =""
                 totalPriceElement.innerHTML = hello;
+
+            //     const cartItems = document.querySelectorAll('.cart__row');
+            // let updatedSubtotal = 0;
+
+            // cartItems.forEach(item => {
+            //     const itemPriceElement = item.querySelector('.cart-price span.money');
+            //     const itemPrice = parseFloat(itemPriceElement.innerText.replace('$', ''));
+            //     updatedSubtotal += itemPrice;
+            // });
+
+            // subTotalElement.innerHTML = `<span class="money">$${updatedSubtotal.toFixed(2)}</span>`;
+
+
+
+
+
+
+
                 // subTotal.innerHTML = `<span id="subTotal" class="col-12 col-sm-6 text-right"><span class="money">${data.price.price}</span></span>`
                 console.log('Quantity updated successfully', data);
                 // Additional logic if needed when quantity is updated successfully
@@ -301,64 +334,6 @@
 
 
 
-
-
-<!-- <script>
-    const qty = (action, productId) => {
-    const qtyInput = document.querySelector(`.qty[data-product-id="${productId}"]`);
-    console.log('kkj');
-    // const alertDiv = document.querySelector(`.alertDiv[data-product-id="${productId}"]`);
-
-    const totalPriceElement = document.querySelector(`[data-product-id="${productId}"] .cart-price`); // Adjust this selector
-
-    const subTotal = document.querySelector('#subTotal');
-
-    const qtyValue = parseInt(qtyInput.value);
-    let newQty;
-
-    if (action === 'plus') {
-        newQty = qtyValue + 1;
-    } else {
-        if (qtyValue > 1) {
-            newQty = qtyValue - 1;
-        }
-    }
-
-    fetch('/updateQuantity', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-            productId: productId,
-            newQuantity: newQty,
-        }),
-    })
-    .then(response => response.json())
-    .then(data => {
-
-
-        if (data.outOfStock) {
-            console.log('true');
-            const alertDiv = document.getElementById(`alertDiv-${productId}`);
-            alertDiv.innerHTML=""
-
-            alertDiv.innerHTML = '<p style="color: darkred;">Out of stock</p>';
-        } else {
-            alertDiv.innerHTML = '';
-            totalPriceElement.innerHTML = `<div><span class="money">$${data.price.price}</span></div>`;
-            subTotal.innerHTML = `<span id="subTotal" class="col-12 col-sm-6 text-right"><span class="money">${data.price.price}</span></span>`;
-            console.log('Quantity updated successfully', data);
-        }
-    })
-    .catch(error => {
-        console.error('Error updating quantity', error);
-    });
-};
-
-</script> -->
-
-<!-- Add this script block after your existing script -->
 
   
 </body>

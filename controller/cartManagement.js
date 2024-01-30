@@ -246,7 +246,8 @@ const updateQuantity = async (req, res) => {
     }
     else{
       console.log('out of stock true');
-      return res.json({ outOfStock: true, product: { stock: product.stock},newQuantity: newQuantity,price:cartItem });
+
+      return res.json({ outOfStock: true, product: { stock: product.stock},newQuantity: newQuantity, price:cartItem  });
 
     }
 
