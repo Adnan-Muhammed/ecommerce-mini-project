@@ -166,46 +166,105 @@ const removeFromCart = async (req, res) => {
 
 
 
-const updateCartQuantities = async (req, res) => {
+// const updateCartQuantities = async (req, res) => {
+//   try {
+//     const updates = req.body.updates;
+//     const emailId = (req.session.user) ? req.session.user.email : req.session.userNew.email;
+
+//     // Find the user
+
+//     if (!user) {
+//       console.log('User not found');
+//       return res.status(404).send('User not found');
+//     }
+
+//     // Iterate through the updates and update quantities in the CartDB collection
+//     for (const update of updates) {
+//       const productId = update.productId;
+
+//       // Find the cart item for the user and product
+//       const cartItem = await CartDB.findOne({ userId: user._id, productId: productId });
+//       const product = await productDB.findOne({ _id: productId })
+//       const quantity = (parseInt(update.quantity)  <= product.stock)?update.quantity:product.stock
+
+//       console.log(product.price);
+//       console.log(6666666);
+//       if (cartItem) {
+//         // Update the quantity and price in the cart item
+//         cartItem.quantity = quantity;
+//         // cartItem.price = quantity * cartItem.price / cartItem.quantity; // Recalculate the price based on the new quantity
+//         cartItem.price = quantity * product.price
+//         await cartItem.save();
+//       }
+//     }
+// res.redirect('/cartpage')
+//     // Redirect to the cart page or send a success message
+//     // res.json({ success: true, message: 'Cart updated successfully' });
+//   } catch (err) {
+//     console.error('Error updating cart quantities:', err);
+//     res.status(500).send('Internal Server Error');
+//   }
+// };
+
+
+
+
+const updateQuantity = async (req, res) => {
+  const { productId, newQuantity } = req.body;
+  console.log(productId ,newQuantity);
   try {
-    const updates = req.body.updates;
+
+    if (!productId || !newQuantity || isNaN(newQuantity) || newQuantity < 0) {
+      return res.status(400).json({ error: 'Invalid input' });
+    }
+
     const emailId = (req.session.user) ? req.session.user.email : req.session.userNew.email;
 
-    // Find the user
+
     const user = await UserDB.findOne({ email: emailId });
+    const cartItem = await CartDB.findOne({ userId: user._id, productId: productId });
+ 
 
-    if (!user) {
-      console.log('User not found');
-      return res.status(404).send('User not found');
+    
+    // const wholeProduct=await CartDB.find({userId: user._id})
+    // console.log(5454545);
+    // console.log(wholeProduct);
+    // console.log(67676);
+
+
+
+    const product = await productDB.findOne({ _id: productId })
+    if(newQuantity<=product.stock){
+      console.log(product.stock);
+      console.log(newQuantity);
+      cartItem.quantity = newQuantity;
+      cartItem.price = (newQuantity||1) * product.price
+      await cartItem.save();
+      console.log('out of stock false');
+      return res.json({ outOfStock:false, product: { stock: product.stock },newQuantity: newQuantity, price:cartItem });
+
+    }
+    else{
+      console.log('out of stock true');
+      return res.json({ outOfStock: true, product: { stock: product.stock},newQuantity: newQuantity,price:cartItem });
+
     }
 
-    // Iterate through the updates and update quantities in the CartDB collection
-    for (const update of updates) {
-      const productId = update.productId;
 
-      // Find the cart item for the user and product
-      const cartItem = await CartDB.findOne({ userId: user._id, productId: productId });
-      const product = await productDB.findOne({ _id: productId })
-      const quantity = (parseInt(update.quantity)  <= product.stock)?update.quantity:product.stock
 
-      console.log(product.price);
-      console.log(6666666);
-      if (cartItem) {
-        // Update the quantity and price in the cart item
-        cartItem.quantity = quantity;
-        // cartItem.price = quantity * cartItem.price / cartItem.quantity; // Recalculate the price based on the new quantity
-        cartItem.price = quantity * product.price
-        await cartItem.save();
-      }
-    }
-res.redirect('/cartpage')
-    // Redirect to the cart page or send a success message
-    // res.json({ success: true, message: 'Cart updated successfully' });
+    
+
+    // Optionally, you may send a success message
   } catch (err) {
-    console.error('Error updating cart quantities:', err);
-    res.status(500).send('Internal Server Error');
+    // Properly handle errors, log them, and return an appropriate response
+    console.error(err);
+    return res.status(500).json({ error: 'Internal server error' });
   }
 };
+
+
+
+
 
 
 
@@ -214,7 +273,6 @@ module.exports ={
     cartPage,
     addtoCart,
     removeFromCart,
-    updateCartQuantities,
+    // updateCartQuantities,
+    updateQuantity,
 }
-
-

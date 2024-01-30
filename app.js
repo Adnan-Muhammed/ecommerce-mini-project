@@ -10,9 +10,8 @@ const cartRoute=require('./router/cartRouter')
 const checkoutRoute=require('./router/checkout')
 
 
-
-app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
 
 app.use((req, res, next) => {
@@ -48,10 +47,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 
 
-
-
-
-
 app.use('/',userRoute)
 app.use('/admin',adminRoute)
 app.use(cartRoute)
@@ -63,7 +58,7 @@ const PORT=process.env.PORT||3000
 app.listen(PORT,()=>{
 
 
-    
+   
 
     console.log(`server running on http://localhost:${PORT}`);
 })
