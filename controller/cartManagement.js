@@ -10,7 +10,6 @@ const determineIsLogged = (session) => {
     return session.user ? session.user.name : (session.userNew ? session.userNew.name : null);
 };
 
-
 const cartPage = async (req, res) => {
     const isLogged = determineIsLogged(req.session);
     const { primaryCategories, otherCategories } = await fetchCategoryMiddleware.fetchCategories();
@@ -43,7 +42,8 @@ const cartPage = async (req, res) => {
         const product = products.find(p => p._id.equals(cartItem.productId));
   
         return {
-          productId: cartItem.productId,
+          // productId: cartItem.productId,
+          productId: cartItem._id,//first
           quantity: cartItem.quantity,
           name:product.name,
           images: product.image,
@@ -65,11 +65,9 @@ for (const cartItem of detailedCartItems) {
 }
 console.log(totalPrice);
 
-const tax = 10.00; // You can change this to your actual tax value
-const grandTotal = totalPrice + tax;
-  
-      res.render('user/cart', { cartItems: detailedCartItems, isLogged, primaryCategories, otherCategories ,totalprice:totalPrice,tax, grandTotal });
-  
+const taxValue = 10.00; // You can change this to your actual tax value
+const grandTotal = totalPrice + taxValue;
+      res.render('user/cart', { cartItems: detailedCartItems, isLogged, primaryCategories, otherCategories ,totalprice:totalPrice,taxValue, grandTotal });
     } catch (err) {
       console.error('Error fetching cart items:', err);
       res.status(500).send('Internal Server Error');
@@ -150,7 +148,8 @@ const removeFromCart = async (req, res) => {
     console.log(55);
 
     // Find and remove the item from the cart
-    await CartDB.findOneAndDelete({ userId: idstr, productId: productIdToRemove });
+    // await CartDB.findOneAndDelete({ userId: idstr, productId: productIdToRemove });
+    await CartDB.findOneAndDelete({ _id:productIdToRemove });//first
 
 
     // Redirect back to the cart page or send a success response
@@ -217,23 +216,17 @@ const updateQuantity = async (req, res) => {
     if (!productId || !newQuantity || isNaN(newQuantity) || newQuantity < 0) {
       return res.status(400).json({ error: 'Invalid input' });
     }
-
     const emailId = (req.session.user) ? req.session.user.email : req.session.userNew.email;
 
-
     const user = await UserDB.findOne({ email: emailId });
-    const cartItem = await CartDB.findOne({ userId: user._id, productId: productId });
- 
-
+    // const cartItem = await CartDB.findOne({ userId: user._id, productId: productId });
+    const cartItem = await CartDB.findOne({_id:productId });
     
-    // const wholeProduct=await CartDB.find({userId: user._id})
-    // console.log(5454545);
-    // console.log(wholeProduct);
-    // console.log(67676);
+    const product = await productDB.findOne({ _id: cartItem.productId })
+
+    const taxValue = 10.00; // You can change this to your actual tax value
 
 
-
-    const product = await productDB.findOne({ _id: productId })
     if(newQuantity<=product.stock){
       console.log(product.stock);
       console.log(newQuantity);
@@ -241,13 +234,29 @@ const updateQuantity = async (req, res) => {
       cartItem.price = (newQuantity||1) * product.price
       await cartItem.save();
       console.log('out of stock false');
-      return res.json({ outOfStock:false, product: { stock: product.stock },newQuantity: newQuantity, price:cartItem });
+      
+      const cartRecords = await CartDB.find({userId: user._id})
+  
+        // Calculate the sum of prices
+        const priceSum = cartRecords.reduce((sum, record) => sum + record.price, 0);
+        const grandTotal =priceSum+taxValue
+      
+    
+
+      return res.json({ outOfStock:false, product: { stock: product.stock },newQuantity: newQuantity, price:cartItem,taxValue, priceSum: priceSum ,grandTotal });
 
     }
     else{
       console.log('out of stock true');
 
-      return res.json({ outOfStock: true, product: { stock: product.stock},newQuantity: newQuantity, price:cartItem  });
+      const cartRecords = await CartDB.find({userId: user._id})
+  
+        // Calculate the sum of prices
+        const priceSum = cartRecords.reduce((sum, record) => sum + record.price, 0);
+        const grandTotal =priceSum+taxValue
+
+
+      return res.json({ outOfStock: true, product: { stock: product.stock},newQuantity: newQuantity, price:cartItem ,priceSum: priceSum ,grandTotal});
 
     }
 

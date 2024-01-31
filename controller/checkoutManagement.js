@@ -13,18 +13,11 @@ const determineIsLogged = (session) => {
 
 
 
-// const categoryPage=async(req,res)=>{
-//     const isLogged = determineIsLogged(req.session);
-// const { primaryCategories, otherCategories } = await fetchCategoryMiddleware.fetchCategories();
-// console.log(isLogged);
-
-
-//     res.render('user/checkout',{isLogged})
-// }
 
 
 
-const categoryPage = async (req, res) => {
+
+const checkoutPage = async (req, res) => {
     const isLogged = determineIsLogged(req.session);
     const { primaryCategories, otherCategories } = await fetchCategoryMiddleware.fetchCategories();
     const emailId = (req.session.user) ? req.session.user.email : req.session.userNew.email;
@@ -78,14 +71,14 @@ for (const cartItem of detailedCartItems) {
 }
 console.log(totalPrice);
 
-const tax = 10.00; // You can change this to your actual tax value
-const grandTotal = totalPrice + tax;
+const taxValue = 10.00; // You can change this to your actual tax value
+const grandTotal = totalPrice + taxValue
   
 
 
 
 
-      res.render('user/checkout', { cartItems: detailedCartItems, isLogged, primaryCategories, otherCategories ,totalprice:totalPrice,tax, grandTotal });
+      res.render('user/checkout', { cartItems: detailedCartItems, isLogged, primaryCategories, otherCategories ,totalprice:totalPrice,taxValue, grandTotal });
   
     } catch (err) {
       console.error('Error fetching cart items:', err);
@@ -96,5 +89,5 @@ const grandTotal = totalPrice + tax;
 
 
 module.exports={
-    categoryPage,
+    checkoutPage,
 }

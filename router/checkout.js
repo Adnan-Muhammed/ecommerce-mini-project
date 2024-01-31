@@ -6,7 +6,7 @@ const checkoutManagement = require('../controller/checkoutManagement')
 
 const userSessionHandling=require('../middleware/userSessionHandling')
 
-router.get('/checkout', userSessionHandling.isBlockedNow,checkoutManagement.categoryPage)
+router.get('/checkout', userSessionHandling.isBlockedNow,checkoutManagement.checkoutPage)
 
 
 module.exports=router
