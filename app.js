@@ -7,7 +7,8 @@ const session=require("express-session")
 const userRoute=require('./router/userRouter')
 const adminRoute=require('./router/adminRouter')
 const cartRoute=require('./router/cartRouter')
-const checkoutRoute=require('./router/checkout')
+const checkoutRoute=require('./router/checkoutRouter')
+const orderRouter=require('./router/orderRouter')
 
 
 app.use(express.urlencoded({ extended: true }));
@@ -51,6 +52,10 @@ app.use('/',userRoute)
 app.use('/admin',adminRoute)
 app.use(cartRoute)
 app.use(checkoutRoute)
+app.use(orderRouter)
+app.get('/error',(req,res)=>{
+    res.render('user/404')
+})
 
 
 

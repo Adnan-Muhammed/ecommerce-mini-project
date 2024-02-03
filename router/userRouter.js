@@ -63,6 +63,7 @@ router.get('/place-order',(req,res)=>{
     res.render('user/orderPlaced')
 })
 
+
 module.exports = router;
 
 

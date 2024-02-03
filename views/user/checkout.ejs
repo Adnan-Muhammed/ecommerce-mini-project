@@ -15,158 +15,139 @@
         <div class="row billing-fields">
             <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 sm-margin-30px-bottom">
                 <div class="create-ac-content bg-light-gray padding-20px-all">
-                    <div class="customer-box customer-coupon">
-                        <h3 class="font-15 xs-font-13"><i class=""></i>  <a href="#your-address" class="text-white text-decoration-underline" data-toggle="collapse">Your Address</a></h3>
-                        <h3 class="font-15 xs-font-13"><i class=""></i>  <a href="#add-address" class="text-white text-decoration-underline" data-toggle="collapse">Add Address</a></h3>
 
-                        <div id="add-address" class="collapse coupon-checkout-content">
-                            <div class="discount-coupon">
-
-
-                                <form  id="address-form" action="/address-added" method="POST">
-                                        <h2 class="login-title mb-3">Billing details</h2>
-                                        <div class="row">
-                                            <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
-                                                <label for="input-firstname">First Name <span class="required-f">*</span></label>
-                                                <input name="firstname" value="" id="input-firstname" type="text">
-                                                <div class="error" style="color: red;"></div>
-
-
-                                            </div>
-                                           
-                                        </div>
-                                        <div class="row">
-
-                                            <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
-                                                <label for="input-telephone">Telephone <span class="required-f">*</span></label>
-                                                <input name="telephone" value="" id="input-telephone" type="tel">
-                                                <div class="error" style="color: red;"></div>
-
-                                            </div>
-
-
-                                            <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
-                                                <label for="input-email">E-Mail <span class="required-f">*</span></label>
-                                                <input name="email" value="" id="input-email" type="email">
-                                                <div class="error" style="color: red;"></div>
-
-                                            </div>                    
-                                        </div>
-            
-                                        <div class="row">
-                                            <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
-                                                <label for="input-address-1">Address <span class="required-f">*</span></label>
-                                                <input name="address_1" value="" id="input-address-1" type="text">
-                                                <div class="error" style="color: red;"></div>
-
-                                            </div>
-
-                                            <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
-                                                <label for="input-city">City <span class="required-f">*</span></label>
-                                                <input name="city" value="" id="input-city" type="text">
-                                                <div class="error" style="color: red;"></div>
-
-                                            </div>
-
-                                        </div>
-                                       
-                                        <div class="row">
-                                            <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
-                                                <label for="input-postcode">Post Code <span class="required-f">*</span></label>
-                                                <input name="postcode" value="" id="input-postcode" type="text">
-                                                <div class="error" style="color: red;"></div>
-
-                                            </div>
-
-                                            <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
-                                                <label for="input-zone">Region / State <span class="required-f">*</span></label>
-                                                <input name="state" value="" id="input-state" type="text">
-                                                <div class="error" style="color: red;"></div>
-
-                                            </div>
-                                            <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
-                                                <button class="btn" style="background-color: cadetblue;" type="submit">Submit</button>
-                                            </div>
-                                        </div>
-
-                                </form> 
-                            </div>
-                        </div>
-
-
-
-
-                        <div id="your-address" class="collapse coupon-checkout-content">
-                           <div class="discount-coupon">
-                                <h2 class="login-title mb-3">Billing details</h2>
+                    <div id="your-address" class="coupon-checkout-content">
+                        <div class="discount-coupon">
+                            <h2 class="login-title mb-3">Billing Address</h2>
+                    
+                            <% billingDetails.forEach((billingDetail, index) => { %>
                                 <div class="row">
                                     <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
                                         <span>First Name:</span>
-                                        <span id="display-firstname">John</span>
+                                        <span><%= billingDetail.name %></span>
                                     </div>
-                                    <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
-                                        <span>Last Name:</span>
-                                        <span id="display-lastname">Doe</span>
-                                    </div>
-                                </div>
-                                <div class="row">
+                    
                                     <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
                                         <span>Telephone:</span>
-                                        <span id="display-telephone">123-456-7890</span>
-                                    </div>
-                                    <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
-                                        <span>E-Mail:</span>
-                                        <span id="display-email">john.doe@example.com</span>
+                                        <span><%= billingDetail.telephone %></span>
                                     </div>
                                 </div>
+                    
                                 <div class="row">
                                     <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
                                         <span>Address:</span>
-                                        <span id="display-address">123 Main St</span>
+                                        <span><%= billingDetail.address %></span>
                                     </div>
                                     <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
                                         <span>City:</span>
-                                        <span id="display-city">Sample City</span>
+                                        <span><%= billingDetail.city %></span>
+                                    </div>
+                                </div>
+                    
+                                <div class="row">
+                                    <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
+                                        <span>Post Code:</span>
+                                        <span><%= billingDetail.postCode %></span>
+                                    </div>
+                                    <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
+                                        <span>Region / State:</span>
+                                        <span><%= billingDetail.regionState %></span>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
-                                        <span>Post Code:</span>
-                                        <span id="display-postcode">12345</span>
+                                        <span>select</span>
+                                        <input type="radio" name="address-selection" value="address1" data-user-id="<%=cartItems[0].userId %>"  data-address-id="<%= billingDetail._id %>">
                                     </div>
                                     <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
-                                        <span>Region / State:</span>
-                                        <span id="display-state">Kerala</span>
+                                        <a href="" class="btn btn--secondary billingAddress__remove" title="Remove tem" data-user-id="<%=cartItems[0].userId %>"  data-address-id="<%= billingDetail._id %>"><i class="icon icon anm anm-times-l"></i></a>
+
                                     </div>
                                 </div>
-                            </div>
-                            
+                                <hr>
+                            <% }); %>
                         </div>
+                    </div>
+
+                    
 
 
 
-                        
+
+
+                    <div class="customer-box customer-coupon">
+                        <h3 class="font-15 xs-font-13"><i class=""></i>  <a href="#add-address" class="text-white text-decoration-underline" data-toggle="collapse">Add Address</a></h3>
+                    </div>  
+
+                    
+                    
+                    <div id="add-address" class="collapse coupon-checkout-content">
+                        <div class="discount-coupon">
+                            <form  id="address-form" action="/address-added" method="POST">
+                                    <h2 class="login-title mb-3">Billing details</h2>
+                                    <div class="row">
+                                        <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
+                                            <label for="input-name">First Name <span class="required-f">*</span></label>
+                                            <input name="name"  id="input-name" type="text">
+                                            <div class="error" style="color: red;"></div>
+                                        </div>
+
+                                        <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
+                                            <label for="input-telephone">Telephone <span class="required-f">*</span></label>
+                                            <input name="telephone"  id="input-telephone" type="tel">
+                                            <div class="error" style="color: red;"></div>
+                                        </div>
+
+
+                                    </div>
+                                    
+        
+                                    <div class="row">
+                                        <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
+                                            <label for="input-homeAddress">Address <span class="required-f">*</span></label>
+                                            <input name="homeAddress"  id="input-homeAddress" type="text">
+                                            <div class="error" style="color: red;"></div>
+                                        </div>
+
+                                        <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
+                                            <label for="input-city">City <span class="required-f">*</span></label>
+                                            <input name="city"  id="input-city" type="text">
+                                            <div class="error" style="color: red;"></div>
+                                        </div>
+
+                                    </div>
+                                   
+                                    <div class="row">
+                                        <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
+                                            <label for="input-postcode">Post Code <span class="required-f">*</span></label>
+                                            <input name="postcode"  id="input-postcode" type="text">
+                                            <div class="error" style="color: red;"></div>
+                                        </div>
+
+                                        <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
+                                            <label for="input-zone">Region / State <span class="required-f">*</span></label>
+                                            <input name="state"  id="input-state" type="text">
+                                            <div class="error" style="color: red;"></div>
+                                        </div>
+                                        <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
+                                            <button class="btn" style="background-color: cadetblue;" type="submit">Submit</button>
+                                        </div>
+                                    </div>
+                            </form> 
+                        </div>
                     </div>
 
 
-                   
 
+
+                  
 
                 </div>
-                <script>
-                    $(document).ready(function () {
-                        // Add an event listener to the collapse elements
-                        $('.customer-coupon a[data-toggle="collapse"]').on('click', function () {
-                            // Hide all collapses
-                            $('.coupon-checkout-content').collapse('hide');
-                            
-                            // Show the selected collapse
-                            var target = $(this).data('target');
-                            $(target).collapse('show');
-                        });
-                    });
-                </script>
-            </div>
+               
+            </div> 
+
+
+            
 
             <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12">
                 <div class="your-order-payment">
@@ -189,27 +170,28 @@
 
                                 <tbody class="font-weight-600" >
                                     <tr>
-                                        <td class="text-left">  <%= item.name %>   </td>
-                                        <td>$<%= item.unitPrice %></td>
-                                        <td><%=item.quantity%></td>
-                                        <td>$<%= item.price %></td>
+                                        <td hidden data-product-image="<%= JSON.stringify(item.images) %>" data-cart-id="item._id" class="text-left"><%= item.name %></td>
+                                        <td  data-product-id="<%= item.productId %>" data-product-name="<%= item.name %>" data-cart-id="item._id" class="text-left"><%= item.name %></td>
+
+                                        <td data-product-unitPrice="<%= item.unitPrice %>" data-cart-id="item._id">$<%= item.unitPrice %></td>
+                                        <td data-product-quantity="<%= item.quantity %>" data-cart-id="item._id"><%=item.quantity%></td>
+                                        <td data-product-price="<%= item.price %>" data-cart-id="item._id">$<%= item.price %></td>
                                     </tr>
-                                    
                                 </tbody>
                         <% }); %>
 
                                 <tfoot class="font-weight-600">
                                     <tr>
                                         <td colspan="3" class="text-right">Shipping </td>
-                                        <td>FREE</td>
+                                        <td data-shipping-value="free" >FREE</td>
                                     </tr>
                                     <tr>
                                         <td colspan="3" class="text-right">Tax </td>
-                                        <td>$<%= taxValue.toFixed(2)%> </td>
+                                        <td data-tax-value="<%= taxValue.toFixed(2)%>" >$<%= taxValue.toFixed(2)%> </td>
                                     </tr>
                                     <tr>
                                         <td colspan="3" class="text-right">Grand Total</td>
-                                        <td>$<%= grandTotal.toFixed(2) %></td>
+                                        <td data-grandTotal-value="<%= grandTotal.toFixed(2)%>" >$<%= grandTotal.toFixed(2) %></td>
                                     </tr>
                                 </tfoot>
                             </table>
@@ -318,9 +300,10 @@
                                 </div>
                             </div>
 
-                            <div class="order-button-payment">
-                                <!-- <button  class="btn" value="Place order" type="submit">Place order</button> -->
-                                <a  href="/place-order" class="btn" style="background-color: cadetblue;" value="Place order" type="submit">Place order</a>
+                            <div class="order-button-payment" >
+                                
+                                <span id="chooseAddressMessage" style="color: red; display: none;">Please choose an address before placing the order.</span>
+                                <a class="btn btn-place-order" style="background-color: cadetblue;" value="Place order" type="submit">Place order</a>
 
                             </div>
                         </div>
@@ -332,92 +315,319 @@
     
 </div>
 <%-include('footer')-%>
+
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        const form = document.getElementById("address-form");
+      const removeButtons = document.querySelectorAll('.billingAddress__remove');
+      removeButtons.forEach(button => {
+        button.addEventListener('click', function (event) {
+          event.preventDefault();
+          const addressId = button.dataset.addressId;
+          const userId = button.dataset.userId
 
-        form.addEventListener('submit', function (event) {
-            let valid = true;
+          console.log(addressId);//its get
+          console.log(userId);
+          console.log(999);
 
-            // Reset previous error messages
-            const errorMessages = form.querySelectorAll('.error');
-            errorMessages.forEach(function (error) {
-                error.textContent = '';
-            });
-
-            // Validate User Name
-            const name = form.querySelector('#input-firstname').value.trim();
-            if (name === '') {
-                valid = false;
-                displayError('input-firstname', 'User Name is required.');
+          fetch(`/${userId}/remove/${addressId}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                },
+          })
+          .then(response => {
+            if (!response.ok) {
+              throw new Error(`HTTP error! Status: ${response.status}`);
             }
+            window.location.reload();
+          })
+          .catch(error => {
+            console.error('Error removing product:', error);
+          });
+        });
+      });
+    });
+  </script>
+ 
 
-            // Validate Email
-            const email = form.querySelector("#input-email").value.trim();
-            if (email === '') {
-                valid = false;
-                displayError('input-email', 'Email is required.');
-            } else if (!isValidEmail(email)) {
-                valid = false;
-                displayError('input-email', 'Enter a valid email address.');
-            }
 
-            const telephone = form.querySelector("#input-telephone").value.trim();
-            if (telephone === '') {
-                valid = false;
-                displayError('input-telephone', 'Contact number is required.');
-            } else if (isNaN(telephone) || telephone.length !== 10) {
-                valid = false;
-                displayError('input-telephone', 'Enter a valid 10-digit number.');
-            }
 
-            const postcode = form.querySelector("#input-postcode").value.trim();
-            if (postcode === '') {
-                valid = false;
-                displayError('input-postcode', 'Postcode is required.');
-            } else if (isNaN(postcode) || postcode.length !== 6) {
-                valid = false;
-                displayError('input-postcode', 'Enter a valid postcode.');
-            }
 
-            
-
-            const cityName = form.querySelector('#input-city').value.trim();
-            if (cityName === '') {
-                valid = false;
-                displayError('input-city', 'City is required.');
-            }
-
-            const stateName = form.querySelector('#input-state').value.trim();
-            if (stateName === '') {
-                valid = false;
-                displayError('input-state', 'Region/State is required.');
-            }
-
-            
-
-            const address = form.querySelector('#input-address-1').value.trim();
-            if (address === '') {
-                valid = false;
-                displayError('input-address-1', 'Address is required.');
-            }
-
-            if (!valid) {
+     <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const form = document.getElementById("address-form");
+    
+            form.addEventListener('submit', async function (event) {
                 event.preventDefault();
+    
+                let valid = validateForm();
+    
+                if (valid) {
+                    const formData = new FormData(form);
+                    const formObject = {};
+                    formData.forEach((value, key) => {
+                        formObject[key] = value;
+                    });
+
+                    
+
+                    // Now, formObject contains the form values
+                    console.log(formObject);
+                    try {
+                        const response = await fetch("/address-added", {
+                            method: "POST",
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({ formObject  }),
+                        });
+
+
+                        
+    
+                        if (response.ok) {
+                            console.log("Form submitted successfully!");
+
+                            window.location.href = '/checkout';
+
+                        } else {
+                            console.error("Form submission failed:", response.statusText);
+                        }
+                    } catch (error) {
+                        console.error("Error during form submission:", error);
+                    }
+                }
+            });
+    
+            function validateForm() {
+                let valid = true;
+    
+                // Reset previous error messages
+                const errorMessages = form.querySelectorAll('.error');
+                errorMessages.forEach(function (error) {
+                    error.textContent = '';
+                });
+    
+                // Validate User Name
+                const name = form.querySelector('#input-name').value.trim();
+                if (name === '') {
+                    valid = false;
+                    displayError('input-name', 'User Name is required.');
+                }
+    
+                const telephone = form.querySelector("#input-telephone").value.trim();
+                if (telephone === '' || isNaN(telephone) || telephone.length !== 10) {
+                    valid = false;
+                    displayError('input-telephone', 'Enter a valid 10-digit number.');
+                }
+    
+                const postcode = form.querySelector("#input-postcode").value.trim();
+                if (postcode === '' || isNaN(postcode) || postcode.length !== 6) {
+                    valid = false;
+                    displayError('input-postcode', 'Enter a valid postcode.');
+                }
+    
+                const cityName = form.querySelector('#input-city').value.trim();
+                if (cityName === '') {
+                    valid = false;
+                    displayError('input-city', 'City is required.');
+                }
+    
+                const address = form.querySelector("#input-homeAddress").value.trim();
+                if (address === '') {
+                    valid = false;
+                    displayError('input-homeAddress', 'Address is required.');
+                }
+    
+                const state = form.querySelector("#input-state").value.trim();
+                if (state === '') {
+                    valid = false;
+                    displayError('input-state', 'State is required.');
+                }
+    
+                return valid;
+            }
+    
+            function displayError(elementId, errorMessage) {
+                const errorElement = form.querySelector(`#${elementId} + .error`);
+                if (errorElement) {
+                    errorElement.textContent = errorMessage;
+                }
             }
         });
+    </script>
 
-        const isValidEmail = email => {
-            const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-            return re.test(String(email).toLowerCase());
-        };
+        <!-- Add this script in your HTML file -->
+<!-- <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script> -->
 
-        function displayError(field, message) {
-            const errorDiv = form.querySelector(`#${field}`).nextElementSibling;
-            errorDiv.textContent = message;
-        }
+
+
+
+<!-- <script>
+      document.addEventListener('DOMContentLoaded', function () {
+    // Click event for the "Place order" button
+    $(".btn-place-order").on("click", function (event) {
+      // Prevent the default form submission
+      event.preventDefault();
+      console.log(444);
+
+      // Get the selected checkbox button value
+      var selectedAddress = $("input[name='address-selection']:checked").val();
+      var selectedAddress = $("input[name='address-selection']:checked").val();
+
+            // Select the chooseAddressMessage element
+            var chooseAddressMessage = $("#chooseAddressMessage");
+
+            if (!selectedAddress) {
+                // If no address is selected, show the message and stop the script
+                chooseAddressMessage.show();
+                return;
+            }
+
+            // If an address is selected, hide the message
+            chooseAddressMessage.hide();
+
+      // Get the dataset values from the table
+      var cartItems = [];
+      $("table tbody").find("tr").each(function () {
+        var productName = $(this).find("td[data-product-name]").data("product-name");
+        var unitPrice = $(this).find("td[data-product-unitPrice]").data("product-unitprice");
+        var quantity = $(this).find("td[data-product-quantity]").data("product-quantity");
+        var price = $(this).find("td[data-product-price]").data("product-price");
+
+        cartItems.push({
+          productName: productName,
+          unitPrice: unitPrice,
+          quantity: quantity,
+          price: price,
+        });
+      });
+
+      // Get the dataset values from the footer
+      var shipping = $("tfoot td[data-shipping-value]").data("shipping-value");
+      var tax = $("tfoot td[data-tax-value]").data("tax-value");
+      var grandTotal = $("tfoot td[data-grandTotal-value]").data("grandtotal-value");
+
+      // Create an object with all the data
+      var orderData = {
+        selectedAddress: selectedAddress,
+        cartItems: cartItems,
+        shipping: shipping,
+        tax: tax,
+        grandTotal: grandTotal,
+      };
+
+      // You can now use the 'orderData' object to send the data to the server or perform any other desired action
+      console.log(orderData);
     });
-</script>
+  });
+
+
+  $("input[name='address-selection']").on("change", function () {
+        // Hide the chooseAddressMessage when an address is selected
+        $("#chooseAddressMessage").hide();
+    });
+</script> -->
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+      // Click event for the "Place order" button
+      $(".btn-place-order").on("click", function (event) {
+        // Prevent the default form submission
+        event.preventDefault();
+        console.log(444);
+  
+        // Get the selected checkbox button value
+        // const selectedAddress = $("input[name='address-selection']:checked").val();
+        const selectedAddress = $("input[name='address-selection']:checked").data("address-id");
+  
+        // Select the chooseAddressMessage element
+        const chooseAddressMessage = $("#chooseAddressMessage");
+  
+        if (!selectedAddress) {
+          // If no address is selected, show the message and stop the script
+          chooseAddressMessage.show();
+          return;
+        }
+  
+        // If an address is selected, hide the message
+        chooseAddressMessage.hide();
+        // Get the dataset values from the table
+        const cartItems = [];
+        $("table tbody").find("tr").each(function () {
+            const productId = $(this).find("td[data-product-id]").data("product-id");
+          const productName = $(this).find("td[data-product-name]").data("product-name");
+          const unitPrice = $(this).find("td[data-product-unitPrice]").data("product-unitprice");
+          const quantity = $(this).find("td[data-product-quantity]").data("product-quantity");
+          const price = $(this).find("td[data-product-price]").data("product-price");
+          const imagesData = $(this).find("td[data-product-image]").data("product-image")
+
+
+          console.log(productId);
+  
+          cartItems.push({
+            productId: productId, // Include the productId
+            productName: productName,
+            unitPrice: unitPrice,
+            quantity: quantity,
+            images: imagesData, // Include the image data
+            price: price,
+          });
+        });
+  
+        // Get the dataset values from the footernpm
+        const shipping = $("tfoot td[data-shipping-value]").data("shipping-value");
+        const tax = $("tfoot td[data-tax-value]").data("tax-value");
+        const grandTotal = $("tfoot td[data-grandTotal-value]").data("grandtotal-value");
+
+  
+        // Create an object with all the data
+        const orderData = {
+            
+          selectedAddress: selectedAddress,
+          orderItems: cartItems,
+          shipping: shipping,
+          tax: tax,
+          grandTotal: grandTotal,
+        };
+  
+        // You can now use the 'orderData' object to send the data to the server or perform any other desired action
+        console.log(orderData);
+        console.log('placeOrder');
+         // Use the Fetch API to send the orderData to the server
+    fetch('/placeOrder', {  
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({orderData}),
+    })
+    .then(response => response.json())
+    .then(data => {
+      // Handle the response from the server if needed
+      console.log(data);
+      window.location.href('/place-order')
+    })
+    .catch(error => {
+      console.error('Error:', error);
+    });
+  });
+});
+  
+    // Change event for the address selection
+    $("input[name='address-selection']").on("change", function () {
+      // Hide the chooseAddressMessage when an address is selected
+      $("#chooseAddressMessage").hide();
+    });
+  </script>
+  
+
+
+
+
+
+
 
 
 </body>

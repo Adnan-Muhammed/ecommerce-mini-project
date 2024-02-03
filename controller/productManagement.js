@@ -1,6 +1,7 @@
 // const CategoryDB=require('../../models/category')
 const CategoryDB=require('../models/category')
 const productDB = require('../models/product');
+const CartDB = require('../models/cart')
 const multer = require('multer');
 const path = require('path');
 const upload = multer({ dest: 'public/uploads/' }); 
@@ -190,7 +191,9 @@ const productDelete=async(req,res)=>{
         const  productishere = await productDB.find({_id:productId})
         console.log(productishere);
         const nowproduct=await productDB.deleteOne({ _id: productId });
+        const removeFromCart = await CartDB.deleteOne({productId:productId})
         console.log(nowproduct);
+        console.log(removeFromCart);
         res.redirect('/admin/productlist')
     }catch(err){
         console.error(err);

@@ -6,7 +6,6 @@
 %>
 
 <%- include('header') -%>
-
 <div class="container mt-4">
     <div class="card">
         <div class="card-body">
@@ -86,6 +85,96 @@
                                 </div>
                       
                             
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title mb-4">Order Details</h5>
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>User Email</th>
+                            <th>Date</th>
+                            <th>Product Details</th>
+                            <th>Payment Method</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% orders.forEach(function(order, index) { %>
+                            <tr>
+                                <th scope="row"><%= index + 1 %></th>
+                                <td><%= order.userEmail %></td>
+                                <td><%= formatDate(order.date) %></td>
+                                <td>
+                                    <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal<%= order._id %>">
+                                        View Details
+                                    </button>
+                                </td>
+                                <td><%= order.paymentMethod %></td>
+                                <td>
+                                    <form action="/ad" method="POST">
+                                        <select name="status" class="form-control" style="width: 100px; background-color: rgb(0, 136, 255); color: white;" id="editStatus<%= index %>">
+                                            <option value="<%= order.status %>"><%= order.status %></option>
+                                            <option value="pending">Pending</option>
+                                            <option value="shipped">Shipped</option>
+                                            <option value="delivered">Delivered</option>
+                                            <option value="cancelled">Cancelled</option>
+                                        </select>
+                                </td>
+                                <td>
+                                    <div class="d-flex">
+                                        <button class="btn btn-primary btn-sm" type="submit">
+                                            <i class="fas fa-save"></i> Save
+                                        </button>
+                                    </div>
+                                    </form>
+                                </td>
+                            </tr>
+                            <!-- Button trigger modal -->
+                            <div class="modal fade" id="exampleModal<%= order._id %>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="exampleModalLabel">Order Details</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="card-body p-4" style="max-height: 400px; overflow-y: auto;">
+                                                <h6 class="fw-bold">User Email: <%= order.userEmail %></h6>
+                                                <h6 class="fw-bold">Address: <%= order.address %></h6>
+                                                <!-- Add additional details as needed -->
+                                                <% order.products.forEach(function(product, productIndex) { %>
+                                                    <div class="d-flex flex-row mb-4 pb-2 border-bottom">
+                                                        <div class="flex-fill">
+                                                            <h6 class="fw-bold"><%= product.productName %></h6>
+                                                            <p class="text-muted">Quantity: <%= product.quantity %></p>
+                                                            <h6 class="mb-0">₹ <%= product.price %> <span class="small text-muted">(<%= order.paymentMethod %>)</span></h6>
+                                                        </div>
+                                                        <div class="ml-3">
+                                                            <img class="img-fluid" src="<%= product.image %>" width="80" alt="<%= product.productName %>">
+                                                        </div>
+                                                    </div>
+                                                <% }) %>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        <% }) %>
                     </tbody>
                 </table>
             </div>

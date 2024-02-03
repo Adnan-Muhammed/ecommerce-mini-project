@@ -24,10 +24,33 @@ const  userSchema=new  mongoose.Schema(
         otp:{
             type:String,
         },
-        billingDetails: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'billingDetailsCollection',
-          },
+        billingDetails: [{
+            name: {
+                type: String,
+                required: true
+            },
+            telephone: {
+                type: Number,
+                required: true
+            },
+            address: {
+                type: String,
+                required: true
+            },
+            city: {
+                type: String,
+                required: true
+            },
+            postCode: {
+                type: Number,
+                required: true
+            },
+            regionState: {
+                type: String,
+                required: true
+            },
+            
+        }]
     }
 )
 //model create

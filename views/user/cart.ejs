@@ -16,6 +16,7 @@
                 	<div class="alert alert-success text-uppercase" role="alert">
 						<i class="icon anm anm-truck-l icon-large"></i> &nbsp;<strong>Congratulations!</strong> You've got free shipping!
 					</div>
+                    <% if(locals.cartItems){%>
                 	<form action="#" method="post" class="cart style2">
                 		<table>
                             <thead class="cart__row cart__header">
@@ -33,8 +34,8 @@
                                         <tr class="cart__row border-bottom line1 cart-flex border-top">
                                             <td class="cart__image-wrapper cart-flex-item">
                                                 <a href="#">
-                                                    <img class="cart__image"
-                                                         class="img-fluid  mx-auto mb-4" 
+                                                    <img data-product-id="<%= item.productId %>" data-images="<%= JSON.stringify(item.images) %>" class="cart__image"
+                                                    class="img-fluid  mx-auto mb-4" 
                                                          src="<%= item.images[0] %>"
                                                          style="width: 100px; height: 100px;"  
                                                          alt="<%= item.productId %>">
@@ -56,38 +57,19 @@
                                                 <div class="cart__qty text-center">
                                                     <div class="qtyField"  >
 
-
-
-
-                                                   
-<!-- 
-                                                        <a  data-product-id="<%= item.productId %>"  class="qtyBtn minus" onclick="qty('minus')"><i class="icon icon-minus"></i></a>
-                                                        <input data-product-id="<%= item.productId %>" data-stock="<%= item.stock %>" class="cart__qty-input qty" type="text" name="updates[]" max="<%= item.stock %>" value="<%= item.quantity %>" pattern="[0-9]*">
-                                                        <a  class="qtyBtn plus" onclick="qty('plus')"><i class="icon icon-plus"></i></a>
-                                                        <div id="alertDiv" ><p style="color:darkred;"></p></div> -->
-
-
                                                         <a data-product-id="<%= item.productId %>" class="qtyBtn minus" onclick="qty('minus', '<%= item.productId %>')"><i class="icon icon-minus"></i></a>
-<input data-product-id="<%= item.productId %>" data-stock="<%= item.stock %>" class="cart__qty-input qty" type="text" name="updates[]" max="<%= item.stock %>" value="<%= item.quantity %>" pattern="[0-9]*">
-<a data-product-id="<%= item.productId %>" class="qtyBtn plus" onclick="qty('plus', '<%= item.productId %>')"><i class="icon icon-plus"></i></a>
-<div id="alertDiv" data-product-id="<%= item.productId %>"><p style="color:darkred;"></p></div>
-
-
-
-                                                        
+                                                        <input data-product-id="<%= item.productId %>" data-stock="<%= item.stock %>" class="cart__qty-input qty" type="text" name="updates[]" max="<%= item.stock %>" value="<%= item.quantity %>" pattern="[0-9]*">
+                                                        <a data-product-id="<%= item.productId %>" class="qtyBtn plus" onclick="qty('plus', '<%= item.productId %>')"><i class="icon icon-plus"></i></a>
+                                                        <div id="alertDiv" data-product-id="<%= item.productId %>"><p style="color:darkred;"></p></div>
 
                                                     </div>
                                                 </div>
                                             </td>
                                             <td  class="text-right small--hide cart-price">
-                                                <!-- <div id="product-price" data-product-id="<%= item.productId %>"><span class="money">$<%= item.price %></span></div> -->
-                                                <!-- <div id="product-price" data-product-id="<%= item.productId %>"><span class="money">$0</span></div> -->
-                                                <div id="productPrice" value="<%= item.price %>" data-product-id="<%= item.productId%>"  >
+                                                 <div id="productPrice" value="<%= item.price %>" data-product-id="<%= item.productId%>"  >
                                                     <span  class="money">$<%= item.price %></span>
                                                 </div>
                                                 <div id="alertDiv2" data-product-id="<%= item.productId %>"><p style="color:darkred;"></p></div>
-                                            
-
                                             </td>
                                             <td class="text-center small--hide">
                                                 <a href="" class="btn btn--secondary cart__remove" title="Remove tem" data-stock="<%= item.stock %>"   data-product-id="<%= item.productId %>"><i class="icon icon anm anm-times-l"></i></a>
@@ -95,16 +77,13 @@
                                         </tr>
                                     <% }); %>
                                 </tbody>
-                                   <tfoot>
-                               
-                            </tfoot>
-                    </table> 
+                      </table> 
                     </form>                   
                	</div>
+                <%} %>
+                                                   
                 
-
-
-                
+                <%if(locals.cartItems){%>
                 <div class="container mt-4">
                     <div class="row">
                     	<div class="col-12 col-sm-12 col-md-4 col-lg-4 mb-4">
@@ -119,28 +98,7 @@
                                 </div>
                             </form>
                         </div>
-                        <!-- <div class="col-12 col-sm-12 col-md-4 col-lg-4 mb-4">
-                        	<h5>Estimate Shipping and Tax</h5>
-							<form action="#" method="post">
-                                <div class="form-group">
-                                    <label for="country">Country</label>
-                                    <input type="text" id="country" name="country">    
-                                      </div>
-    
-                                <div class="form-group">
-                                    <label for="state">state</label>
-                                    <input type="text" id="state" name="state">                                   
-                                </div>
-                                <div class="form-group">
-                                    <label for="address_zip">Postal/Zip Code</label>
-                                    <input type="text" id="address_zip" name="address[zip]">
-                                </div>
-    
-                                <div class="actionRow">
-                                    <div><input type="button" class="btn btn-secondary btn--small" value="Calculate shipping"></div>
-                                </div>
-                            </form>
-                        </div> -->
+                        
                         
                         <div class="col-12 col-sm-12 col-md-4 col-lg-4 cart__footer">
                             <div class="solid-border">	
@@ -173,18 +131,25 @@
                               <!-- <div class="paymnet-img"><img src="/assets/images/payment-img.jpg" alt="Payment"></div>
                               <p><a href="#;">Checkout with Multiple Addresses</a></p> -->
                             </div>
-        
                         </div>
+
+
+
+                        
                     </div>
                 </div>
-                
+                <%}else{%>
+                <h1>CART IS EMPTY</h1>
+                <p><a href="/" class="btn btn--has-icon-after" style="background-color: black; color: aliceblue;" >Continue shopping <i class="fa fa-caret-right" aria-hidden="true"></i></a></p>
+
+                <%}%>
             </div>
         </div>
         
     </div>
     <!--End Body Content-->
     
-  <%-include('footer')-%>
+    <%-include('footer')-%>
   
   <script>
     const checkoutButton = document.getElementById('cartCheckout');
@@ -360,6 +325,10 @@ console.log(typeof stockAttributeValue);
     }
 </script>  -->
 
+
+
+
+
 <script>
     const qty = (action, productId) => {
         const qtyInput = document.querySelector(`.qty[data-product-id="${productId}"]`);
@@ -413,18 +382,12 @@ console.log(typeof stockAttributeValue);
             const hello = `<span class="money">$${data.price.price}</span>`;
 
 
-       
-
-
             console.log(data.priceSum   ,  ' subTotal from  backend');
-
            const subTotal =data.priceSum
            subTotalElement.innerHTML = `
                 <span class="col-12 col-sm-6 cart__subtotal-title">Subtotal</span>
                 <span id="subTotal"  class="col-12 col-sm-6 text-right"><span class="money">$${subTotal}</span></span>
             `;
-
-
 
             const grandTotal= data.grandTotal
             grandTotalElement.innerHTML = `
@@ -433,19 +396,13 @@ console.log(typeof stockAttributeValue);
             `;
 
 
-
-
-
-
             if (data.outOfStock) {
                 alertDiv.innerHTML = divseted;
                 alertDiv2.innerHTML = divseted2;
-
                 totalPriceElement.innerHTML = hello;
             } else {
                 alertDiv.innerHTML = "";
                 alertDiv2.innerHTML = "";
-                
                 totalPriceElement.innerHTML = hello;
             }
 
