@@ -88,16 +88,16 @@ const cartPage = async (req, res) => {
       if (!user) {
         return res.status(404).send('User not found');
       }
-      console.log(123456789123456789);
+   // console.log(56789);
       const cartItems = await CartDB.find({ userId: user._id });
-      console.log(1,cartItems); //no need
+   // console.log(1,cartItems); //no need
       if(cartItems.length>0){
-        console.log(1);
+     // console.log(1);
 
         const productIds = cartItems.map(cartItem => cartItem.productId);
-      console.log(2,'www');
+   // console.log(2,'www');
       const products = await ProductDB.find({ _id: { $in: productIds  } });
-      console.log(3,'eee');
+   // console.log(3,'eee');
 
       const detailedCartItems = cartItems.map(cartItem => {
         const product = products.find(p => p._id.equals(cartItem.productId ));
@@ -125,10 +125,10 @@ console.log(detailedCartItems[0].images[0]);
 res.render('user/cart', { cartItems: detailedCartItems, isLogged, primaryCategories, otherCategories ,totalprice:totalPrice,taxValue, grandTotal });
 
       }else{
-        console.log(404);
+     // console.log(404);
         res.render('user/cart', {isLogged, primaryCategories, otherCategories  });
       }
-      console.log(878787);
+   // console.log(878787);
     } catch (err) {
       // console.error('Error fetching cart items:', err);
       res.status(500).send('Internal Server Error');

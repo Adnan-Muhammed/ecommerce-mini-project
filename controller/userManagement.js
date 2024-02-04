@@ -1,23 +1,29 @@
 const userDB = require('../models/user');
 const productDB = require('../models/product')
 const CategoryDB =require('../models/category')
+const OrderDB = require('../models/order')
 const bcrypt = require('bcrypt');
 
 
 const fetchCategoryMiddleware = require('../middleware/fetchCategoryData');
 
+const determineIsLogged = (session) => {
+    return session.user ? session.user.name : (session.userNew ? session.userNew.name : null);
+};
+
+
 const home = async (req, res) => {
     try {
-        console.log(84848);
+        // console.log(84848);
         let isLogged = null;
         const product = await productDB.find();
         const { primaryCategories, otherCategories } = await fetchCategoryMiddleware.fetchCategories();
 
         if (req.session.user) {
             isLogged = req.session.user.name;
-            console.log('userlog');
+            // console.log('userlog');
         } else if (req.session.userNew) {
-            console.log('userNewlog');
+            // console.log('userNewlog');
             isLogged = req.session.userNew.name;
         }
 
@@ -37,16 +43,16 @@ const home = async (req, res) => {
 const userLogin=(req, res) => {
     if( req.session.passwordError){
         req.session.passwordError=null
-        console.log(1);
+     // console.log(1);
         return  res.render('user/user-login',{isAlert:true}); 
     }
     if(req.session.invalid){
         req.session.invalid=null
-        console.log(2);
+     // console.log(2);
         return  res.render('user/user-login',{isAlert2:true}); 
     }
     if(req.session.Blocked){
-        console.log(3);
+     // console.log(3);
         req.session.Blocked=null
         return res.render('user/user-login',{isAlert3:true})
     }
@@ -55,7 +61,7 @@ const userLogin=(req, res) => {
 
 
 const userLoginPost = async (req, res) => {
-    console.log(6666);
+ // console.log(6666);
 
     try {
         const { email_Id, password } = req.body;
@@ -77,14 +83,14 @@ const userLoginPost = async (req, res) => {
                     isBlocked: user.isBlocked,
                 };
                 if(!req.session.cartId){
-                    console.log('Welcome to home');
+                 // console.log('Welcome to home');
                     return res.redirect('/');
                 }else{
-                    console.log('session is here');
-                    console.log(req.session.cartId);
+                 // console.log('session is here');
+                 // console.log(req.session.cartId);
                     const cartSession = req.session.cartId
                     req.session.cartId=null
-                    console.log(99);
+                 // console.log(99);
                     return res.redirect('/cart/'+cartSession)
 
 
@@ -114,14 +120,14 @@ const userLoginPost = async (req, res) => {
 
 // signupPage
 const userSignupGet=(req,res)=>{
-        console.log(777777);
+     // console.log(777777);
         if(req.session.userExist){
-            console.log(4545);
+         // console.log(4545);
             req.session.userExist =null
             return res.render('user/user-register',{isAlert:'user is Exist'})
         }
         else{
-            console.log(22220909);
+         // console.log(22220909);
             return res.render('user/user-register')
         }
 }
@@ -135,9 +141,9 @@ const router = require('../router/userRouter');
 
 const userSignupPost = async (req, res) => {
     try {
-        console.log('signuppost');
+     // console.log('signuppost');
         const { email, name, password } = req.body;
-        console.log(email, name, password);
+     // console.log(email, name, password);
 
         const userData = await userDB.findOne({ email: email });
 
@@ -152,7 +158,7 @@ const userSignupPost = async (req, res) => {
                 lowerCaseAlphabets: false,
                 specialChars: false,
             });
-            console.log(otp);
+         // console.log(otp);
             const user = {
                 name: name,
                 email: email,
@@ -167,9 +173,9 @@ const userSignupPost = async (req, res) => {
                 
             };
 
-            console.log(req.session.userNew.email);
+         // console.log(req.session.userNew.email);
             await userDB.insertMany([user]);
-            console.log(9999);
+         // console.log(9999);
 
             
 
@@ -191,14 +197,14 @@ const userSignupPost = async (req, res) => {
             // Uncomment the following lines to send the email with OTP
             // transporter.sendMail(mailOptions, function (error, info) {
             //     if (error) {
-            //         console.log(error);
+            //      // console.log(error);
             //     } else {
-            //         console.log('Email sent: ' + info.response);
+            //      // console.log('Email sent: ' + info.response);
             //     }
             // });
 
             // req.session.otp = otp;
-            console.log('User created successfully');
+         // console.log('User created successfully');
             res.redirect('/otpPage');
         }
     } catch (error) {
@@ -217,19 +223,19 @@ const userSignupPost = async (req, res) => {
 
 
 const otpPage = async (req, res) => {
-    console.log('otppage');
+ // console.log('otppage');
     const email = req.session.userNew.email; // Retrieve OTP from session
     const otp= await userDB.findOne({ email: email },{otp:1,_id:0});
-    console.log(otp);
+ // console.log(otp);
     // req.session.userNew=otp
-    console.log(req.session.userNew.email);
+ // console.log(req.session.userNew.email);
     if (otp) {
         setTimeout(async() => {
             // delete req.session.otp;
             // console.log('req.session.otp has been deleted after a few seconds.');
             await userDB.updateOne({ email: email }, { $set: { otp: null } });
             const otpNow=await userDB.findOne({ email: email }, { otp:1,_id:0 });
-            console.log(otpNow,1111);
+         // console.log(otpNow,1111);
         }, 30000);
         res.render('user/user-otp', { otp: otp }); // Pass otp variable to the template
     } else {
@@ -245,24 +251,24 @@ const otpPage = async (req, res) => {
 
 const otpVerificationPost = async(req, res) => {
     try {
-        console.log(191919191);
+     // console.log(191919191);
         const email = req.session.userNew.email; // Retrieve OTP from session
         const otpValue= await userDB.findOne({ email: email },{otp:1,_id:0});
         const otp=otpValue.otp
         const enteredOTP = req.body.otpform; // Assuming the input name in the form is 'otpform'
-        console.log(65656);
-        console.log(otp ,777,enteredOTP);
+     // console.log(65656);
+     // console.log(otp ,777,enteredOTP);
         if (otp == null || otp === undefined) {
-            console.log(404,'its', null);
+         // console.log(404,'its', null);
             return res.render('user/user-otp', { error: 'Invalid, it\'s expiredkhgvj' });
         } else {
             // const otp = req.session.otp; // Retrieve OTP from session
             if (enteredOTP != otp) {
-                console.log(enteredOTP ,505,  otp);
+             // console.log(enteredOTP ,505,  otp);
                 return res.render('user/user-otp', { error: 'Incorrect OTP', otp: otp });
             } else {
                 req.session.userNew.otp=otp
-                console.log(req.session.userNew);
+             // console.log(req.session.userNew);
                 return res.redirect('/');
             }
         }
@@ -282,7 +288,7 @@ const resendOtp = async (req, res) => {
     try {
         // Retrieve user data from session storage
         const { email, name, password } = req.session.userNew;
-        console.log(505);
+     // console.log(505);
         // Generate a new OTP
         const otp = otpGenerator.generate(6, {
             upperCaseAlphabets: false,
@@ -308,10 +314,10 @@ const resendOtp = async (req, res) => {
         };
         // transporter.sendMail(mailOptions, function(error, info) {
         //     if (error) {
-        //         console.log(error);
+        //      // console.log(error);
         //     } else {
-        //         console.log(otp , 1010101);
-        //         console.log('Email sent: ' + info.response);
+        //      // console.log(otp , 1010101);
+        //      // console.log('Email sent: ' + info.response);
         //     }
         // });
         // req.session.otp=otp
@@ -331,7 +337,7 @@ const logout= async (req,res)=>{
         delete req.session.user 
         delete req.session.userNew
         delete req.session.cartId
-        console.log('logout');
+     // console.log('logout');
         res.redirect('/')
     }catch (err){
         console.error();
@@ -393,7 +399,7 @@ const userlist = async (req, res) => {
                     currentPage: page
                 });
             } else {
-                console.log('No data found');
+             // console.log('No data found');
                 return res.render('admin/userlist', { 
                     users: [], 
                    
@@ -402,7 +408,7 @@ const userlist = async (req, res) => {
                 });
             }
         } catch (err) {
-            console.log('Error:', err);
+         // console.log('Error:', err);
             return res.status(500).render('error', { message: 'Internal Server Error' });
         }
 };
@@ -415,8 +421,8 @@ const userlist = async (req, res) => {
 
 const blocking=  async (req,res)=>{
         try{
-            console.log(888888888);
-            console.log(req.params.id);
+         // console.log(888888888);
+            // console.log(req.params.id);
             const userIdToUpdate=req.params.id
             await userDB.find({_id:userIdToUpdate},{name:1,_id:0})
             await userDB.updateOne({ _id: userIdToUpdate }, { $set: { isBlocked: true } });
@@ -430,7 +436,7 @@ const blocking=  async (req,res)=>{
 
 const unblocking=  async (req,res)=>{
         try{
-            console.log(req.params.id);
+            // console.log(req.params.id);
             const userIdToUpdate=req.params.id
             await userDB.find({_id:userIdToUpdate},{name:1,_id:0})
             await userDB.updateOne({ _id: userIdToUpdate }, { $set: { isBlocked: false } });
@@ -441,6 +447,65 @@ const unblocking=  async (req,res)=>{
     
     
 }
+
+
+
+const userProfile=async (req,res)=>{
+    const isLogged = determineIsLogged(req.session);
+    const { primaryCategories, otherCategories } = await fetchCategoryMiddleware.fetchCategories();
+    const emailId = (req.session.user) ? req.session.user.email : req.session.userNew.email;
+
+    try{
+        const user = await userDB.findOne({email:emailId})
+
+        console.log(1234321);
+       console.log(user);
+
+    
+        res.render('user/profile2',{isLogged,user})
+
+    }catch(err){
+
+    }
+}
+
+
+
+const userAddAddress = async(req,res)=>{
+    const isLogged = determineIsLogged(req.session);
+    const { primaryCategories, otherCategories } = await fetchCategoryMiddleware.fetchCategories();
+    const emailId = (req.session.user) ? req.session.user.email : req.session.userNew.email;
+
+    try{
+        const user = await userDB.findOne({ email: emailId });
+        const billingDetails = user.billingDetails || []; 
+        const userId = user._id
+        // console.log(user.id);
+        // console.log(userId);
+        res.render('user/addAddress',{isLogged,billingDetails,userId})
+    }catch(err){
+    }
+}
+
+
+
+const userOrderStatus = async(req,res)=>{
+    const isLogged = determineIsLogged(req.session);
+    const { primaryCategories, otherCategories } = await fetchCategoryMiddleware.fetchCategories();
+    const emailId = (req.session.user) ? req.session.user.email : req.session.userNew.email;
+
+    try{
+        const user = await userDB.findOne({ email: emailId });
+        const orderList = await OrderDB.find({userId:user.id})
+       console.log(orderList);
+
+
+        res.render('user/orderStatus',{isLogged,orderList})
+    }catch(err){
+    }
+}
+
+
 
 
 
@@ -457,5 +522,8 @@ module.exports = {
     otpVerificationPost,
     userLogin,
     userLoginPost,
+    userProfile,
+    userAddAddress,
+    userOrderStatus,
 
 };

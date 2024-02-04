@@ -19,8 +19,9 @@ router.get('/resendOtp',userSessionHandling.otpSession,userManagement.resendOtp)
 router.get('/logout',userManagement.logout)
 
 
-
-
+router.get('/userProfile',userSessionHandling.userlogged,userManagement.userProfile)
+router.get('/userAddAddress',   userSessionHandling.userlogged,userManagement.userAddAddress )
+router.get('/orderStatus',    userSessionHandling.userlogged,userManagement.userOrderStatus)
 
 
 
@@ -45,15 +46,16 @@ router.get('/productdetails/:id', userSessionHandling.isBlockedNow,  productMana
 
 
 
+
+
+
 router.get('/aaa',(req,res)=>{
     res.render('user/aaa')
 })
 router.get('/myprofile',(req,res)=>{
     res.render('user/profile')
 })
-router.get('/myprofile2',(req,res)=>{
-    res.render('user/profile2')
-})
+
 router.get('/myprofile/wallet',(req,res)=>{
     res.render('user/wallet')
 })
@@ -62,6 +64,8 @@ router.get('/myprofile/wallet',(req,res)=>{
 router.get('/place-order',(req,res)=>{
     res.render('user/orderPlaced')
 })
+
+
 
 
 module.exports = router;

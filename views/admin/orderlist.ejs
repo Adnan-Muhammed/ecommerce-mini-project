@@ -1,10 +1,3 @@
-<% function formatDate(dateString) {
-    const options = { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: true };
-    const formattedDate = new Date(dateString).toLocaleDateString('en-US', options);
-    return formattedDate;
-  }
-%>
-
 <%- include('header') -%>
 
 <div class="container mt-4">
@@ -15,8 +8,7 @@
                 <table class="table table-striped">
                     <thead>
                         <tr>
-                            <th>#</th>
-                            <th>User Email</th>
+                            <th>User Id</th>
                             <th>Date</th>
                             <th>Address</th>
                             <th>Product Details</th>
@@ -26,21 +18,31 @@
                         </tr>
                     </thead>
                     <tbody>
+                        <% locals.orderList.forEach(order => { %>
+                            <% order.orderItems.forEach(item => { %>
                                 <tr>
-                                    <th scope="row"> index +1 </th>
-                                    <td>  order.userEmail </td>
-                                    <td>formatDate(order.date) </td>
-                                    <td> order.address </td>
+                                    <td><%= order.userId %></td>
+                                    <td><%= order.orderDate %></td>
                                     <td>
-                                        <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal<%= order._id %>">
-                                            Order Detailskjhb
+                                        <div>
+                                            <strong>Name:</strong> <%= order.billingAddress.name %><br>
+                                            <strong>Phone:</strong> <%= order.billingAddress.telephone %><br>
+                                            <strong>Address:</strong> <%= order.billingAddress.address %><br>
+                                            <strong>City:</strong> <%= order.billingAddress.city %><br>
+                                            <strong>Region/State:</strong> <%= order.billingAddress.regionState %><br>
+                                            <strong>Postcode:</strong> <%= order.billingAddress.postCode %><br>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal<%= order.orderId + '_' + item.productId %>">
+                                            Order Details
                                         </button>
                                     </td>
-                                    <td> order.paymentMethod </td>
+                                    <td><%= order.paymentMethod.type %></td>
                                     <td>
-                                        <form action="/ad" method="POST">
-                                            <select name="status" class="form-control" style="width: 100px; background-color: rgb(0, 136, 255); color: white;" id="editStatus index ">
-                                                <option value=" order.status "> order.status </option>
+                                        <form action="/admin/editOrders/<%= order.orderId %>/<%= item.productId %>" method="POST">
+                                            <select name="status" class="form-control" style="width: 100px; background-color: rgb(0, 136, 255); color: white;" id="editStatus<%= order.orderId + '_' + item.productId %>">
+                                                <option value="<%= order.status %>"><%= order.orderStatus.type %></option>
                                                 <option value="pending">Pending</option>
                                                 <option value="shipped">Shipped</option>
                                                 <option value="delivered">Delivered</option>
@@ -56,8 +58,8 @@
                                         </form>
                                     </td>
                                 </tr>
-                                <!-- Button trigger modal -->
-                                <div class="modal fade" id="exampleModal<%= order._id %>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+
+                                <div class="modal fade" id="exampleModal<%= order.orderId + '_' + item.productId %>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
                                         <div class="modal-content">
                                             <div class="modal-header">
@@ -66,16 +68,22 @@
                                             </div>
                                             <div class="modal-body">
                                                 <div class="card-body p-4" style="max-height: 400px; overflow-y: auto;">
-                                                        <div class="d-flex flex-row mb-4 pb-2 border-bottom">
-                                                            <div class="flex-fill">
-                                                                <h6 class="fw-bold">products.productName </h6>
-                                                                <p class="text-muted">Quantity: = products.quantity  </p>
-                                                                <h6 class="mb-0">₹ = products.price <span class="small text-muted"> (= order.paymentMethod ) </span></h6>
-                                                            </div>
-                                                            <div class="ml-3">
-                                                                <img class="img-fluid" src="= products.image " width="80">
-                                                            </div>
+                                                    <div class="d-flex flex-row mb-4 pb-2 border-bottom">
+                                                        <div class="flex-fill">
+                                                            <h6 class="fw-bold">Product Name: <%= item.productName %></h6>
+                                                            <p class="fw-bold">Quantity: <%= item.quantity %></p>
+                                                            <h6 class="mb-0">Unit Price: ₹<%= item.unitPrice %> <span class="small text-muted"></span></h6>
+                                                            <h6 class="mb-0">Total Price: ₹<%= item.price %> <span class="small text-muted"></span></h6>
                                                         </div>
+                                                        <div class="ml-3">
+                                                            <img class="img-fluid" src="<%= item.images[0] %>" width="90" height="70">
+                                                        </div>
+                                                    </div>
+                                                    <div style="text-align: center;" class="cart__price-wrapper cart-flex-item">
+                                                        <div>
+                                                            <strong>Product ID:</strong> <%= item.productId %><br>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
                                             <div class="modal-footer">
@@ -84,8 +92,8 @@
                                         </div>
                                     </div>
                                 </div>
-                      
-                            
+                            <% }); %>
+                        <% }); %>
                     </tbody>
                 </table>
             </div>
@@ -96,10 +104,10 @@
 <%- include('footer') -%>
 
 <script>
-    function saveStatus(orderId, index) {
-        const newStatus = document.getElementById(`editStatus${index}`).value;
-        
-        fetch(`/admin/editOrders/${orderId}`, {
+    function saveStatus(orderId, productId) {
+        const newStatus = document.getElementById(`editStatus${orderId}_${productId}`).value;
+
+        fetch(`/admin/editOrders/${orderId}/${productId}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -115,4 +123,3 @@
         });
     }
 </script>
- 

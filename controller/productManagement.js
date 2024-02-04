@@ -22,11 +22,11 @@ const determineIsLogged = (session) => {
 //     const { primaryCategories, otherCategories } = await fetchCategoryMiddleware.fetchCategories();
 //     const  categoryData  = req.params.id.toUpperCase()
 //     try {
-//         console.log(565656);
+//      // console.log(565656);
 //         const isCategory=await CategoryDB.find({name:categoryData,isAvailable:true})
 //         const  product=await productDB.find({isAvailable:true,categoryName:categoryData})
 //         if(isCategory&&product){
-//             console.log(product)
+//          // console.log(product)
 //             res.render('user/productlist',{isLogged,product,primaryCategories, otherCategories})
 //         }
 //     } catch (err) {
@@ -59,12 +59,12 @@ const productListAdmin=async (req,res)=>{
 
         const productList = await productDB.find().skip(skip).limit(productsPerPage);
         const totalProductsCount = await productDB.countDocuments();
-        console.log(totalProductsCount);
+     // console.log(totalProductsCount);
 
         const totalPages = Math.ceil(totalProductsCount / productsPerPage);
         
         // const productList=await productDB.find()
-        console.log(productList.length);
+     // console.log(productList.length);
         if(productList.length>0){
             // console.log('listed',productList);
             res.render('admin/productlist',{
@@ -73,7 +73,7 @@ const productListAdmin=async (req,res)=>{
             currentPage: page
             })
         }else{
-            console.log('NO DATA');
+         // console.log('NO DATA');
             res.render('admin/categorylist')
         }
     }catch (err){
@@ -88,7 +88,7 @@ const productListAdmin=async (req,res)=>{
 
 const addProduct=async(req,res)=>{
     try{
-        console.log('rrrrr');
+     // console.log('rrrrr');
         const categoryList=await CategoryDB.find({isAvailable:true},{name:1,_id:0})
     res.render('admin/addproduct',{categoryList})
     }catch(err){
@@ -128,7 +128,7 @@ const productadded = async (req, res) => {
                 };
 
 
-                console.log(101,req.body.productDescription.trim(),999);
+             // console.log(101,req.body.productDescription.trim(),999);
                 await productDB.insertMany([newProduct])
                 
                 req.session.productAdded=newProduct
@@ -144,7 +144,7 @@ const productadded = async (req, res) => {
                     description: (req.body.productDescription.trim() !== "")?req.body.productDescription:existingProduct.description,
                     image: newImages.length > 0 ? newImages : existingProduct.image,
                 };
-                console.log(existingProduct.description);
+             // console.log(existingProduct.description);
                 const editing = await productDB.findByIdAndUpdate(
                     productId,
                     updateProduct,
@@ -171,13 +171,13 @@ const productadded = async (req, res) => {
 //productUnlist admin
 const productUnlist=async(req,res)=>{
     try{
-        console.log(1111111);
+     // console.log(1111111);
         const productId=req.params.id
-        console.log(productId);
+     // console.log(productId);
         const  productishere = await productDB.find({_id:productId})
-        console.log(productishere);
+     // console.log(productishere);
         const nowproduct=await productDB.updateOne({ _id: productId }, { $set: { isAvailable: false } });
-        console.log(nowproduct);
+     // console.log(nowproduct);
         res.redirect('/admin/productlist')
     }catch(err){
         console.error(err);
@@ -185,15 +185,15 @@ const productUnlist=async(req,res)=>{
 }
 const productDelete=async(req,res)=>{
     try{
-        console.log('deleting');
+     // console.log('deleting');
         const productId=req.params.id
-        console.log(productId);
+     // console.log(productId);
         const  productishere = await productDB.find({_id:productId})
-        console.log(productishere);
+     // console.log(productishere);
         const nowproduct=await productDB.deleteOne({ _id: productId });
         const removeFromCart = await CartDB.deleteOne({productId:productId})
-        console.log(nowproduct);
-        console.log(removeFromCart);
+     // console.log(nowproduct);
+     // console.log(removeFromCart);
         res.redirect('/admin/productlist')
     }catch(err){
         console.error(err);
@@ -202,13 +202,13 @@ const productDelete=async(req,res)=>{
 
 const productList=async(req,res)=>{
     try{
-        console.log(2222);
+     // console.log(2222);
         const productId=req.params.id
-        console.log(productId);
+     // console.log(productId);
         const  productishere = await productDB.find({_id:productId})
-        console.log(productishere);
+     // console.log(productishere);
         const nowproduct=await productDB.updateOne({ _id: productId }, { $set: { isAvailable: true } });
-        console.log(nowproduct);
+     // console.log(nowproduct);
         res.redirect('/admin/productlist')
     }catch(err){
         console.error(err);
@@ -219,9 +219,9 @@ const productList=async(req,res)=>{
 const productUpdate=async(req,res)=>{
     try{
         const productId=req.params.id
-        console.log('updating this product');
+     // console.log('updating this product');
         const editProduct= await productDB.findById(productId)
-        console.log(editProduct.name);
+     // console.log(editProduct.name);
         res.render('admin/editProduct',{editProduct})
     }catch(err){
     }
@@ -231,7 +231,7 @@ const productUpdatePost=async(req,res)=>{
     try{
         const updateProduct=req.params.id
         const updatedProduct=await productDB.findById(updateProduct).select('name isAvailable image')
-        console.log(updatedProduct);
+     // console.log(updatedProduct);
     }catch(err){
     }
 }
@@ -243,9 +243,9 @@ const productImgDelete=async(req,res)=>{
         req.session.productId=productObjectId
 
         const url=req.params.imgUrl
-        console.log(121212);
+     // console.log(121212);
         const imgUrl=`\\uploads\\${url}`
-        console.log(imgUrl);
+     // console.log(imgUrl);
 
         const img=await productDB.updateOne(
             { _id: productObjectId },
@@ -262,13 +262,13 @@ const productImgDelete=async(req,res)=>{
 
 //
 const productDetail=async(req,res)=>{
-    console.log(1818);
+ // console.log(1818);
     const isLogged = determineIsLogged(req.session);
     const { primaryCategories, otherCategories } = await fetchCategoryMiddleware.fetchCategories();
     try{
-        console.log(isLogged);
+     // console.log(isLogged);
         const productId=req.params.id
-        console.log(productId,1111);
+     // console.log(productId,1111);
 
          // Extract the valid ObjectId from the provided string
     const validObjectId =new mongoose.Types.ObjectId(productId);
@@ -277,8 +277,8 @@ const productDetail=async(req,res)=>{
     const productDetails = await productDB.findById(validObjectId);
 
         // const productDetails=await productDB.findById(productId)
-        console.log(productDetails,444);
-        console.log(222);
+     // console.log(productDetails,444);
+     // console.log(222);
         res.render('user/product-detail',{productDetails,isLogged, primaryCategories, otherCategories})
     }catch(err){
         console.error(err);
@@ -311,15 +311,15 @@ const productListUser = async (req, res) => {
     const limit = 5; // Number of items per page
     try {
         const totalProductsCount = await productDB.countDocuments({ isAvailable: true, categoryName: categoryData });
-        console.log(`total products count is ${totalProductsCount}`);
+     // console.log(`total products count is ${totalProductsCount}`);
         const totalPages = Math.ceil(totalProductsCount / limit);
         const offset = (page - 1) * limit;
 
         const products = await productDB.find({ isAvailable: true, categoryName: categoryData })
             .skip(offset)
             .limit(limit);
-            console.log('haaai');
-            console.log(4444);
+         // console.log('haaai');
+         // console.log(4444);
         res.render('user/productlist', {
             isLogged,
             product: products,
@@ -339,22 +339,22 @@ const productListUser = async (req, res) => {
 
 
 const priceSortAscending=async (req,res)=>{  
-    console.log('its ascending');
-    console.log(req.body);
+ // console.log('its ascending');
+ // console.log(req.body);
     const priceString=req.body.value
-    console.log(priceString);
+ // console.log(priceString);
     const regex = /₹(\d+)\s*-\s*₹(\d+)/;
     const match = priceString.match(regex);
-    console.log(match);
+ // console.log(match);
     const minValue = parseInt(match[1], 10);
     const maxValue = parseInt(match[2], 10);
-    console.log(minValue,maxValue);
+ // console.log(minValue,maxValue);
 
 
     const categoryData=req.params.id.toUpperCase()
-    console.log(categoryData,222);
+ // console.log(categoryData,222);
     const page = parseInt(req.query.page) || 1; // Get the page number from the query parameter, default to page 1
-    console.log(page,999);
+ // console.log(page,999);
     const limit = 5; // Number of items per page
 
     try{
@@ -376,15 +376,15 @@ const priceSortAscending=async (req,res)=>{
             },
           ];
           const totalProductsCount = await productDB.aggregate(pipeline)
-          console.log(totalProductsCount);
+       // console.log(totalProductsCount);
           const countValue = totalProductsCount[0].documentCount;
-          console.log(countValue);
-          console.log(`filtered products count is ${countValue}`);
+       // console.log(countValue);
+       // console.log(`filtered products count is ${countValue}`);
 
 
           const totalPages = Math.ceil(countValue / limit);
-          console.log(totalPages);
-          console.log(7876);
+       // console.log(totalPages);
+       // console.log(7876);
 
         const offset = (page - 1) * limit;
 
@@ -406,7 +406,7 @@ const priceSortAscending=async (req,res)=>{
         const sortedProducts = await productDB.aggregate(pipeline2)
             .skip(offset)
             .limit(limit);
-            console.log('hello');
+         // console.log('hello');
             res.json({sortedProducts,totalPages,currentPage: page}) 
     }catch(err){
         console.error(err);
@@ -415,22 +415,22 @@ const priceSortAscending=async (req,res)=>{
 
 
 const priceSortDescending=async (req,res)=>{  
-    console.log('its ascending');
-    console.log(req.body);
+ // console.log('its ascending');
+ // console.log(req.body);
     const priceString=req.body.value
-    console.log(priceString);
+ // console.log(priceString);
     const regex = /₹(\d+)\s*-\s*₹(\d+)/;
     const match = priceString.match(regex);
-    console.log(match);
+ // console.log(match);
     const minValue = parseInt(match[1], 10);
     const maxValue = parseInt(match[2], 10);
-    console.log(minValue,maxValue);
+ // console.log(minValue,maxValue);
 
 
     const categoryData=req.params.id.toUpperCase()
-    console.log(categoryData,222);
+ // console.log(categoryData,222);
     const page = parseInt(req.query.page) || 1; // Get the page number from the query parameter, default to page 1
-    console.log(page,999);
+ // console.log(page,999);
     const limit = 5; // Number of items per page
 
     try{
@@ -452,15 +452,15 @@ const priceSortDescending=async (req,res)=>{
             },
           ];
           const totalProductsCount = await productDB.aggregate(pipeline)
-          console.log(totalProductsCount);
+       // console.log(totalProductsCount);
           const countValue = totalProductsCount[0].documentCount;
-          console.log(countValue);
-          console.log(`filtered products count is ${countValue}`);
+       // console.log(countValue);
+       // console.log(`filtered products count is ${countValue}`);
 
 
           const totalPages = Math.ceil(countValue / limit);
-          console.log(totalPages);
-          console.log(7876);
+       // console.log(totalPages);
+       // console.log(7876);
 
         const offset = (page - 1) * limit;
 
@@ -482,7 +482,7 @@ const priceSortDescending=async (req,res)=>{
         const sortedProducts = await productDB.aggregate(pipeline2)
             .skip(offset)
             .limit(limit);
-            console.log('hello');
+         // console.log('hello');
             res.json({sortedProducts,totalPages,currentPage: page}) 
     }catch(err){
         console.error(err);
@@ -502,12 +502,12 @@ const priceSortDescending=async (req,res)=>{
 
 
 const searchProduct = async (req,res)=>{
-    console.log('its search');
+ // console.log('its search');
     const category=req.params.id.toUpperCase()
-    console.log(category,222);
+ // console.log(category,222);
 
     const searchValue=req.body.searchTerm
-    console.log(searchValue);
+ // console.log(searchValue);
   
     try{
         const pipeline = [
@@ -528,16 +528,15 @@ const searchProduct = async (req,res)=>{
         const searchProducts =  await productDB.aggregate(pipeline);
         if( res.json({searchProducts}) ){
             // console.log(searchProducts);
-            console.log(9999956865345);
-            console.log('its send');
+         // console.log(9999956865345);
+         // console.log('its send');
         }else{
-            console.log('else');
+         // console.log('else');
         }
     }catch(err){
         console.error(err);
     }
 }
-
 
 
 

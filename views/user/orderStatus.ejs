@@ -1,0 +1,103 @@
+
+
+<%-include('header')-%>
+<!--Body Content-->
+    <div id="page-content">
+    	<!--Page Title-->
+    	<div class="page section-header text-center">
+			<div class="page-title">
+        		<div class="wrapper"><h1 class="page-width">My Order List</h1></div>
+      		</div>
+		</div>
+        <!--End Page Title-->
+        <div class="container">
+            <div class="row">
+                <div class="col-12 col-sm-12 col-md-12 col-lg-12 main-col">
+                    <% if(locals.orderList.length>0) { %>
+                    <div class="alert alert-success text-uppercase" role="alert">
+                        <i class="icon anm anm-truck-l icon-large"></i> &nbsp;<strong>Congratulations!</strong> You've got free shipping!
+                    </div>
+        
+                        <form action="#" method="post" class="cart style2">
+                            <table class="table table-striped">
+                                <thead class="cart__row cart__header  text-white" style="background-color: cadetblue;">
+                                    <tr>
+                                        <th class="text-center">User ID</th>
+                                        <th class="text-center">Billing Address</th>
+                                        <th class="text-center">Image</th>
+                                        <th class="text-center">Product Name</th>
+                                        <th class="text-center">Quantity</th>
+                                        <th class="text-right">Unit Price</th>
+                                        <th class="text-right">Price</th>
+                                        <th class="text-right">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% locals.orderList.forEach(order => { %>
+                                        <% order.orderItems.forEach(item => { %>
+                                            <tr class="cart__row border-bottom line1 cart-flex border-top">
+                                                <td class="cart__meta small--text-left cart-flex-item">
+                                                    <div class="list-view-item__title">
+                                                        <span><%= isLogged %></span>
+                                                    </div>
+                                                </td>
+                                                <td style="text-align: center;" class="cart__price-wrapper cart-flex-item">
+                                                    <div>
+                                                        <strong>Name:</strong> <%= order.billingAddress.name %><br>
+                                                        <strong>Phone:</strong> <%= order.billingAddress.telephone %><br>
+                                                        <strong>Address:</strong> <%= order.billingAddress.address %><br>
+                                                        <strong>City:</strong> <%= order.billingAddress.city %><br>
+                                                        <strong>Region/State:</strong> <%= order.billingAddress.regionState %><br>
+                                                        <strong>Postcode:</strong> <%= order.billingAddress.postCode %><br>
+                                                    </div>
+                                                </td>
+                                                <td class="cart__image-wrapper cart-flex-item">
+                                                    <a href="#">
+                                                        <img class="cart__image img-fluid mx-auto mb-4" 
+                                                             src="<%= item.images[0] %>"
+                                                             style="width: 100px; height: 100px;"  
+                                                             alt="<%= item.productId %>">
+                                                    </a>
+                                                </td>
+                                                <td class="cart__meta small--text-left cart-flex-item">
+                                                    <div class="list-view-item__title">
+                                                        <span><%= item.productName %></span>
+                                                    </div>
+                                                </td>
+                                                <td style="text-align: center;" class="cart__price-wrapper cart-flex-item">
+                                                    <span id="unitPrice" data-product-id="<%= item.productId %>" class="money"><%= item.quantity %></span>
+                                                </td>
+                                                <td style="text-align: center;" class="cart__price-wrapper cart-flex-item">
+                                                    <span><%= item.unitPrice %></span>
+                                                </td>
+                                                <td class="text-right small--hide cart-price">
+                                                    <div id="productPrice" value="<%= item.price %>" data-product-id="<%= item.productId %>"  >
+                                                        <span class="money">$<%= item.price %></span>
+                                                    </div>
+                                                </td>
+                                                <td class="text-right small--hide cart-price">
+                                                    <span><%= order.orderStatus.type %></span>
+                                                </td>
+                                            </tr>
+                                        <% }); %>
+                                    <% }); %>
+                                </tbody>
+                            </table>
+                        </form>
+                    </div>
+                    <% }else{ %>
+                    <h1>No order products</h1>
+                <p><a href="/" class="btn btn--has-icon-after" style="background-color: black; color: aliceblue;" >Continue shopping <i class="fa fa-caret-right" aria-hidden="true"></i></a></p>
+                        <%}%>
+                    <div>
+                    </div>
+            </div>
+        </div>
+        
+        
+        
+        
+    </div>
+    <!--End Body Content-->
+    
+    <%-include('footer')-%>

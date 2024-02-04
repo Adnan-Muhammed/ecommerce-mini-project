@@ -13,9 +13,6 @@ const determineIsLogged = (session) => {
 
 
 
-
-
-
 const checkoutPage = async (req, res) => {
     const isLogged = determineIsLogged(req.session);
     const { primaryCategories, otherCategories } = await fetchCategoryMiddleware.fetchCategories();
@@ -23,7 +20,7 @@ const checkoutPage = async (req, res) => {
   
     try {
       const user = await UserDB.findOne({ email: emailId });
-      console.log(123456789);
+   // console.log(123456789);
   
       if (!user) {
         return res.status(404).send('User not found');
@@ -51,7 +48,7 @@ const checkoutPage = async (req, res) => {
         };
       });
     
-     console.log(987654321);
+  // console.log(987654321);
       let totalPrice = 0;
     for (const cartItem of detailedCartItems) {
         totalPrice += cartItem.price;
@@ -59,13 +56,13 @@ const checkoutPage = async (req, res) => {
       const taxValue = 10.00; // You can change this to your actual tax value
       const grandTotal = totalPrice + taxValue
       const billingDetails = user.billingDetails || []; 
-      console.log('hello welcome checkout page');
-      console.log(detailedCartItems[0].images[0]);
+   // console.log('hello welcome checkout page');
+   // console.log(detailedCartItems[0].images[0]);
 
       res.render('user/checkout', { cartItems: detailedCartItems, billingDetails ,isLogged, primaryCategories, otherCategories ,totalprice:totalPrice,taxValue, grandTotal });
       }else{
 
-        console.log(9999999912345678);
+     // console.log(9999999912345678);
         res.redirect('/error')
       }
             
@@ -101,7 +98,7 @@ const checkoutPage = async (req, res) => {
               { new: true } // Return the modified document
           );
 
-          console.log('User updated with billing details:', updatedUser);
+       // console.log('User updated with billing details:', updatedUser);
 
           // If you want to send a JSON response
           res.status(200).json({ message: 'Form data received successfully' });

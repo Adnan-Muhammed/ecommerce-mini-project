@@ -5,14 +5,17 @@
         <div class="container py-5">
 
           <div class="row">
+
             <div class="col-lg-4">
+
               <div class="card mb-4">
                 <div class="card-body text-center">
                   <img src="https://cdn1.iconfinder.com/data/icons/public-company-solid/32/employee_employe_workman_user_profiles_avatar_people_human_persons_icon_1-512.png" alt="avatar"
                     class="rounded-circle img-fluid" style="width: 150px;">
-                  <h5 class="my-3"> user.name </h5> 
+                  <h5 class="my-3"> <%=user.name%>  </h5> 
                 </div>
               </div>
+
               <div class="card mb-4 mb-lg-0">
                 <div class="card-body p-0">
                   <ul class="list-group list-group-flush rounded-3">
@@ -26,7 +29,7 @@
                       <p class="mb-0"> <a href="/userAddAddress">ADDRESS</a> </p>
                     </li>
                     <li class="list-group-item d-flex justify-content-between align-items-center p-3">
-                      <p class="mb-0"> <a href="/orderDetails">ORDER STATUS</a> </p>
+                      <p class="mb-0"> <a href="/orderStatus">ORDER STATUS</a> </p>
                     </li>
                     <li class="list-group-item d-flex justify-content-between align-items-center p-3">
                       <p class="mb-0"> <a href="/changePassword">CHANGE PASSWORD</a> </p>
@@ -40,16 +43,20 @@
                   </ul>
                 </div>
               </div>
+
+
             </div>
+
+            
             <div class="col-lg-8">
               <div class="card mb-4">
                 <div class="card-body">
                   <div class="row">
                     <div class="col-sm-3">
-                      <p class="mb-0">Full Name</p>
+                      <p class="mb-0">Name:</p>
                     </div>
                     <div class="col-sm-9">
-                      <p class="text-muted mb-0">= user.name </p>
+                      <p class="text-muted mb-0"><%=user.name%> </p>
                     </div>
                   </div>
                   <hr>
@@ -58,7 +65,7 @@
                       <p class="mb-0">Email</p>
                     </div>
                     <div class="col-sm-9">
-                      <p class="text-muted mb-0">= user.email </p>
+                      <p class="text-muted mb-0"><%=user.email%> </p>
                     </div>
                   </div>
                   <hr>

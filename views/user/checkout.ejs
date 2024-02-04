@@ -69,18 +69,10 @@
                         </div>
                     </div>
 
-                    
-
-
-
-
-
                     <div class="customer-box customer-coupon">
                         <h3 class="font-15 xs-font-13"><i class=""></i>  <a href="#add-address" class="text-white text-decoration-underline" data-toggle="collapse">Add Address</a></h3>
                     </div>  
 
-                    
-                    
                     <div id="add-address" class="collapse coupon-checkout-content">
                         <div class="discount-coupon">
                             <form  id="address-form" action="/address-added" method="POST">
@@ -137,17 +129,10 @@
                         </div>
                     </div>
 
-
-
-
-                  
-
                 </div>
                
             </div> 
 
-
-            
 
             <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12">
                 <div class="your-order-payment">
@@ -607,7 +592,8 @@
     .then(data => {
       // Handle the response from the server if needed
       console.log(data);
-      window.location.href('/place-order')
+      window.location.href = '/orderplaced/success';
+
     })
     .catch(error => {
       console.error('Error:', error);
