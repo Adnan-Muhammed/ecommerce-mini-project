@@ -505,6 +505,13 @@ const userOrderStatus = async(req,res)=>{
     }
 }
 
+const changePassword = (req,res)=>{
+    res.redirect('')
+}
+const forgotPassword = (req,res)=>{
+    res.render('user/forgotPassword')
+}
+
 
 
 
@@ -525,5 +532,7 @@ module.exports = {
     userProfile,
     userAddAddress,
     userOrderStatus,
+    changePassword,
+    forgotPassword,
 
 };

@@ -6,6 +6,10 @@ const orderSchema = new mongoose.Schema({
     ref: 'usercollections', // Reference to the user model
     required: true,
   },
+  userEmailId: {
+    type: String,
+    required: true,
+  },
   orderDate: {
     type: Date,
     default: Date.now,
@@ -105,7 +109,7 @@ const orderSchema = new mongoose.Schema({
   orderStatus: {
     type: {
       type: String,
-      enum: ['processing', 'shipped', 'delivered', 'other'],
+      // enum: ['processing', 'shipped', 'delivered', 'other'],
       default:'processing',
       required: true,
     },

@@ -12,6 +12,7 @@ router.get('/orderplaced/success', userSessionHandling.isBlockedNow, orderManage
 
 
 
+router.post('/admin/editOrder/:orderId', userSessionHandling.isBlockedNow, orderManagement.orderStatus )
 
 
 

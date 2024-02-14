@@ -18,10 +18,14 @@ router.post('/otpverified',  userSessionHandling.requireNotUser  , userManagemen
 router.get('/resendOtp',userSessionHandling.otpSession,userManagement.resendOtp)
 router.get('/logout',userManagement.logout)
 
+router.get('/forgotPassword',userManagement.forgotPassword)
+router.post('/passwordChange',userManagement.forgotPassword)
+
 
 router.get('/userProfile',userSessionHandling.userlogged,userManagement.userProfile)
 router.get('/userAddAddress',   userSessionHandling.userlogged,userManagement.userAddAddress )
 router.get('/orderStatus',    userSessionHandling.userlogged,userManagement.userOrderStatus)
+router.get('/changePassword',    userSessionHandling.userlogged,userManagement.changePassword)
 
 
 

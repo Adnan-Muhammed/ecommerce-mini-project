@@ -51,15 +51,6 @@ const orderManagement = require('../controller/orderManagement.js')
 router.get('/orderlist',adminSessionMiddleware.requireAdmin,orderManagement.orderUpdates)
 
 
-
-// router.get('/order',(req,res)=>{
-//     res.render('admin/order')
-// })
-
-// (req,res)=>{
-//     const order={_id:22}
-//     res.render('admin/orderlist',{order})
-// }
   
 
 

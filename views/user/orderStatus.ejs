@@ -22,25 +22,25 @@
                             <table class="table table-striped">
                                 <thead class="cart__row cart__header  text-white" style="background-color: cadetblue;">
                                     <tr>
-                                        <th class="text-center">User ID</th>
                                         <th class="text-center">Billing Address</th>
                                         <th class="text-center">Image</th>
                                         <th class="text-center">Product Name</th>
                                         <th class="text-center">Quantity</th>
                                         <th class="text-right">Unit Price</th>
-                                        <th class="text-right">Price</th>
-                                        <th class="text-right">Status</th>
+                                        <th style="background-color: blueviolet;" class="text-right">Price</th>
+                                        <th style="background-color:darkgoldenrod;" class="text-center">Status</th>
+                                        <th style="background-color: chocolate;" class="text-center">Action</th>
+
+
+
+
+                                        <!-- <th style="background-color: chocolate;" class="text-center">Action</th> -->
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <% locals.orderList.forEach(order => { %>
                                         <% order.orderItems.forEach(item => { %>
                                             <tr class="cart__row border-bottom line1 cart-flex border-top">
-                                                <td class="cart__meta small--text-left cart-flex-item">
-                                                    <div class="list-view-item__title">
-                                                        <span><%= isLogged %></span>
-                                                    </div>
-                                                </td>
                                                 <td style="text-align: center;" class="cart__price-wrapper cart-flex-item">
                                                     <div>
                                                         <strong>Name:</strong> <%= order.billingAddress.name %><br>
@@ -54,9 +54,9 @@
                                                 <td class="cart__image-wrapper cart-flex-item">
                                                     <a href="#">
                                                         <img class="cart__image img-fluid mx-auto mb-4" 
-                                                             src="<%= item.images[0] %>"
-                                                             style="width: 100px; height: 100px;"  
-                                                             alt="<%= item.productId %>">
+                                                        src="<%= item.images[0] %>"
+                                                        style="width: 100px; height: 100px;"  
+                                                        alt="<%= item.productId %>">
                                                     </a>
                                                 </td>
                                                 <td class="cart__meta small--text-left cart-flex-item">
@@ -70,17 +70,44 @@
                                                 <td style="text-align: center;" class="cart__price-wrapper cart-flex-item">
                                                     <span><%= item.unitPrice %></span>
                                                 </td>
-                                                <td class="text-right small--hide cart-price">
-                                                    <div id="productPrice" value="<%= item.price %>" data-product-id="<%= item.productId %>"  >
+                                                <td   style="background-color: blueviolet;"  class="text-right small--hide cart-price">
+                                                    <divid="productPrice" value="<%= item.price %>" data-product-id="<%= item.productId %>"  >
                                                         <span class="money">$<%= item.price %></span>
                                                     </div>
                                                 </td>
-                                                <td class="text-right small--hide cart-price">
-                                                    <span><%= order.orderStatus.type %></span>
+                                                <td class="text-center small--hide cart-price">
+                                                    <div  style="text-align: center;" class="list-view-item__title">
+                                                    <span   ><%= order.orderStatus.type %></span>
+                                                    </div>
                                                 </td>
+
+
+                                                <td class="text-center small--hide cart-price">
+                                                    <!-- <div  style="text-align: center;" class="list-view-item__title">
+                                                        <select name="status" class="form-control" style="width: 100px; background-color: rgb(0, 136, 255); color: white;" id="editStatus<%= order._id%> ">
+                                                        <option value="<%= order.orderStatus.type %>"><%= order.orderStatus.type %></option>
+                                                        <option value="cancelled">cancelled</option>
+                                                    </select>
+                                                    </div> -->
+                                                    
+                                                        <button class="btn btn-info block-btn" data-user-id="<%= order.orderStatus.type %>">Cancelled</button>
+                                                        <button class="btn btn-info unblock-btn" data-user-id="<%= order.orderStatus.type %>">Unblock</button>
+                                                </td>
+
+
+
+                                                <!-- <td>
+                                                    <div class="d-flex">
+                                                        <button class="btn btn-primary btn-sm" type="submit">
+                                                            <i class=""></i> Save
+                                                        </button>
+                                                    </div>
+                                                </td> -->
+
+
                                             </tr>
-                                        <% }); %>
-                                    <% }); %>
+                                            <% }); %>
+                                            <% }); %>
                                 </tbody>
                             </table>
                         </form>
