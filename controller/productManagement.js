@@ -465,7 +465,7 @@ const priceSortDescending=async (req,res)=>{
  // console.log(match);
     const minValue = parseInt(match[1], 10);
     const maxValue = parseInt(match[2], 10);
- // console.log(minValue,maxValue);
+//  console.log(minValue,maxValue);
 
 
     const categoryData=req.params.id.toUpperCase()
