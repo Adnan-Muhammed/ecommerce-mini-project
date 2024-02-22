@@ -104,9 +104,11 @@ const addProduct=async(req,res)=>{
 
 const productadded = async (req, res) => {
   let imageCount =4;
-  if(req.params){
-    const productId=req.params.id
-    const existingProduct=await productDB.findById(productId)
+  const existingProductId=req.params.id?? null
+
+  if(req.params.id){
+    const existingProductId=req.params.id
+    const existingProduct=await productDB.findById(existingProductId)
     const ExistingImgCount = existingProduct.image.length
     console.log(ExistingImgCount);
     imageCount = 4-ExistingImgCount
@@ -114,16 +116,17 @@ const productadded = async (req, res) => {
 
 
     upload.array('images', imageCount)(req, res, async function (err) {
+      console.log(imageCount);
+      console.log(78534567);
 
     if (err instanceof multer.MulterError) {
-      console.log(`err is length : ${req.files.length}`);
-
-      if(req.params){
+     console.log(`err is length : ${req.files.length}`);
+     if(req.params.id){
+      req.session.multerError = true
+       return res.redirect(`/admin/productUpdate/${existingProductId}`)
+     }else{     
         req.session.multerError = true
-        return res.redirect('/admin/productUpdate/:id')
-      }else{     
-        req.session.multerError = true
-        return res.redirect('admin/addProduct')
+        return res.redirect('/admin/addProduct')
       }
             // return res.status(400).send({ message: 'Multer error' });
         } 
@@ -380,16 +383,25 @@ const productListUser = async (req, res) => {
 
 
 const priceSortAscending=async (req,res)=>{  
- // console.log('its ascending');
- // console.log(req.body);
-    const priceString=req.body.value
+ console.log('its ascending');
+ const data = req.body.value
+  const priceString=data.value
+  console.log(priceString);
+  console.log(12345678);
+  const searchValue=(data.searchTerm)??null
+  console.log(searchValue,78);
+  console.log(898);
+  
+ 
+ console.log('priceSortAscending');
+
  // console.log(priceString);
     const regex = /₹(\d+)\s*-\s*₹(\d+)/;
     const match = priceString.match(regex);
  // console.log(match);
     const minValue = parseInt(match[1], 10);
     const maxValue = parseInt(match[2], 10);
- // console.log(minValue,maxValue);
+ console.log(minValue,maxValue);
 
 
     const categoryData=req.params.id.toUpperCase()
@@ -405,6 +417,7 @@ const priceSortAscending=async (req,res)=>{
                 categoryName: categoryData,
                 price: { $gte: minValue, $lte: maxValue },
                 isAvailable: true,
+                ...(searchValue && { name: searchValue }), // Include name field conditionally
               },
             },
             {
@@ -435,6 +448,7 @@ const priceSortAscending=async (req,res)=>{
                 categoryName: categoryData,
                 price: { $gte: minValue, $lte: maxValue },
                 isAvailable: true,
+                ...(searchValue && { name: searchValue }), // Include name field conditionally
               },
             },
             {
@@ -456,16 +470,26 @@ const priceSortAscending=async (req,res)=>{
 
 
 const priceSortDescending=async (req,res)=>{  
- // console.log('its ascending');
- // console.log(req.body);
-    const priceString=req.body.value
- // console.log(priceString);
+  console.log('priceSortDescend');
+
+  console.log('its descending');
+  const data = req.body.value
+  const priceString=data.value
+  console.log(priceString);
+  console.log(12345678);
+  const searchValue=(data.searchTerm)??null
+  console.log(searchValue,78);
+  console.log(898);
+  
+ 
+
+
     const regex = /₹(\d+)\s*-\s*₹(\d+)/;
     const match = priceString.match(regex);
- // console.log(match);
+  // console.log(match);
     const minValue = parseInt(match[1], 10);
     const maxValue = parseInt(match[2], 10);
-//  console.log(minValue,maxValue);
+  console.log(minValue,maxValue);
 
 
     const categoryData=req.params.id.toUpperCase()
@@ -481,6 +505,8 @@ const priceSortDescending=async (req,res)=>{
                 categoryName: categoryData,
                 price: { $gte: minValue, $lte: maxValue },
                 isAvailable: true,
+                ...(searchValue && { name: searchValue }), // Include name field conditionally
+
               },
             },
             {
@@ -511,6 +537,7 @@ const priceSortDescending=async (req,res)=>{
                 categoryName: categoryData,
                 price: { $gte: minValue, $lte: maxValue },
                 isAvailable: true,
+                ...(searchValue && { name: searchValue }), // Include name field conditionally
               },
             },
             {
@@ -548,6 +575,16 @@ const searchProduct = async (req,res)=>{
  // console.log(category,222);
 
     const searchValue=req.body.searchTerm
+    const priceString=req.body.value
+    // console.log(priceString);
+    const regex = /₹(\d+)\s*-\s*₹(\d+)/;
+    const match = priceString.match(regex);
+    // console.log(match);
+    const minValue = parseInt(match[1], 10);
+    const maxValue = parseInt(match[2], 10);
+    console.log(minValue,maxValue);
+
+
  // console.log(searchValue);
   
     try{
@@ -555,7 +592,7 @@ const searchProduct = async (req,res)=>{
             {
               $match: {
                 categoryName: category,
-                // price: { $gte: minValue, $lte: maxValue },
+                price: { $gte: minValue, $lte: maxValue },
                 isAvailable: true,
                 name:searchValue,
               },

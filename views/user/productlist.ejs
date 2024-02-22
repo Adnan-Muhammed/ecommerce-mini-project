@@ -181,15 +181,23 @@
 <!-- price sorting script -->
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('search-value')
         
         document.getElementById('btn-1').addEventListener('click', function() {
+            let searchTerm = searchInput.value.trim();     
             const value = document.getElementById('amount').value.trim();
-            fetchData('/category/<%=categoryName%>/ascending', value);
+            console.log(searchTerm);                 
+            console.log(44444);      
+            fetchData('/category/<%=categoryName%>/ascending',{ value, searchTerm});
         });
 
         document.getElementById('btn-2').addEventListener('click', function() {
             const value = document.getElementById('amount').value.trim();
-            fetchData('/category/<%=categoryName%>/descending', value);
+            let searchTerm = searchInput.value.trim(); 
+            console.log(searchTerm);                 
+            console.log(333);                          
+
+            fetchData('/category/<%=categoryName%>/descending',{ value, searchTerm});
         });
 
         const fetchData = async (url, value) => {
@@ -319,12 +327,14 @@
 <script>
     document.addEventListener('DOMContentLoaded', function() {
 
+        
         const searchInput = document.getElementById('search-value');
         const searchButton = document.getElementById('search-btn');
-
+        
         searchButton.addEventListener('click', function () {                       
             let searchTerm = searchInput.value.trim();                            
-            fetchData('/category/<%=categoryName%>/searchProduct',  {searchTerm });   
+            const value = document.getElementById('amount').value.trim();
+            fetchData('/category/<%=categoryName%>/searchProduct',  {searchTerm ,value });   
         });
 
         const fetchData = async (url,  searchTerm ) => {

@@ -35,8 +35,10 @@ router.get('/hide/:id',adminSessionMiddleware.requireAdmin,categoryManagement.hi
 
 const productManagement = require('../controller/productManagement.js');
 router.get('/addproduct',adminSessionMiddleware.requireAdmin, productManagement.addProduct);
+
 router.post('/productadded',adminSessionMiddleware.requireAdmin,productManagement.productadded);//post
 router.post('/productUpdated/:id',adminSessionMiddleware.requireAdmin,productManagement.productadded)
+
 router.get('/productlist',adminSessionMiddleware.requireAdmin,productManagement.productListAdmin);
 router.get('/unlist/:id',adminSessionMiddleware.requireAdmin,  productManagement.productUnlist)
 router.get('/delete/:id',adminSessionMiddleware.requireAdmin,  productManagement.productDelete)
