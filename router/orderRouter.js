@@ -14,7 +14,9 @@ router.get('/orderplaced/success', userSessionHandling.isBlockedNow, orderManage
 
 router.post('/admin/editOrder/:orderId', userSessionHandling.isBlockedNow, orderManagement.orderStatus )
 
-
+  
+router.post('/cancelOrder/:orderId',userSessionHandling.isBlockedNow, orderManagement.handleOrderStatusUpdate )
+router.post('/returnOrder/:orderId',userSessionHandling.isBlockedNow, orderManagement.handleOrderStatusUpdate)
 
 
 module.exports=router

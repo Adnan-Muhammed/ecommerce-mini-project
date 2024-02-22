@@ -90,7 +90,9 @@ const addProduct=async(req,res)=>{
     try{
      // console.log('rrrrr');
         const categoryList=await CategoryDB.find({isAvailable:true},{name:1,_id:0})
-    res.render('admin/addproduct',{categoryList})
+        const multerError = req.session.multerError
+        req.session.multerError = null
+    res.render('admin/addproduct',{categoryList ,multerError})
     }catch(err){
         console.error(err);
     }
@@ -101,11 +103,31 @@ const addProduct=async(req,res)=>{
 
 
 const productadded = async (req, res) => {
-    upload.array('images', 4)(req, res, async function (err) {
+  let imageCount =4;
+  if(req.params){
+    const productId=req.params.id
+    const existingProduct=await productDB.findById(productId)
+    const ExistingImgCount = existingProduct.image.length
+    console.log(ExistingImgCount);
+    imageCount = 4-ExistingImgCount
+  }
+
+
+    upload.array('images', imageCount)(req, res, async function (err) {
 
     if (err instanceof multer.MulterError) {
-            return res.status(400).send({ message: 'Multer error' });
-        } else if (err) {
+      console.log(`err is length : ${req.files.length}`);
+
+      if(req.params){
+        req.session.multerError = true
+        return res.redirect('/admin/productUpdate/:id')
+      }else{     
+        req.session.multerError = true
+        return res.redirect('admin/addProduct')
+      }
+            // return res.status(400).send({ message: 'Multer error' });
+        } 
+        else if (err) {
             return res.status(500).send({ message: 'Server error' });
         }
 
@@ -124,15 +146,13 @@ const productadded = async (req, res) => {
                     categoryName: req.body.productCategory,
                     description: req.body.productDescription,
                     image: newImages, 
-                    
                 };
-
-
              // console.log(101,req.body.productDescription.trim(),999);
                 await productDB.insertMany([newProduct])
-                
                 req.session.productAdded=newProduct
-            }else{
+              }else{
+
+
                 const productId=req.params.id
                 const existingProduct=await productDB.findById(productId)
 
@@ -142,7 +162,7 @@ const productadded = async (req, res) => {
                     price: req.body.productPrice,
                     stock: req.body.productStock,
                     description: (req.body.productDescription.trim() !== "")?req.body.productDescription:existingProduct.description,
-                    image: newImages.length > 0 ? newImages : existingProduct.image,
+                    image: newImages.length > 0 ?   [...newImages, ...existingProduct.image] : existingProduct.image,
                 };
              // console.log(existingProduct.description);
                 const editing = await productDB.findByIdAndUpdate(
@@ -150,8 +170,6 @@ const productadded = async (req, res) => {
                     updateProduct,
                   );
             }
-            
-
           
             return res.redirect('/admin/productlist');
         } catch (error) {
@@ -202,7 +220,7 @@ const productDelete=async(req,res)=>{
 
 const productList=async(req,res)=>{
     try{
-     // console.log(2222);
+    //  console.log(2222);
         const productId=req.params.id
      // console.log(productId);
         const  productishere = await productDB.find({_id:productId})
@@ -217,12 +235,14 @@ const productList=async(req,res)=>{
 
 
 const productUpdate=async(req,res)=>{
+  const multerError = req.session.multerError
+  req.session.multerError = null
     try{
         const productId=req.params.id
      // console.log('updating this product');
         const editProduct= await productDB.findById(productId)
      // console.log(editProduct.name);
-        res.render('admin/editProduct',{editProduct})
+        res.render('admin/editProduct',{editProduct , multerError})
     }catch(err){
     }
 }
@@ -237,25 +257,46 @@ const productUpdatePost=async(req,res)=>{
 }
 
 
-const productImgDelete=async(req,res)=>{
-    try{
-        const productObjectId=req.params.id
-        req.session.productId=productObjectId
+// const productImgDelete=async(req,res)=>{
+//     try{
+//         const productObjectId=req.params.id
+//         req.session.productId=productObjectId
 
-        const url=req.params.imgUrl
-     // console.log(121212);
-        const imgUrl=`\\uploads\\${url}`
-     // console.log(imgUrl);
+//         const url=req.params.imgUrl
+//      // console.log(121212);
+//         const imgUrl=`\\uploads\\${url}`
+//      // console.log(imgUrl);
 
-        const img=await productDB.updateOne(
-            { _id: productObjectId },
-            { $pull: { image: imgUrl } }
-          );
-          res.redirect(`/admin/productUpdate/${productObjectId}`)
-    }catch(err){
-        console.error(err);
-    }
-}
+//         const img=await productDB.updateOne(
+//             { _id: productObjectId },
+//             { $pull: { image: imgUrl } }
+//           );
+//           res.redirect(`/admin/productUpdate/${productObjectId}`)
+//     }catch(err){
+//         console.error(err);
+//     }
+// }
+
+const productImgDelete = async (req, res) => {
+  try {
+      const productObjectId = req.params.id;
+      const imgUrl = req.params.imgUrl;
+      // Construct the image URL consistent with the database format
+      const imgPath = `\\uploads\\${imgUrl}`; // Assuming your database stores URLs with forward slashes
+      // Remove the image path from the product's image array
+      const img = await productDB.updateOne(
+          { _id: productObjectId },
+          { $pull: { image: imgPath } }
+      );
+      // Send a success response
+      res.json({ message: "Image deleted successfully" });
+  } catch (err) {
+      console.error(err);
+      res.status(500).json({ error: "Internal Server Error" }); // Send an error response
+  }
+};
+
+
 
 
 
@@ -308,7 +349,7 @@ const productListUser = async (req, res) => {
     const categoryName=req.params.id
     const categoryData = req.params.id.toUpperCase();
     const page = parseInt(req.query.page) || 1; // Get the page number from the query parameter, default to page 1
-    const limit = 5; // Number of items per page
+    const limit = 4; // Number of items per page
     try {
         const totalProductsCount = await productDB.countDocuments({ isAvailable: true, categoryName: categoryData });
      // console.log(`total products count is ${totalProductsCount}`);
@@ -355,7 +396,7 @@ const priceSortAscending=async (req,res)=>{
  // console.log(categoryData,222);
     const page = parseInt(req.query.page) || 1; // Get the page number from the query parameter, default to page 1
  // console.log(page,999);
-    const limit = 5; // Number of items per page
+    const limit = 4; // Number of items per page
 
     try{
         const pipeline = [
@@ -431,7 +472,7 @@ const priceSortDescending=async (req,res)=>{
  // console.log(categoryData,222);
     const page = parseInt(req.query.page) || 1; // Get the page number from the query parameter, default to page 1
  // console.log(page,999);
-    const limit = 5; // Number of items per page
+    const limit = 4; // Number of items per page
 
     try{
         const pipeline = [

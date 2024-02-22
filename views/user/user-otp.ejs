@@ -1,15 +1,6 @@
 
 
-
-
-
-
 <%-include('header')-%>
-
-
-
-
-
     <!--Body Content-->
     <div id="page-content">
     	<!--Page Title-->
@@ -35,25 +26,26 @@
                                 <div class="form-group">
                                     <label for="otp">OTP</label>
                                     <input type="" name="otpform" placeholder="" id="otpcode" class="" autocorrect="off" autocapitalize="off" autofocus="">
-                                    <%if(locals.error){%>
-                                    <div class="error" style="color: red;"> <%= error %></div>
-                                    <%}%>
+                                    <div class=" error" style="color: red;"> </div>
                                 </div>
                             </div>
                             <div class="col-12 col-sm-12 col-md-12 col-lg-12">
-                               
+
                             </div>
                           </div>
                           <div class="row">
+                            <!-- <div class="error" ><p style="color: red;">khygj</p></div> -->
+
                             <div class="text-center col-12 col-sm-12 col-md-12 col-lg-12">
                                 <div id="timer"></div>
 
                                 <!-- <input type="submit" class="btn mb-3" value="" > -->
-                                <input type="submit" class="btn mb-3" id="submitButton" value="<%= (otp && typeof seconds !== 'undefined' && seconds > 0) ? 'Send' : 'Resend' %>">
+                                <input type="submit" class="btn mb-3" id="submitButton" value="Send">
+                                
 
 
                                 <p class="mb-4">
-									<a href="#" id="RecoverPassword">Back to login</a> &nbsp; | &nbsp;
+									<a href="#" id="">Back to login</a> &nbsp; | &nbsp;
 								    <a href="register.html" id="customer_register_link">Create account</a>
                                 </p>
                             </div>
@@ -68,64 +60,102 @@
     
 
 
-            <script>
-                const timerElement = document.getElementById('timer');
-                let seconds = 30; // Set the initial timer value in seconds
-                let otpExpired = false; // Flag to track OTP expiration
-                
-                function updateTimer() {
-                    timerElement.innerText = `left: ${seconds} seconds`;
-                
-                    if (seconds > 0) {
-                        seconds--;
-                        setTimeout(updateTimer, 1000); // Update the timer every second
-                    } else {
-                        timerElement.innerText = 'its Expired';
-                        otpExpired = true;
-                        // Handle timer expiration actions here
-                        updateButtonLabel();
-                        updateResendLink();
-                    }
-                }
-                
-                function updateButtonLabel() {
-                    const submitButton = document.getElementById('submitButton');
-                    if (otpExpired) {
-                        submitButton.value = 'Resend';
-                    } else {
-                        submitButton.value = 'Send';
-                    }
-                }
-                
-                function updateResendLink() {
-                    const resendLink = document.getElementById('RecoverPassword');
-                    if (otpExpired) {
-                        resendLink.href = '/resendOtp';
-                    } else {
-                        // Set the default link when the timer is active (you can change '#' to your default link)
-                        resendLink.href = '#'; // Change this to the default link
-                    }
-                }
-                
-                // Start the timer when the page loads or as needed
-                updateTimer();
-                
-                const submitButton = document.getElementById('submitButton');
-                
-                submitButton.addEventListener('click', function(event) {
-                    if (otpExpired) {
-                        event.preventDefault(); // Prevent default form submission
-                        window.location.href = '/resendOtp'; // Redirect to /resendOtp
-                    } else {
-                        // No need to prevent default behavior if the label is "Send"
-                        // The form will submit to /otpverified by default
-                    }
-                });
-                
-                // Update button label and resend link when the page loads
-                updateButtonLabel();
-                updateResendLink();
-                </script>
+            
+
+<script>
+    const timerElement = document.getElementById('timer');
+    let seconds = 30; // Set the initial timer value in seconds
+    let otpExpired = false; // Flag to track OTP expiration
+
+    function updateTimer() {
+        timerElement.innerText = `left: ${seconds} seconds`;
+
+        if (seconds > 0) {
+            seconds--;
+            setTimeout(updateTimer, 1000); // Update the timer every second
+        } else {
+            timerElement.innerText = 'its Expired';
+            otpExpired = true;
+            // Handle timer expiration actions here
+            updateButtonLabel();
+            updateResendLink();
+        }
+    }
+
+ 
+function updateButtonLabel() {
+    const actionButton = document.getElementById('submitButton');
+
+    if (otpExpired) {
+        actionButton.value = 'Resend'; // Update button value to "Resend" if OTP has expired
+        actionButton.type= ""
+        actionButton.addEventListener('click', function() {
+            window.location.href = "/resendOtp";
+        });
+    } else {
+        actionButton.value = 'Send'; 
+        actionButton.removeEventListener('click');
+    }
+}
+
+    // function updateResendLink() {
+    //     const resendLink = document.getElementById('resendOtp');
+    //     if (otpExpired) {
+    //         resendLink.href = '/resendOtp';
+    //     } 
+    // }
+   
+
+    // Start the timer when the page loads or as needed
+    updateTimer();
+
+    const otpForm = document.getElementById('otpVerification');
+    otpForm.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        console.log(9999);
+        const errorElement = document.querySelector('.error');
+        
+        const otpValue = document.getElementById('otpcode').value.trim();// Trimmed the value to remove leading and trailing whitespace
+    if (!otpValue) {
+        // Display error message if OTP input is empty
+        errorElement.innerText = 'Please enter OTP';
+        return;
+    }
+
+
+        // const formData = new FormData(otpForm);
+        console.log(otpValue,77777);
+        const value = JSON.stringify({ otp: otpValue })
+        console.log('its stringify otp',value );
+        try {
+            const response = await fetch('/otpverified', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                // body: formData
+                body: JSON.stringify({ otp: otpValue }), // Sending the OTP value in the request body
+
+            });
+            const responseData = await response.json();
+            console.log(responseData);
+            if (response.ok) {
+                // Handle success case
+                window.location.href = '/'; // Redirect to home page
+            } else {
+                // Handle error cases
+                errorElement.innerText = responseData.error;
+                console.log(responseData.error);
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    });
+
+    // Update button label and resend link when the page loads
+    updateButtonLabel();
+    updateResendLink();
+</script>
 
 
 

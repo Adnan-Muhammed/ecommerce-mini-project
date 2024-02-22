@@ -36,15 +36,18 @@ router.get('/hide/:id',adminSessionMiddleware.requireAdmin,categoryManagement.hi
 const productManagement = require('../controller/productManagement.js');
 router.get('/addproduct',adminSessionMiddleware.requireAdmin, productManagement.addProduct);
 router.post('/productadded',adminSessionMiddleware.requireAdmin,productManagement.productadded);//post
+router.post('/productUpdated/:id',adminSessionMiddleware.requireAdmin,productManagement.productadded)
 router.get('/productlist',adminSessionMiddleware.requireAdmin,productManagement.productListAdmin);
 router.get('/unlist/:id',adminSessionMiddleware.requireAdmin,  productManagement.productUnlist)
 router.get('/delete/:id',adminSessionMiddleware.requireAdmin,  productManagement.productDelete)
 router.get('/list/:id',adminSessionMiddleware.requireAdmin,productManagement.productList)
 router.get('/productUpdate/:id',adminSessionMiddleware.requireAdmin,productManagement.productUpdate)
-router.get('/delete/:id/uploads/:imgUrl',   adminSessionMiddleware.requireAdmin,productManagement.productImgDelete)
+router.get('/delete/:id/uploads/:imgUrl',  adminSessionMiddleware.requireAdmin,productManagement.productImgDelete)
+//  (req,res)=>console.log(` \\uploads\\${req.params.imgUrl}`),
+
+
 
 // router.post('/productUpdated/:id',adminSessionMiddleware.requireAdmin,productManagement.productUpdatePost)
-router.post('/productUpdated/:id',adminSessionMiddleware.requireAdmin,productManagement.productadded)
 
 
 const orderManagement = require('../controller/orderManagement.js')

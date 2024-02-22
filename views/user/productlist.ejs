@@ -1,7 +1,8 @@
 <%-include('header')-%>
 
 
-<div id="page-content">
+<div id="page-content" >
+    
   <!--Collection Banner-->
     <div class="slideshow slideshow-wrapper pb-4">
     <div class="home-slideshow">
@@ -25,127 +26,130 @@
     </div>
  </div>
 
-    <!--End Collection Banner-->
-    <div clets="containe-fluid" >
-      <div class="row">
-        <!-- <nav class="grid__item" id="AccessibleNav">for mobile -->
-            <ul id="siteNav" class="site-nav medium center hidearrow">
-                    <li class="lvl1 parent dropdown">
-                        <a >price sort
-                            <i class="anm anm-angle-down-l"></i>
-                        </a>
-                        <ul class="dropdown">
-                                <li>
-                                    <div class="price-filter">
-                                        <div id="slider-range" class="ui-slider ui-slider-horizontal ui-widget ui-widget-content ui-corner-all">
-                                            <div class="ui-slider-range ui-widget-header ui-corner-all">
 
-                                            </div>
-                                            <span class="ui-slider-handle ui-state-default ui-corner-all" tabindex="0"></span>
-                                            <span class="ui-slider-handle ui-state-default ui-corner-all" tabindex="0"></span>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-6">
-                                                <p class="no-margin"><input id="amount" name="priceValue" type="text" style="background-color: darkslategray; color: beige;"></p>
-                                            </div>
-                                            <div class="col-6 text-right margin-20px-top " >
-                                                <button class="btn btn-secondary btn--small" id="btn-1"  style="background-color: darkslategray; ">
-                                                    <p style="font-size: 11px; color: beige; ">High to Low</p>
-                                                </button>
-                                                <button class="btn btn-secondary btn--small" id="btn-2"  style="background-color: darkslategray;">
-                                                    <p style="font-size: 11px;  color: beige;">Low to High</p>
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </li>
-                        </ul>
-                        <li class="lvl1 parent dropdown">
-                            <a>Search
-                            </a>
-                            <ul class="dropdown" style="background-color: rgb(249, 251, 251); width: 150px;">
-                                <div class="form-group has-search"  >
-                                    <input  class="fa fa-search form-control-feedback" type="text"   value=""  id="search-value"  class="form-control" placeholder="Search" style="border: 0cm; color: rgb(15, 5, 5);">
-                                    <button class="btn btn-secondary btn--small"  id="search-btn"  style="background-color: darkslategray;">
-                                        <p style="font-size: 11px;  color: beige;">Enter</p>
-                                    </button>
-                                </div>
-                            </ul>
-                        </li>              
-            </ul>
-              <div class="productList product-load-more" >
-                    <div class="grid-products grid--view-items">
-                        <div class="row" style="display: flex; justify-content: center; align-items: center; overflow: hidden;" id="orginalList">
-                            <% product.forEach((product) => { %>
-                                <div class="product-item" style="width: 18%; border: 1px solid #ddd; padding: 15px; margin: 1%; text-align: center; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
-                                    <div class="product-image mt-2 rounded-top rounded-bottom" style="position: relative; overflow: hidden;">
-                            
-                                        <!-- Add to Cart button -->
+ <div class="container">
+    <div class="row">
+        <!--Sidebar-->
+        <div class="col-12 col-sm-12 col-md-3 col-lg-3 sidebar filterbar">
+            <div class="closeFilter d-block d-md-none d-lg-none"><i class="icon icon anm anm-times-l"></i></div>
+            <div class="sidebar_tags">
+                <!--Categories-->
+                
+            
+                <!--Price Filter-->
+                <div class="sidebar_widget filterBox filter-widget">
+                    <div class="widget-title">
+                        <h2>Price</h2>
+                    </div>
+                    <div  class="price-filter">
+                        <div id="slider-range" class="ui-slider ui-slider-horizontal ui-widget ui-widget-content ui-corner-all">
+                            <div class="ui-slider-range ui-widget-header ui-corner-all"></div>
 
-                                        <form class="variants add" action="#" onclick="window.location.href='cart.html'" method="post" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); opacity: 0; transition: opacity 0.3s;">
-                                            <button class="btn btn-addto-cart" type="button" style="background-color: #3498db; color: #fff; padding: 8px 16px; border: none; border-radius: 5px; cursor: pointer;">Add to Cart</button>
-                                        </form>
-                            
-                                        <a href="/productdetails/<%=product._id%>" class="product-link">
-                                            <!-- Original image -->
-
-                                            <img class="primary lazyload" data-src="<%=product.image[0]%>" src="<%=product.image[0]%>" alt="image" title="product" style="width: 100%; height: 200px; object-fit: cover; border-radius: 8px; transition: transform 0.3s ease-in-out; opacity: 1;" />
-                            
-                                            <!-- Hover effect image -->
-                            
-                                            <!-- Hover effect -->
-
-                                            <div class="overla" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.3); opacity: 0; transition: opacity 0.3s ease-in-out;">
-                                                <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: #fff;">
-                                                    <p style="font-size: 14px;">Add to Cart</p>
-                                                </div>
-                                            </div>
-                                        </a>
-                                    </div>
-                            
-                                    <div class="product-details text-center" style="margin-top: 10px;">
-
-                                        <div>
-                                            <button style="background-color: rgba(0, 255, 255, 0.621); color: brown;">add to cart</button>
-                            
-                                        </div>
-                                        <div class="product-name">
-                                            <p style="font-weight: bold; font-size: 14px; color: #333; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"><%=product.name%></p>
-                                        </div>
-                                        <div class="product-price">
-                                            <span class="price" style="font-size: 16px; color: #27ae60; font-weight: bold;"><%=product.price%></span>
-                                        </div>
-                                        <div class="product-review" style="color: #f39c12; margin-top: 5px;">
-                                            <i class="font-16 fa fa-star"></i>
-                                            <i class="font-16 fa fa-star"></i>
-                                            <i class="font-16 fa fa-star"></i>
-                                            <i class="font-16 fa fa-star"></i>
-                                            <i class="font-16 fa fa-star"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                            <% }) %>
-                            
-                            <style>
-                                
-                            
-                              
-                            
-                               
-                                .product-link {
-                                    position: relative;
-                                    display: block;
-                                }
-                            </style>
-                            
-
-                            
+                            <span class="ui-slider-handle ui-state-default ui-corner-all" tabindex="0"></span>
+                            <span class="ui-slider-handle ui-state-default ui-corner-all" tabindex="0"></span>
+                        </div>
+                        <div class="row">
+                            <div class="col-6">
+                                <p class="no-margin"><input id="amount" name="priceValue" type="text"></p>
+                            </div>
+                            <div class="col-6 text-right margin-25px-top">
+                                <button class="btn btn-secondary btn--small" id="btn-1"  style="background-color: darkslategray; ">
+                                    <p style="font-size: 11px; color: beige; ">High to Low</p>
+                                </button>
+                                <button class="btn btn-secondary btn--small" id="btn-2"  style="background-color: darkslategray;">
+                                    <p style="font-size: 11px;  color: beige;">Low to High</p>
+                                </button>
+                            </div>
                         </div>
                     </div>
-                </div>
-                </div>
-                
+                    <div class="sidebar_widget filterBox filter-widget">
 
+                    <div class="widget-title">
+                        <h2>Search</h2>
+                    </div>
+                    <!-- <ul class="dropdown" style="background-color: rgb(249, 251, 251); width: 150px;"> -->
+                        <div class="form-group has-search"   id="slider-range"> 
+
+                            <input  class="fa fa-search form-control-feedback" type="text"   value=""  id="search-value"  class="form-control" placeholder="Search" style="border: 0cm; color: rgb(15, 5, 5);">
+                            <button class=" btn btn-secondary btn--small"  id="search-btn"  style="background-color: darkslategray;">
+                                <p style="font-size: 11px;  color: beige;">Enter</p>
+                            </button>
+                        </div>
+                    <!-- </ul> -->
+                </div>
+            </div>
+            <!--End Price Filter-->
+                <!--Color Swatches-->
+                
+              
+                <!--Product Tags-->
+                
+                <!--end Product Tags-->
+            </div>
+        </div>
+        <!--End Sidebar-->
+        <!--Main Content-->
+        <div class="col-12 col-sm-12 col-md-9 col-lg-9 main-col">
+            <div class="productList">
+                <!--Toolbar-->
+          
+                <!--End Toolbar-->
+                <div class="grid-products grid--view-items">
+                    <div class="row" id="orginalList">
+                        <% product.forEach((product) => { %>
+
+                        <!-- goodjnijn k -->
+                        <div class="col-6 col-sm-6 col-md-4 col-lg-3 item">
+                            <!-- start product image -->
+                            <div class="product-image">
+                                <!-- start product image -->
+                                <a href="/productdetails/<%=product._id%>">
+                                    <!-- image -->
+                                    <img class="primary blur-up lazyload"  data-src="<%=product.image[0]%>"    src="<%=product.image[0]%>" alt="image" title="product" />
+                                    <!-- End image -->
+                                    <!-- Hover image -->
+                                    <img class="hover blur-up lazyload"  data-src="<%=product.image[1]%>"    src="<%=product.image[0]%>" alt="image" title="product" />
+                                    <!-- End hover image -->
+                                </a>
+                                <!-- end product image -->
+
+                                <!-- Start product button -->
+                               
+                                
+                                <!-- end product button -->
+                            </div>
+                            <!-- end product image -->
+
+                            <!--start product details -->
+                            <div class="product-details text-center">
+                                <!-- product name -->
+                                <div class="product-name">
+                                    <a href=""><%=product.name%></a>
+                                </div>
+                                <!-- End product name -->
+                                <!-- product price -->
+                                <div class="product-price">
+                                    <span class="price"><%=product.price%></span>
+                                </div>
+                                <!-- End product price -->
+                                
+                               
+                            </div>
+                            <!-- End product details -->
+                        </div>
+                       
+
+                        <% }) %>
+
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+        <!--End Main Content-->
+    </div>
+</div>
+   
             <div class="infinitpaginOuter" style="display: flex; justify-content: center;" id="orginalPagination">
                 <div class="infinitpagin  ">	
                     <% if (totalPages > 1) { %>
@@ -219,67 +223,54 @@
 
                 productListContainer.innerHTML = '' ; 
 
+                console.log(sortedProductsArray);
 
                 sortedProductsArray.forEach(product => {
+                    console.log(product.name,666); // Check if the image array exists
+
+                    console.log(898);
                     productListContainer.innerHTML +=  
                     `   
-                <div class="product-item" style="width: 18%; border: 1px solid #ddd; padding: 15px; margin: 1%; text-align: center; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
-                <div class="product-image mt-2 rounded-top rounded-bottom" style="position: relative; overflow: hidden;">
-            
-                    <!-- Add to Cart button -->
-                    <form class="variants add" action="#" onclick="window.location.href='cart.html'" method="post" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); opacity: 0; transition: opacity 0.3s;">
-                        <button class="btn btn-addto-cart" type="button" style="background-color: #3498db; color: #fff; padding: 8px 16px; border: none; border-radius: 5px; cursor: pointer;">Add to Cart</button>
-                    </form>
-            
-                    <a href="/productdetails/${product._id}">
-                        <img class="primary lazyload" data-src="${product.image[0]}" src="${product.image[0]}" alt="image" title="product" style="width: 100%; height: 200px; object-fit: cover; border-radius: 8px; transition: transform 0.3s ease-in-out; opacity: 1;" />
-            
-                        <!-- Hover effect -->
-                        <div class="overlay" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.3); opacity: 0; transition: opacity 0.3s ease-in-out;">
-                            <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: #fff;">
-                                <p style="font-size: 14px;">Add to Cart</p>
+
+                    <div class="col-6 col-sm-6 col-md-4 col-lg-3 item">
+                            <!-- start product image -->
+                            <div class="product-image">
+                                <!-- start product image -->
+                                <a href="/productdetails/${product._id}">
+                                    <!-- image -->
+                                    <img class="primary blur-up lazyload"  data-src="${product.image[0]}"    src="${product.image[0]}" alt="${product.name}" title="product" />
+                                    <!-- End image -->
+                                    <!-- Hover image -->
+                                    <img class="hover blur-up lazyload"  data-src="${product.image[1]}"    src="${product.image[1]}" alt="${product.name}" title="product" />
+                                    <!-- End hover image -->
+                                </a>
+                                <!-- end product image -->
+
+                                <!-- Start product button -->
+                                
+                                
+                                <!-- end product button -->
                             </div>
+                            <!-- end product image -->
+
+                            <!--start product details -->
+                            <div class="product-details text-center">
+                                <!-- product name -->
+                                <div class="product-name">
+                                    <a href="">${product.name}</a>
+                                </div>
+                                <!-- End product name -->
+                                <!-- product price -->
+                                <div class="product-price">
+                                    <span class="price">${product.price}</span>
+                                </div>
+                                <!-- End product price -->
+                                
+                               
+                            </div>
+                            <!-- End product details -->
                         </div>
-                    </a>
-                </div>
-            
-                <div class="product-details text-center" style="margin-top: 10px;">
-                    <div>
-                        <button style="background-color: rgba(0, 255, 255, 0.621); color: brown;">add to cart</button>
-                    </div>
-                    <div class="product-name">
-                        <p style="font-weight: bold; font-size: 14px; color: #333; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${product.name}</p>
-                    </div>
-                    <div class="product-price">
-                        <span class="price" style="font-size: 16px; color: #27ae60; font-weight: bold;">${product.price}</span>
-                    </div>
-                    <div class="product-review" style="color: #f39c12; margin-top: 5px;">
-                        <i class="font-16 fa fa-star"></i>
-                        <i class="font-16 fa fa-star"></i>
-                        <i class="font-16 fa fa-star"></i>
-                        <i class="font-16 fa fa-star"></i>
-                        <i class="font-16 fa fa-star"></i>
-                    </div>
-                </div>
-            </div>
-            
-            <style>
-                .product-item:hover .variants.add {
-                    opacity: 1;
-                }
-            
-                .product-item:hover .overlay {
-                    opacity: 1;
-                }
-            
-                .product-item:hover img:first-child {
-                    opacity: 0;
-                }
-            
-                .product-item:hover img:last-child {
-                    opacity: 1;
-                }
-            </style>            
+                                          
               
                 `
                 });
@@ -358,67 +349,52 @@
                 productListContainer.innerHTML = ''; // Clear existing content
                 const paginationContainer = document.getElementById('orginalPagination')
                 paginationContainer.innerHTML = '';
-               
                 searchProductsArray.forEach(product => {
+                    console.log(product.image[0]);
                     productListContainer.innerHTML +=  
                         `  
-                        <div class="product-item" style="width: 18%; border: 1px solid #ddd; padding: 15px; margin: 1%; text-align: center; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
-                <div class="product-image mt-2 rounded-top rounded-bottom" style="position: relative; overflow: hidden;">
-            
-                    <!-- Add to Cart button -->
-                    <form class="variants add" action="#" onclick="window.location.href='cart.html'" method="post" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); opacity: 0; transition: opacity 0.3s;">
-                        <button class="btn btn-addto-cart" type="button" style="background-color: #3498db; color: #fff; padding: 8px 16px; border: none; border-radius: 5px; cursor: pointer;">Add to Cart</button>
-                    </form>
-            
-                    <a href="/productdetails/${product._id}">
-                        <img class="primary lazyload" data-src="${product.image[0]}" src="${product.image[0]}" alt="image" title="product" style="width: 100%; height: 200px; object-fit: cover; border-radius: 8px; transition: transform 0.3s ease-in-out; opacity: 1;" />
-            
-                        <!-- Hover effect -->
-                        <div class="overlay" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.3); opacity: 0; transition: opacity 0.3s ease-in-out;">
-                            <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: #fff;">
-                                <p style="font-size: 14px;">Add to Cart</p>
+
+                        <div class="col-6 col-sm-6 col-md-4 col-lg-3 item">
+                            <!-- start product image -->
+                            <div class="product-image">
+                                <!-- start product image -->
+                                <a href="/productdetails/${product._id}">
+                                    <!-- image -->
+                                    <img class="primary blur-up lazyload"  data-src="${product.image[0]}"    src="${product.image[0]}" alt="image" title="product" />
+                                    <!-- End image -->
+                                    <!-- Hover image -->
+                                    <img class="hover blur-up lazyload"  data-src="${product.image[1]}"    src="${product.image[1]}" alt="image" title="product" />
+                                    <!-- End hover image -->
+                                </a>
+                                <!-- end product image -->
+
+                                <!-- Start product button -->
+                                
+                                
+                                <!-- end product button -->
                             </div>
+                            <!-- end product image -->
+
+                            <!--start product details -->
+                            <div class="product-details text-center">
+                                <!-- product name -->
+                                <div class="product-name">
+                                    <a href="">${product.name}</a>
+                                </div>
+                                <!-- End product name -->
+                                <!-- product price -->
+                                <div class="product-price">
+                                    <span class="price">${product.price}</span>
+                                </div>
+                                <!-- End product price -->
+                                
+                               
+                            </div>
+                            <!-- End product details -->
                         </div>
-                    </a>
-                </div>
-            
-                <div class="product-details text-center" style="margin-top: 10px;">
-                    <div>
-                        <button style="background-color: rgba(0, 255, 255, 0.621); color: brown;">add to cart</button>
-                    </div>
-                    <div class="product-name">
-                        <p style="font-weight: bold; font-size: 14px; color: #333; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${product.name}</p>
-                    </div>
-                    <div class="product-price">
-                        <span class="price" style="font-size: 16px; color: #27ae60; font-weight: bold;">${product.price}</span>
-                    </div>
-                    <div class="product-review" style="color: #f39c12; margin-top: 5px;">
-                        <i class="font-16 fa fa-star"></i>
-                        <i class="font-16 fa fa-star"></i>
-                        <i class="font-16 fa fa-star"></i>
-                        <i class="font-16 fa fa-star"></i>
-                        <i class="font-16 fa fa-star"></i>
-                    </div>
-                </div>
-            </div>
-            
-            <style>
-                .product-item:hover .variants.add {
-                    opacity: 1;
-                }
-            
-                .product-item:hover .overlay {
-                    opacity: 1;
-                }
-            
-                .product-item:hover img:first-child {
-                    opacity: 0;
-                }
-            
-                .product-item:hover img:last-child {
-                    opacity: 1;
-                }
-            </style>  
+                      
+                 
+           
                     
                     `
                 });

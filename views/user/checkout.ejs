@@ -301,7 +301,70 @@
 </div>
 <%-include('footer')-%>
 
+
+
+<!-- Include SweetAlert library -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
 <script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const removeButtons = document.querySelectorAll('.billingAddress__remove');
+    removeButtons.forEach(button => {
+      button.addEventListener('click', function (event) {
+        event.preventDefault();
+        const addressId = button.dataset.addressId;
+        const userId = button.dataset.userId;
+
+        // Display confirmation dialog using SweetAlert
+        Swal.fire({
+          title: 'Are you sure?',
+          text: 'You are about to remove this billing address.',
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Yes, remove it!'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            // Proceed with removal
+            fetch(`/${userId}/remove/${addressId}`, {
+              method: 'GET',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+            })
+            .then(response => {
+              if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+              }
+              // Display success message using SweetAlert
+              Swal.fire({
+                title: 'Success!',
+                text: 'Billing address removed successfully.',
+                icon: 'success',
+              }).then(() => {
+                // Reload the page
+                window.location.reload();
+              });
+            })
+            .catch(error => {
+              console.error('Error removing billing address:', error);
+              // Display error message using SweetAlert
+              Swal.fire({
+                title: 'Error!',
+                text: 'Failed to remove billing address. Please try again later.',
+                icon: 'error',
+              });
+            });
+          }
+        });
+      });
+    });
+  });
+</script>
+
+
+<!-- <script>
     document.addEventListener('DOMContentLoaded', function () {
       const removeButtons = document.querySelectorAll('.billingAddress__remove');
       removeButtons.forEach(button => {
@@ -332,7 +395,7 @@
         });
       });
     });
-  </script>
+  </script> -->
  
 
 

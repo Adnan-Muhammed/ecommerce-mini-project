@@ -32,6 +32,22 @@
                         
                         <div class="mb-3">
                           <label for="formFileMultiple" class="form-label">Multiple files input example (Max 4 files)</label>
+                          <%if(locals.multerError){%>
+                            <p id="multerError" class="multerError" style="color: red;">maximum images 4 </p>
+                          <%}%>
+                          <script>
+                            document.addEventListener("DOMContentLoaded", function() {
+                              var errorElement = document.getElementById("multerError");
+                              if (errorElement) {
+                                setTimeout(function() {
+                                  errorElement.parentNode.removeChild(errorElement);
+                                }, 5000); // 5000 milliseconds = 5 seconds
+                              }
+                            });
+                          </script>
+
+
+                          
                           <input class="form-control" type="file" name="images" id="formFileMultiple" multiple  >
                           <p id="imageError" class="error" style="color: red;"></p>
                         </div>
@@ -47,8 +63,15 @@
                                       class="img-fluid mx-auto mb-5"
                                       style="width: 90px; height: 90px;"
                                       alt="">
-                                      <a href="/admin/delete/<%=`${editProduct._id}${image.replace('/uploads', '')}`%>" class="btn btn-primary" style="position: absolute; bottom: -5px; left: 50%; transform: translateX(-50%);">Delete</a>
+                                      <!-- <a href="/admin/delete/<%=`${editProduct._id}${image.replace('/uploads', '')}`%>" class="btn btn-primary" style="position: absolute; bottom: -5px; left: 50%; transform: translateX(-50%);">Delete</a> -->
                                     
+                                      <!-- HTML code -->
+                                      <a href="#" 
+                                      class="btn btn-primary delete-btn" 
+                                      data-product-id="<%= editProduct._id %>" 
+                                      data-image="<%= image %>"
+                                      style="position: absolute; bottom: -5px; left: 50%; transform: translateX(-50%);">Delete</a>
+
                                   </div>
                                 </div>
                               <% }) %>
@@ -97,7 +120,114 @@
     </div>
 
     
+    <!-- 
+      <script>
+        document.addEventListener('DOMContentLoaded', function () {
+          const deleteButtons = document.querySelectorAll('.delete-image-btn');
+          
+          deleteButtons.forEach(function (button) {
+            button.addEventListener('click', function (event) {
+              event.preventDefault(); // Prevent default link behavior
+              
+              const imageUrl = button.dataset.image;
+              
+              Swal.fire({
+                title: 'Are you sure?',
+                text: 'You are about to delete this image!',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+              }).then((result) => {
+                if (result.isConfirmed) {
+                  // User confirmed deletion, proceed with navigation
+                  window.location.href = '/admin/delete/' + imageUrl;
+                }
+              });
+            });
+          });
+        });
+      </script> -->
+      
+      
 
+      
+      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+<!-- JavaScript code -->
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+      const deleteButtons = document.querySelectorAll('.delete-btn');
+  
+      deleteButtons.forEach(button => {
+          button.addEventListener('click', function (event) {
+              event.preventDefault();
+  
+              const productId = button.dataset.productId;
+              const image = button.dataset.image.replace('\\uploads\\', 'uploads/'); // Replace '/uploads' with an empty string
+              console.log(`/admin/delete/${productId}/${image}`);
+              // Show SweetAlert confirmation dialog
+              Swal.fire({
+                  title: 'Are you sure?',
+                  text: 'You won\'t be able to revert this!',
+                  icon: 'warning',
+                  showCancelButton: true,
+                  confirmButtonText: 'Yes, delete it!',
+                  cancelButtonText: 'No, cancel!',
+                  reverseButtons: true
+              }).then((result) => {
+                  if (result.isConfirmed) {
+                      // If user confirms deletion, proceed with fetch request
+                      ///delete/:id/uploads/:imgUrl
+                      fetch(`/admin/delete/${productId}/${image}`)
+                          .then(response => {
+                              if (!response.ok) {
+                                  throw new Error('Network response was not ok');
+                              }
+                              return response.json();
+                          })
+                          .then(data => {
+                              // Handle success response
+                              // Show SweetAlert for success
+                              Swal.fire({
+                                  title: 'Deleted!',
+                                  text: 'Your product has been deleted.',
+                                  icon: 'success',
+                                  confirmButtonText: 'OK'
+                              });
+                          })
+                          window.location.reload()
+                          .catch(error => {
+                              // Handle error
+                              console.error('There was a problem with the fetch operation:', error);
+                              // Show SweetAlert for error
+                              Swal.fire({
+                                  title: 'Error!',
+                                  text: 'Failed to delete product. Please try again later.',
+                                  icon: 'error',
+                                  confirmButtonText: 'OK'
+                              });
+                          });
+                  } else if (result.dismiss === Swal.DismissReason.cancel) {
+                      // If user cancels deletion, show a message
+                      Swal.fire({
+                          title: 'Cancelled',
+                          text: 'Your product is safe :)',
+                          icon: 'info',
+                          confirmButtonText: 'OK'
+                      });
+                  }
+              });
+          });
+      });
+  });
+  </script>
+  
+
+    
+
+
+    
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
@@ -134,7 +264,9 @@
         }
 
         // Validate Description
-        const productDescription = form.querySelector('input[name="productDescription"]').value.trim();
+        // const productDescription = form.querySelector('input[name="productDescription"]').value.trim();
+        const productDescription = form.querySelector('textarea[name="productDescription"]').value.trim();
+
         if (productDescription === '') {
           valid = false;
           displayError('Description is required.', 'productDescriptionError');

@@ -93,8 +93,7 @@ res.render('user/orderPlaced',{isLogged })
 const orderUpdates =async (req,res)=>{
   try{
     const orderList = await OrderDB.find()
-       console.log(orderList);
-
+      //  console.log(orderList);
 
     res.render('admin/orderlist',{orderList})
 
@@ -108,16 +107,18 @@ const orderStatus = async (req, res) => {
       const orderId = req.params.orderId;
       const newStatus = req.body.status;
 
-      console.log(orderId);
-      console.log(newStatus);
+      console.log(orderId, "admin side");
+      console.log(newStatus , "admin side");
 
       const updatedOrder = await OrderDB.findByIdAndUpdate(
           orderId,
           { $set: { 'orderStatus.type': newStatus } },
-      );
+          { new: true } // To return the updated order document
+          );
 
       if (updatedOrder) {
-        console.log('Order status updated successfully:', updatedOrder.orderStatus.type);
+        console.log('after Update');
+        console.log('Order status updated successfully:', updatedOrder.orderStatus.type);// cancelled pending what ever
         // Reload the page
         // res.redirect(req.get('referer')); // Redirect to the previous page
         res.redirect('/admin/orderlist')
@@ -135,6 +136,88 @@ const orderStatus = async (req, res) => {
 
 
 
+// const cancelOrder = async (req, res) => {
+//   try {
+//       const orderId = req.params.orderId;
+//       console.log("orderId:", orderId);
+//       const status = req.body.orderStatus
+
+//       // Update order status to 'cancelled' in the database
+//       const orderCancel = await OrderDB.findByIdAndUpdate(
+//         orderId,
+//         { $set: { 'orderStatus.type': status } },
+//         { new: true } // To return the updated order document
+//       );
+//       // Check if orderCancel is null (no order found with the provided ID)
+//       if (!orderCancel) {
+//           return res.status(404).json({ message: 'Order not found' });
+//       }
+//       console.log(" haaai 111",orderCancel);
+//       console.log('after user updation');
+//       console.log(status," what change");
+//       console.log(orderCancel.orderStatus);
+//       console.log(orderCancel.orderStatus.type);
+//       // Respond with the updated order docuyment
+//       return res.status(200).json({ message: 'Order cancelled successfully', order: orderCancel });
+//   } catch (err) {
+//       // Handle any errors that occur during the cancellation process
+//       console.error('Error cancelling order:', err);
+//       return res.status(500).json({ message: 'Failed to cancel order. Please try again later.' });
+//   }
+// };
+
+const handleOrderStatusUpdate = async (req, res) => {
+  try {
+    const orderId = req.params.orderId;
+    console.log("orderId:", orderId);
+    const status = req.body.orderStatus; // Assuming you're passing the new status in the request body
+
+    let orderUpdate;
+    let message;
+
+    // Update order status based on the provided status
+    if (status === 'cancelled') {
+      // Update order status to 'cancelled' in the database
+      orderUpdate = await OrderDB.findByIdAndUpdate(
+        orderId,
+        { $set: { 'orderStatus.type': status } },
+        { new: true } // To return the updated order document
+      );
+      message = 'Order cancelled successfully';
+    } else if (status === 'returned') {
+      // Update order status to 'returned' in the database
+      orderUpdate = await OrderDB.findByIdAndUpdate(
+        orderId,
+        { $set: { 'orderStatus.type': status } },
+        { new: true } // To return the updated order document
+      );
+      message = 'Order returned successfully';
+    } else {
+      // Invalid status provided
+      return res.status(400).json({ message: 'Invalid order status' });
+    }
+
+    // Check if orderUpdate is null (no order found with the provided ID)
+    if (!orderUpdate) {
+      return res.status(404).json({ message: 'Order not found' });
+    }
+
+    console.log("Updated order:", orderUpdate);
+    console.log('After updating order status to:', status);
+
+    // Respond with the updated order document
+    return res.status(200).json({ message, order: orderUpdate });
+  } catch (err) {
+    // Handle any errors that occur during the update process
+    console.error('Error updating order:', err);
+    return res.status(500).json({ message: 'Failed to update order. Please try again later.' });
+  }
+};
+
+
+
+
+
 
 
 
@@ -144,4 +227,6 @@ module.exports={
     orderPlacedSuccess,
     orderUpdates,
     orderStatus ,
+    // cancelOrder,
+    handleOrderStatusUpdate
 }

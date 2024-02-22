@@ -15,17 +15,21 @@ router.get('/signuppage',userSessionHandling.requireNotUser,userManagement.userS
 router.post('/signup',userManagement.userSignupPost)
 router.get('/otpPage', userSessionHandling.otpSession , userManagement.otpPage)
 router.post('/otpverified',  userSessionHandling.requireNotUser  , userManagement.otpVerificationPost)
-router.get('/resendOtp',userSessionHandling.otpSession,userManagement.resendOtp)
+router.get('/resendOtp', userSessionHandling.otpSession,userManagement.otpPage)
 router.get('/logout',userManagement.logout)
-
-router.get('/forgotPassword',userManagement.forgotPassword)
-router.post('/passwordChange',userManagement.forgotPassword)
 
 
 router.get('/userProfile',userSessionHandling.userlogged,userManagement.userProfile)
 router.get('/userAddAddress',   userSessionHandling.userlogged,userManagement.userAddAddress )
 router.get('/orderStatus',    userSessionHandling.userlogged,userManagement.userOrderStatus)
-router.get('/changePassword',    userSessionHandling.userlogged,userManagement.changePassword)
+
+
+
+
+router.get('/changePassword',    userSessionHandling.userlogged,userManagement.updatePassword)
+router.get('/forgotPassword',    userSessionHandling.passwordUpdation,userManagement.updatePassword)
+router.post('/update-password',    userManagement.updatePasswordPost)
+
 
 
 

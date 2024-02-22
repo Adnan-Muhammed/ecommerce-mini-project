@@ -66,10 +66,10 @@ const  isBlockedNow=async (req,res,next)=>{
 }
 
 const otpSession=(req,res,next)=>{
-    if(!req.session.userNew){
-        console.log('no user session');
-        return res.redirect('/')
-    }
+    // if(!req.session.userNew ){
+    //     console.log('no user session');
+    //     return res.redirect('/')
+    // }
     if( req.session.userNew?.otp){
         console.log('no otp session');
        return res.redirect('/')
@@ -90,7 +90,16 @@ console.log('userSessionHandling middleware');
     } else {
         res.redirect('/loginPage');
     }
-};
+}
+
+const passwordUpdation = (req, res, next) => {
+console.log(' forgot password');
+    if (req.session.userNew || req.session.user) {
+        res.redirect('/');
+    } else {
+        next();
+    }
+}
 
 
 module.exports={
@@ -99,4 +108,6 @@ module.exports={
     isBlockedNow,
     otpSession,
     userlogged,
+    passwordUpdation,
+    
 }

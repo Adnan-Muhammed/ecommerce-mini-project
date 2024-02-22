@@ -30,6 +30,12 @@ app.use(session({
     saveUninitialized:true
 }))
 
+app.use((req, res, next) => {
+    if (req.session.user || req.session.userNew) {
+        delete req.session.admin;
+    }
+    next();
+});
 
 
 
