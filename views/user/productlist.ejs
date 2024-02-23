@@ -71,7 +71,7 @@
                         <div class="form-group has-search"   id="slider-range"> 
 
                             <input  class="fa fa-search form-control-feedback" type="text"   value=""  id="search-value"  class="form-control" placeholder="Search" style="border: 0cm; color: rgb(15, 5, 5);">
-                            <button class=" btn btn-secondary btn--small"  id="search-btn"  style="background-color: darkslategray;">
+                            <button type="button" class=" btn btn-secondary btn--small"  id="search-btn"  style="background-color: darkslategray;">
                                 <p style="font-size: 11px;  color: beige;">Enter</p>
                             </button>
                         </div>
@@ -95,7 +95,7 @@
           
                 <!--End Toolbar-->
                 <div class="grid-products grid--view-items">
-                    <div class="row" id="orginalList">
+                    <div class="row" id="orginalList" >
                         <% product.forEach((product) => { %>
 
                         <!-- goodjnijn k -->
@@ -196,8 +196,7 @@
             let searchTerm = searchInput.value.trim(); 
             console.log(searchTerm);                 
             console.log(333);                          
-
-            fetchData('/category/<%=categoryName%>/descending',{ value, searchTerm});
+            fetchData('/category/<%=categoryName%>/descending',{  searchTerm ,value });
         });
 
         const fetchData = async (url, value) => {
@@ -214,79 +213,39 @@
                     throw new Error(`HTTP error! Status: ${response.status}`);
                 }
 
-                const {sortedProducts ,totalPages, currentPage} = await response.json();
+                const {sortedProducts ,totalPages, currentPage ,categoryData,  minValue, maxValue ,searchTerm} = await response.json();
                 const sortedProductsArray = sortedProducts;
 
 
 
                 const productListContainer = document.getElementById('orginalList');
                 const paginationContainer = document.getElementById('orginalPagination')
-
-                // paginationContainer.innerHTML +='<h1>jhugj</h1>';
-
                 paginationContainer.innerHTML ='';
-                // its impossible
-
-
-
                 productListContainer.innerHTML = '' ; 
-
                 console.log(sortedProductsArray);
-
                 sortedProductsArray.forEach(product => {
                     console.log(product.name,666); // Check if the image array exists
-
                     console.log(898);
                     productListContainer.innerHTML +=  
                     `   
-
                     <div class="col-6 col-sm-6 col-md-4 col-lg-3 item">
-                            <!-- start product image -->
                             <div class="product-image">
-                                <!-- start product image -->
                                 <a href="/productdetails/${product._id}">
-                                    <!-- image -->
                                     <img class="primary blur-up lazyload"  data-src="${product.image[0]}"    src="${product.image[0]}" alt="${product.name}" title="product" />
-                                    <!-- End image -->
-                                    <!-- Hover image -->
                                     <img class="hover blur-up lazyload"  data-src="${product.image[1]}"    src="${product.image[1]}" alt="${product.name}" title="product" />
-                                    <!-- End hover image -->
                                 </a>
-                                <!-- end product image -->
-
-                                <!-- Start product button -->
-                                
-                                
-                                <!-- end product button -->
                             </div>
-                            <!-- end product image -->
-
-                            <!--start product details -->
                             <div class="product-details text-center">
-                                <!-- product name -->
                                 <div class="product-name">
                                     <a href="">${product.name}</a>
                                 </div>
-                                <!-- End product name -->
-                                <!-- product price -->
                                 <div class="product-price">
                                     <span class="price">${product.price}</span>
                                 </div>
-                                <!-- End product price -->
-                                
-                               
                             </div>
-                            <!-- End product details -->
                         </div>
-                                          
-              
                 `
                 });
-
-
-                // how its 
-
-
                 if (totalPages > 1) {
         paginationContainer.innerHTML += `
     <div class="infinitpaginOuter" style="display: flex; justify-content: center;">
@@ -296,8 +255,8 @@
                 `<ul class="pagination">
                     ${Array.from({ length: totalPages }, (_, i) => `
                         <li class="btn-dark page-item ${i + 1 === currentPage ? 'active' : ''}" style="background-color: aliceblue;">
-                            <a class="page-link" style="margin: 2px;" href="?page=${i + 1}$name='kkk">
-                                <p style="font-size: 15px; color: black;">${i + 1}</p>
+                            <a class="page-link" style="margin: 2px; "href="/fetch/category/${categoryData}?page=${i+1}&minValue=${minValue}&maxValue=${maxValue}&searchTerm=${searchTerm}""  >
+                                <p style="font-size: 15px; color: black;">${i+1}</p>
                             </a>
                         </li>`).join('')
                     }
@@ -332,12 +291,13 @@
         const searchButton = document.getElementById('search-btn');
         
         searchButton.addEventListener('click', function () {                       
-            let searchTerm = searchInput.value.trim();                            
+            const searchTerm = searchInput.value.trim();                            
             const value = document.getElementById('amount').value.trim();
+            console.log(464,'gfh')
             fetchData('/category/<%=categoryName%>/searchProduct',  {searchTerm ,value });   
         });
 
-        const fetchData = async (url,  searchTerm ) => {
+        const fetchData = async (url,  value ) => {
 
             try {
                 const response = await fetch(url, {
@@ -345,18 +305,32 @@
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify( searchTerm ),
+                    body: JSON.stringify( value ),
                 });
-
                 if (!response.ok) {
                     throw new Error(`HTTP error! Status: ${response.status}`);
                 }
 
                 const searchProducts = await response.json();
+                console.log(searchProducts);
                 const searchProductsArray = searchProducts.searchProducts;
+                const totalPages = searchProducts.totalPages
+                console.log('totalPage:', totalPages);
+                const currentPage = searchProducts.currentPage
+                console.log('currentPage :',currentPage);
+                const categoryData = searchProducts.categoryData
+                console.log(categoryData);
+                const minValue =searchProducts.minValue
+                console.log(minValue);
+                const maxValue = searchProducts.maxValue
+                console.log(maxValue);
+                const searchTerm = searchProducts.searchTerm
+                console.log(searchTerm);
+
+                
 
                 const productListContainer = document.getElementById('orginalList');
-                productListContainer.innerHTML = ''; // Clear existing content
+                productListContainer.innerHTML = ''; 
                 const paginationContainer = document.getElementById('orginalPagination')
                 paginationContainer.innerHTML = '';
                 searchProductsArray.forEach(product => {
@@ -365,49 +339,63 @@
                         `  
 
                         <div class="col-6 col-sm-6 col-md-4 col-lg-3 item">
-                            <!-- start product image -->
                             <div class="product-image">
-                                <!-- start product image -->
                                 <a href="/productdetails/${product._id}">
-                                    <!-- image -->
                                     <img class="primary blur-up lazyload"  data-src="${product.image[0]}"    src="${product.image[0]}" alt="image" title="product" />
-                                    <!-- End image -->
-                                    <!-- Hover image -->
+                                   
                                     <img class="hover blur-up lazyload"  data-src="${product.image[1]}"    src="${product.image[1]}" alt="image" title="product" />
-                                    <!-- End hover image -->
+                                    
                                 </a>
-                                <!-- end product image -->
+                              
 
-                                <!-- Start product button -->
-                                
-                                
-                                <!-- end product button -->
+                          
                             </div>
-                            <!-- end product image -->
-
-                            <!--start product details -->
+                       
                             <div class="product-details text-center">
-                                <!-- product name -->
+                              
                                 <div class="product-name">
                                     <a href="">${product.name}</a>
                                 </div>
-                                <!-- End product name -->
-                                <!-- product price -->
+                               
                                 <div class="product-price">
                                     <span class="price">${product.price}</span>
                                 </div>
-                                <!-- End product price -->
+                              
                                 
                                
                             </div>
-                            <!-- End product details -->
+                           
                         </div>
-                      
-                 
-           
-                    
                     `
                 });
+
+
+                if (totalPages > 1) {
+        paginationContainer.innerHTML += `
+    <div class="infinitpaginOuter" style="display: flex; justify-content: center;">
+        <div class="infinitpagin">	
+            ${
+                totalPages > 1 ? 
+                `<ul class="pagination">
+                    ${Array.from({ length: totalPages }, (_, i) => `
+                        <li class="btn-dark page-item ${i + 1 === currentPage ? 'active' : ''}" style="background-color: aliceblue;">
+                            <a class="page-link" style="margin: 2px; "href="/fetch/category/${categoryData}?page=${i+1}&minValue=${minValue}&maxValue=${maxValue}&searchTerm=${searchTerm}""  >
+                                <p style="font-size: 15px; color: black;">${i+1}</p>
+                            </a>
+                        </li>`).join('')
+                    }
+                </ul>` 
+                : ''
+            }
+        </div>
+    </div>
+`;
+    }
+
+
+
+
+
 
             } catch (error) {
                 console.error('Error:', error);

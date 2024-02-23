@@ -37,12 +37,13 @@ const productManagement=require('../controller/productManagement')
 
 
 router.get('/category/:id',userSessionHandling.isBlockedNow,    productManagement.productListUser)
+router.get('/fetch/category/:id',userSessionHandling.isBlockedNow,    productManagement.fetchData)
 router.post('/category/:id/ascending/',userSessionHandling.isBlockedNow,productManagement.priceSortAscending)
-
-
-
 router.post('/category/:id/descending',userSessionHandling.isBlockedNow,productManagement.priceSortDescending)
 router.post('/category/:id/searchProduct',userSessionHandling.isBlockedNow,productManagement.searchProduct)
+
+
+
 router.get('/productdetails/:id', userSessionHandling.isBlockedNow,  productManagement.productDetail)
 
 

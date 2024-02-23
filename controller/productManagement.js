@@ -382,14 +382,80 @@ const productListUser = async (req, res) => {
 
 
 
+
+
+const fetchData = async (req, res) => {
+  const categoryData = req.params.id.toUpperCase();
+  const searchValue = (req.query.searchTerm)|| null
+  const minValueParsing = req.query.minValue
+  const maxValueParsing = req.query.maxValue
+
+  const minValue = parseInt(minValueParsing)
+  const maxValue = parseInt(maxValueParsing)
+
+  console.log(minValue, maxValue);
+  const searchTerm = req.query.searchTerm || null;
+  console.log(searchTerm);
+  const regex = /₹(\d+)\s*-\s*₹(\d+)/;
+  
+  try {
+    const page = parseInt(req.query.page) || 1; // Get the page number from the query parameter, default to page 1
+    const limit = 4; // Number of items per page
+    const offset = (page - 1) * limit;
+
+
+
+
+
+
+    
+    const pipeline = [
+      {
+        $match: {
+          categoryName: categoryData,
+          price: { $gte: minValue, $lte: maxValue },
+          isAvailable: true,
+          name: searchValue ? { $regex: new RegExp(searchValue, 'i') } : { $exists: true } // Include name field conditionally
+        }
+      },
+      {
+        $sort: {
+          price: 1 // Sort by price in ascending order
+        }
+      },
+      {
+        $facet: {
+          metadata: [{ $count: "total" }, { $addFields: { page: page } }],
+          data: [{ $skip: offset }, { $limit: limit }]
+        }
+      }
+    ];
+
+    const [{ metadata, data }] = await productDB.aggregate(pipeline);
+
+    const totalDocs = metadata.length > 0 ? metadata[0].total : 0;
+    const totalPages = Math.ceil(totalDocs / limit);
+
+    res.json({
+      sortedProducts: data,
+      currentPage: page,
+      totalPages,
+      categoryData,
+      minValue,
+      maxValue,
+      searchTerm: searchValue
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
 const priceSortAscending=async (req,res)=>{  
  console.log('its ascending');
- const data = req.body.value
-  const priceString=data.value
-  console.log(priceString);
+ const {value,searchTerm} = req.body.value
+  // const priceString=data.value
   console.log(12345678);
-  const searchValue=(data.searchTerm)??null
-  console.log(searchValue,78);
   console.log(898);
   
  
@@ -397,7 +463,7 @@ const priceSortAscending=async (req,res)=>{
 
  // console.log(priceString);
     const regex = /₹(\d+)\s*-\s*₹(\d+)/;
-    const match = priceString.match(regex);
+    const match = value.match(regex);
  // console.log(match);
     const minValue = parseInt(match[1], 10);
     const maxValue = parseInt(match[2], 10);
@@ -410,6 +476,11 @@ const priceSortAscending=async (req,res)=>{
  // console.log(page,999);
     const limit = 4; // Number of items per page
 
+
+
+
+
+
     try{
         const pipeline = [
             {
@@ -417,7 +488,7 @@ const priceSortAscending=async (req,res)=>{
                 categoryName: categoryData,
                 price: { $gte: minValue, $lte: maxValue },
                 isAvailable: true,
-                ...(searchValue && { name: searchValue }), // Include name field conditionally
+                ...(searchTerm && { name: searchTerm }), // Include name field conditionally
               },
             },
             {
@@ -431,6 +502,8 @@ const priceSortAscending=async (req,res)=>{
           ];
           const totalProductsCount = await productDB.aggregate(pipeline)
        // console.log(totalProductsCount);
+       console.log(totalProductsCount[0].documentCount);
+       console.log(1234);
           const countValue = totalProductsCount[0].documentCount;
        // console.log(countValue);
        // console.log(`filtered products count is ${countValue}`);
@@ -448,7 +521,7 @@ const priceSortAscending=async (req,res)=>{
                 categoryName: categoryData,
                 price: { $gte: minValue, $lte: maxValue },
                 isAvailable: true,
-                ...(searchValue && { name: searchValue }), // Include name field conditionally
+                ...(searchTerm && { name: searchTerm }), // Include name field conditionally
               },
             },
             {
@@ -462,36 +535,24 @@ const priceSortAscending=async (req,res)=>{
             .skip(offset)
             .limit(limit);
          // console.log('hello');
-            res.json({sortedProducts,totalPages,currentPage: page}) 
-    }catch(err){
+         res.json({sortedProducts,totalPages,currentPage: page,categoryData , minValue, maxValue ,searchTerm}) 
+        }catch(err){
         console.error(err);
     }
 }
 
-
 const priceSortDescending=async (req,res)=>{  
   console.log('priceSortDescend');
-
   console.log('its descending');
-  const data = req.body.value
-  const priceString=data.value
-  console.log(priceString);
+  const {value,searchTerm} = req.body.value
   console.log(12345678);
-  const searchValue=(data.searchTerm)??null
-  console.log(searchValue,78);
   console.log(898);
-  
- 
-
-
     const regex = /₹(\d+)\s*-\s*₹(\d+)/;
-    const match = priceString.match(regex);
+    const match = value.match(regex);
   // console.log(match);
     const minValue = parseInt(match[1], 10);
     const maxValue = parseInt(match[2], 10);
   console.log(minValue,maxValue);
-
-
     const categoryData=req.params.id.toUpperCase()
  // console.log(categoryData,222);
     const page = parseInt(req.query.page) || 1; // Get the page number from the query parameter, default to page 1
@@ -505,8 +566,7 @@ const priceSortDescending=async (req,res)=>{
                 categoryName: categoryData,
                 price: { $gte: minValue, $lte: maxValue },
                 isAvailable: true,
-                ...(searchValue && { name: searchValue }), // Include name field conditionally
-
+                ...(searchTerm && { name: searchTerm }), // Include name field conditionally
               },
             },
             {
@@ -519,25 +579,21 @@ const priceSortDescending=async (req,res)=>{
             },
           ];
           const totalProductsCount = await productDB.aggregate(pipeline)
-       // console.log(totalProductsCount);
+       console.log(totalProductsCount,'99');
           const countValue = totalProductsCount[0].documentCount;
-       // console.log(countValue);
+       console.log(countValue,'787');
        // console.log(`filtered products count is ${countValue}`);
-
-
           const totalPages = Math.ceil(countValue / limit);
        // console.log(totalPages);
        // console.log(7876);
-
         const offset = (page - 1) * limit;
-
         const pipeline2 = [
             {
               $match: {
                 categoryName: categoryData,
                 price: { $gte: minValue, $lte: maxValue },
                 isAvailable: true,
-                ...(searchValue && { name: searchValue }), // Include name field conditionally
+                ...(searchTerm && { name: searchTerm }), // Include name field conditionally
               },
             },
             {
@@ -545,78 +601,79 @@ const priceSortDescending=async (req,res)=>{
                 price: -1, // 1 for ascending, -1 for descending
               },
             },
-            
           ];
         const sortedProducts = await productDB.aggregate(pipeline2)
             .skip(offset)
             .limit(limit);
          // console.log('hello');
-            res.json({sortedProducts,totalPages,currentPage: page}) 
-    }catch(err){
+         res.json({sortedProducts,totalPages,currentPage: page,categoryData , minValue, maxValue ,searchTerm}) 
+        }catch(err){
         console.error(err);
     }
 }
 
+const searchProduct = async (req, res) => {
+  const categoryData = req.params.id.toUpperCase();
+  const searchValue = req.body.searchTerm;
+  const priceString = req.body.value;
+  const regex = /₹(\d+)\s*-\s*₹(\d+)/;
+  const match = priceString.match(regex);
+  const minValue = parseInt(match[1], 10);
+  const maxValue = parseInt(match[2], 10);
 
+  try {
+      const page = parseInt(req.query.page) || 1; // Get the page number from the query parameter, default to page 1
+      const limit = 4; // Number of items per page
+      const offset = (page - 1) * limit;
 
-
-
-
-
-
-
-
-
-
-
-const searchProduct = async (req,res)=>{
- // console.log('its search');
-    const category=req.params.id.toUpperCase()
- // console.log(category,222);
-
-    const searchValue=req.body.searchTerm
-    const priceString=req.body.value
-    // console.log(priceString);
-    const regex = /₹(\d+)\s*-\s*₹(\d+)/;
-    const match = priceString.match(regex);
-    // console.log(match);
-    const minValue = parseInt(match[1], 10);
-    const maxValue = parseInt(match[2], 10);
-    console.log(minValue,maxValue);
-
-
- // console.log(searchValue);
-  
-    try{
-        const pipeline = [
-            {
+      const pipeline = [
+          {
               $match: {
-                categoryName: category,
-                price: { $gte: minValue, $lte: maxValue },
-                isAvailable: true,
-                name:searchValue,
-              },
-            },
-            {
+                  categoryName: categoryData,
+                  price: { $gte: minValue, $lte: maxValue },
+                  isAvailable: true,
+                  name: { $regex: searchValue, $options: 'i' } // Case-insensitive search
+              }
+          },
+          {
               $sort: {
-                price: 1, // 1 for ascending, -1 for descending
-              },
-            },
-          ];
-        const searchProducts =  await productDB.aggregate(pipeline);
-        if( res.json({searchProducts}) ){
-            // console.log(searchProducts);
-         // console.log(9999956865345);
-         // console.log('its send');
-        }else{
-         // console.log('else');
-        }
-    }catch(err){
-        console.error(err);
-    }
+                  price: 1 // 1 for ascending, -1 for descending
+              }
+          },
+          {
+              $facet: {
+                  metadata: [ { $count: "total" }, { $addFields: { page: page } } ],
+                  data: [ { $skip: offset }, { $limit: limit } ]
+              }
+          }
+      ];
+
+      const [{ metadata, data }] = await productDB.aggregate(pipeline);
+
+      const totalDocs = metadata.length > 0 ? metadata[0].total : 0;
+      const totalPages = Math.ceil(totalDocs / limit);
+
+      res.json({ searchProducts: data, currentPage: page, totalPages, categoryData, minValue, maxValue, searchTerm: searchValue });
+  } catch (err) {
+      console.error(err);
+      res.status(500).json({ error: 'Internal Server Error' });
+  }
 }
 
 
+
+
+ 
+
+
+
+
+
+
+
+
+ 
+ 
 
 
 
@@ -640,5 +697,6 @@ module.exports={
     priceSortAscending,
     priceSortDescending,
     searchProduct,
+    fetchData,
     
 }
