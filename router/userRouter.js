@@ -36,15 +36,15 @@ router.post('/update-password',    userManagement.updatePasswordPost)
 const productManagement=require('../controller/productManagement')
 
 
-router.get('/category/:id',userSessionHandling.isBlockedNow,    productManagement.productListUser)
-router.get('/fetch/category/:id',userSessionHandling.isBlockedNow,    productManagement.fetchData)
-router.post('/category/:id/ascending/',userSessionHandling.isBlockedNow,productManagement.priceSortAscending)
-router.post('/category/:id/descending',userSessionHandling.isBlockedNow,productManagement.priceSortDescending)
+router.get('/category/:id',   userSessionHandling.isBlockedNow,    productManagement.productListUser)
+router.post('/category/fetch/:id', userSessionHandling.isBlockedNow,    productManagement.fetchData)
+router.post('/category/:id/ascending/',userSessionHandling.isBlockedNow,productManagement.priceSortDescending)
+router.post('/category/:id/descending',userSessionHandling.isBlockedNow,productManagement.priceSortAscending)
 router.post('/category/:id/searchProduct',userSessionHandling.isBlockedNow,productManagement.searchProduct)
 
 
 
-router.get('/productdetails/:id', userSessionHandling.isBlockedNow,  productManagement.productDetail)
+router.get('/productdetails/:id',  userSessionHandling.isBlockedNow,  productManagement.productDetail)
 
 
 
@@ -59,7 +59,7 @@ router.get('/productdetails/:id', userSessionHandling.isBlockedNow,  productMana
 
 
 router.get('/aaa',(req,res)=>{
-    res.render('user/aaa')
+    res.render('user/zooming')
 })
 router.get('/myprofile',(req,res)=>{
     res.render('user/profile')

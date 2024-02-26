@@ -179,7 +179,9 @@
 
 
 <!-- price sorting script -->
-<script>
+
+
+<!-- <script>
     document.addEventListener('DOMContentLoaded', function() {
         const searchInput = document.getElementById('search-value')
         
@@ -246,6 +248,10 @@
                         </div>
                 `
                 });
+
+
+
+
                 if (totalPages > 1) {
         paginationContainer.innerHTML += `
     <div class="infinitpaginOuter" style="display: flex; justify-content: center;">
@@ -255,9 +261,16 @@
                 `<ul class="pagination">
                     ${Array.from({ length: totalPages }, (_, i) => `
                         <li class="btn-dark page-item ${i + 1 === currentPage ? 'active' : ''}" style="background-color: aliceblue;">
-                            <a class="page-link" style="margin: 2px; "href="/fetch/category/${categoryData}?page=${i+1}&minValue=${minValue}&maxValue=${maxValue}&searchTerm=${searchTerm}""  >
-                                <p style="font-size: 15px; color: black;">${i+1}</p>
-                            </a>
+                            
+
+                            <a class="page-link2" style="margin: 2px;" 
+   data-category="${categoryData}" 
+   data-page="${i+1}" 
+   data-minValue="${minValue}" 
+   data-maxValue="${maxValue}" 
+   data-searchTerm="${searchTerm}">
+    <p style="font-size: 15px; color: black;">${i+1}</p>
+</a>
                         </li>`).join('')
                     }
                 </ul>` 
@@ -265,6 +278,10 @@
             }
         </div>
     </div>
+
+
+
+    
 `;
     }
             } catch (error) {
@@ -273,9 +290,560 @@
         };
         });
     
-</script>
+</script> -->
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('search-value');
+    
+        document.getElementById('btn-1').addEventListener('click', function() {
+            let searchTerm = searchInput.value.trim();     
+            const value = document.getElementById('amount').value.trim();
+            console.log(searchTerm);                 
+            console.log(44444);      
+            fetchData('/category/<%=categoryName%>/ascending',{ value, searchTerm});
+        });
+    
+        document.getElementById('btn-2').addEventListener('click', function() {
+            const value = document.getElementById('amount').value.trim();
+            let searchTerm = searchInput.value.trim(); 
+            console.log(searchTerm);                 
+            console.log(333);                          
+            fetchData('/category/<%=categoryName%>/descending',{  searchTerm ,value });
+        });
+    
+        const fetchData = async (url, value) => {
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ value }),
+                });
+    
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+    
+                const {sortedProducts, totalPages, currentPage, categoryData, minValue, maxValue, searchTerm ,descending} = await response.json();
+                const sortedProductsArray = sortedProducts;
+                console.log('kl');
+                console.log( totalPages, currentPage, categoryData, minValue, maxValue, searchTerm);//   its consoled properly 
+                const productListContainer = document.getElementById('orginalList');
+                const paginationContainer = document.getElementById('orginalPagination');
+                paginationContainer.innerHTML = '';
+                productListContainer.innerHTML = '';
+    
+                sortedProductsArray.forEach(product => {
+                    productListContainer.innerHTML +=  
+                        `<div class="col-6 col-sm-6 col-md-4 col-lg-3 item">
+                            <div class="product-image">
+                                <a href="/productdetails/${product._id}">
+                                    <img class="primary blur-up lazyload" data-src="${product.image[0]}" src="${product.image[0]}" alt="${product.name}" title="product" />
+                                    <img class="hover blur-up lazyload" data-src="${product.image[1]}" src="${product.image[1]}" alt="${product.name}" title="product" />
+                                </a>
+                            </div>
+                            <div class="product-details text-center">
+                                <div class="product-name">
+                                    <a href="">${product.name}</a>
+                                </div>
+                                <div class="product-price">
+                                    <span class="price">${product.price}</span>
+                                </div>
+                            </div>
+                        </div>`;
+                });
+    
+                if (totalPages > 1) {
+                    paginationContainer.innerHTML += `
+                        <div class="infinitpaginOuter" style="display: flex; justify-content: center;">
+                            <div class="infinitpagin">    
+                                <ul class="pagination">
+                                    ${Array.from({ length: totalPages }, (_, i) => `
+                                        <li class="btn-dark page-item ${i + 1 === currentPage ? 'active' : ''}" style="background-color: aliceblue;">
+                                            <a class="page-link2" style="margin: 2px;" 
+                                            
+  
+                                                            data-category="${categoryData}" 
+                                                            data-page="${i + 1}" 
+                                                            data-min-value="${minValue}" 
+                                                            data-max-value="${maxValue}" 
+                                                            data-search-Term="${searchTerm}"
+                                                            data-descending="${descending}">
+
+                                                            <p style="font-size: 15px; color: black;">${i + 1}</p>
+                                                        </a>
+                                               
+                                               
+                                        </li>`).join('')
+                                    }
+                                </ul>
+                            </div>
+                        </div>`;
+                }
+    
+                // Add event listeners to pagination links
+                const paginationLinks = document.querySelectorAll('.page-link2');
+                paginationLinks.forEach(link => {
+                    link.addEventListener('click', async function(event) {
+                        event.preventDefault(); // Prevent default link behavior
+
+
+
+    
+                        const categoryData = this.dataset.category;
+                        const page = this.dataset.page;
+                        // const minValue = this.dataset.minValue
+                        // const maxValue = this.dataset.maxValue;
+                        // const searchTerm = this.dataset.searchTerm;
+                        const minValue = this.dataset.minValue;
+                        const maxValue = this.dataset.maxValue;
+                        const searchTerm = this.dataset.searchTerm;
+                        const descending  = this.dataset.descending 
+
+                        console.log(categoryData, page, minValue, maxValue, searchTerm ,);// categoryData, page,  consoled rest of its undefined why
+    
+                        try {
+                            const response = await fetch(`/category/fetch/${categoryData}`, {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                },
+                                body: JSON.stringify({ page, minValue, maxValue, searchTerm ,descending}),
+                            });
+    
+                            if (!response.ok) {
+                                throw new Error(`HTTP error! Status: ${response.status}`);
+                            }
+    
+                            // Process the response data
+                            const responseData = await response.json();
+                            const { sortedProducts, totalPages, currentPage } = responseData;
+    
+                            productListContainer.innerHTML = ''; // Clear existing products
+    
+                            sortedProducts.forEach(product => {
+                                productListContainer.innerHTML += `
+                                    <div class="col-6 col-sm-6 col-md-4 col-lg-3 item">
+                                        <div class="product-image">
+                                            <a href="/productdetails/${product._id}">
+                                                <img class="primary blur-up lazyload" src="${product.image[0]}" alt="${product.name}" title="product" />
+                                                <img class="hover blur-up lazyload" src="${product.image[1]}" alt="${product.name}" title="product" />
+                                            </a>
+                                        </div>
+                                        <div class="product-details text-center">
+                                            <div class="product-name">
+                                                <a href="">${product.name}</a>
+                                            </div>
+                                            <div class="product-price">
+                                                <span class="price">${product.price}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                `;
+                            });
+    
+                            // Update pagination links if totalPages > 1
+                            paginationContainer.innerHTML = '';
+                            if (totalPages > 1) {
+                                paginationContainer.innerHTML = `
+                                    <div class="infinitpaginOuter" style="display: flex; justify-content: center;">
+                                        <div class="infinitpagin">    
+                                            <ul class="pagination">
+                                                ${Array.from({ length: totalPages }, (_, i) => `
+                                                    <li class="btn-dark page-item ${i + 1 === currentPage ? 'active' : ''}" style="background-color: aliceblue;">
+                                                        <a class="page-link2" style="margin: 2px;" 
+                                                            data-category="${categoryData}" 
+                                                            data-page="${i + 1}" 
+                                                            data-min-Value="${minValue}" 
+                                                            data-max-Value="${maxValue}" 
+                                                            data-search-Term="${searchTerm}">
+                                                            <p style="font-size: 15px; color: black;">${i + 1}</p>
+                                                        </a>
+                                                    </li>`).join('')
+                                                }
+                                            </ul>
+                                        </div>
+                                    </div>`;
+                            }
+
+
+
+                            const paginationLinks = document.querySelectorAll('.page-link2');
+                paginationLinks.forEach(link => {
+                    link.addEventListener('click', async function(event) {
+                        event.preventDefault(); // Prevent default link behavior
+    
+                        const categoryData = this.dataset.category;
+                        const page = this.dataset.page;
+                        const minValue = this.dataset.minValue;
+                        const maxValue = this.dataset.maxValue;
+                        const searchTerm = this.dataset.searchTerm;
+
+                        console.log(categoryData, page, minValue, maxValue, searchTerm );// categoryData, page,  consoled rest of its undefined why
+    
+                        try {
+                            const response = await fetch(`/category/fetch/${categoryData}`, {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                },
+                                body: JSON.stringify({ page, minValue, maxValue, searchTerm }),
+                            });
+                            if (!response.ok) {
+                                throw new Error(`HTTP error! Status: ${response.status}`);
+                            }
+                            // Process the response data
+                            const responseData = await response.json();
+                            const { sortedProducts, totalPages, currentPage } = responseData;
+    
+                            productListContainer.innerHTML = ''; // Clear existing products
+                            sortedProducts.forEach(product => {
+                                productListContainer.innerHTML += `
+                                    <div class="col-6 col-sm-6 col-md-4 col-lg-3 item">
+                                        <div class="product-image">
+                                            <a href="/productdetails/${product._id}">
+                                                <img class="primary blur-up lazyload" src="${product.image[0]}" alt="${product.name}" title="product" />
+                                                <img class="hover blur-up lazyload" src="${product.image[1]}" alt="${product.name}" title="product" />
+                                            </a>
+                                        </div>
+                                        <div class="product-details text-center">
+                                            <div class="product-name">
+                                                <a href="">${product.name}</a>
+                                            </div>
+                                            <div class="product-price">
+                                                <span class="price">${product.price}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                `;
+                            });
+    
+                            // Update pagination links if totalPages > 1
+                            paginationContainer.innerHTML = '';
+                            if (totalPages > 1) {
+                                paginationContainer.innerHTML = `
+                                    <div class="infinitpaginOuter" style="display: flex; justify-content: center;">
+                                        <div class="infinitpagin">    
+                                            <ul class="pagination">
+                                                ${Array.from({ length: totalPages }, (_, i) => `
+                                                    <li class="btn-dark page-item ${i + 1 === currentPage ? 'active' : ''}" style="background-color: aliceblue;">
+                                                        <a class="page-link2" style="margin: 2px;" 
+                                                            data-category="${categoryData}" 
+                                                            data-page="${i + 1}" 
+                                                            data-min-Value="${minValue}" 
+                                                            data-max-Value="${maxValue}" 
+                                                            data-search-Term="${searchTerm}">
+                                                            <p style="font-size: 15px; color: black;">${i + 1}</p>
+                                                        </a>
+                                                    </li>`).join('')
+                                                }
+                                            </ul>
+                                        </div>
+                                    </div>`;
+                            }
+
+
+                            const paginationLinks = document.querySelectorAll('.page-link2');
+                paginationLinks.forEach(link => {
+                    link.addEventListener('click', async function(event) {
+                        event.preventDefault(); // Prevent default link behavior
+    
+                        const categoryData = this.dataset.category;
+                        const page = this.dataset.page;
+                        const minValue = this.dataset.minValue;
+                        const maxValue = this.dataset.maxValue;
+                        const searchTerm = this.dataset.searchTerm;
+
+                        console.log(categoryData, page, minValue, maxValue, searchTerm );// categoryData, page,  consoled rest of its undefined why
+    
+                        try {
+                            const response = await fetch(`/category/fetch/${categoryData}`, {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                },
+                                body: JSON.stringify({ page, minValue, maxValue, searchTerm }),
+                            });
+                            if (!response.ok) {
+                                throw new Error(`HTTP error! Status: ${response.status}`);
+                            }
+                            // Process the response data
+                            const responseData = await response.json();
+                            const { sortedProducts, totalPages, currentPage } = responseData;
+    
+                            productListContainer.innerHTML = ''; // Clear existing products
+                            sortedProducts.forEach(product => {
+                                productListContainer.innerHTML += `
+                                    <div class="col-6 col-sm-6 col-md-4 col-lg-3 item">
+                                        <div class="product-image">
+                                            <a href="/productdetails/${product._id}">
+                                                <img class="primary blur-up lazyload" src="${product.image[0]}" alt="${product.name}" title="product" />
+                                                <img class="hover blur-up lazyload" src="${product.image[1]}" alt="${product.name}" title="product" />
+                                            </a>
+                                        </div>
+                                        <div class="product-details text-center">
+                                            <div class="product-name">
+                                                <a href="">${product.name}</a>
+                                            </div>
+                                            <div class="product-price">
+                                                <span class="price">${product.price}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                `;
+                            });
+    
+                            // Update pagination links if totalPages > 1
+                            paginationContainer.innerHTML = '';
+                            if (totalPages > 1) {
+                                paginationContainer.innerHTML = `
+                                    <div class="infinitpaginOuter" style="display: flex; justify-content: center;">
+                                        <div class="infinitpagin">    
+                                            <ul class="pagination">
+                                                ${Array.from({ length: totalPages }, (_, i) => `
+                                                    <li class="btn-dark page-item ${i + 1 === currentPage ? 'active' : ''}" style="background-color: aliceblue;">
+                                                        <a class="page-link2" style="margin: 2px;" 
+                                                            data-category="${categoryData}" 
+                                                            data-page="${i + 1}" 
+                                                            data-min-Value="${minValue}" 
+                                                            data-max-Value="${maxValue}" 
+                                                            data-search-Term="${searchTerm}">
+                                                            <p style="font-size: 15px; color: black;">${i + 1}</p>
+                                                        </a>
+                                                    </li>`).join('')
+                                                }
+                                            </ul>
+                                        </div>
+                                    </div>`;
+                            }
+
+
+
+
+                             const paginationLinks = document.querySelectorAll('.page-link2');
+                paginationLinks.forEach(link => {
+                    link.addEventListener('click', async function(event) {
+                        event.preventDefault(); // Prevent default link behavior
+    
+                        const categoryData = this.dataset.category;
+                        const page = this.dataset.page;
+                        const minValue = this.dataset.minValue;
+                        const maxValue = this.dataset.maxValue;
+                        const searchTerm = this.dataset.searchTerm;
+
+                        console.log(categoryData, page, minValue, maxValue, searchTerm );// categoryData, page,  consoled rest of its undefined why
+    
+                        try {
+                            const response = await fetch(`/category/fetch/${categoryData}`, {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                },
+                                body: JSON.stringify({ page, minValue, maxValue, searchTerm }),
+                            });
+                            if (!response.ok) {
+                                throw new Error(`HTTP error! Status: ${response.status}`);
+                            }
+                            // Process the response data
+                            const responseData = await response.json();
+                            const { sortedProducts, totalPages, currentPage } = responseData;
+    
+                            productListContainer.innerHTML = ''; // Clear existing products
+                            sortedProducts.forEach(product => {
+                                productListContainer.innerHTML += `
+                                    <div class="col-6 col-sm-6 col-md-4 col-lg-3 item">
+                                        <div class="product-image">
+                                            <a href="/productdetails/${product._id}">
+                                                <img class="primary blur-up lazyload" src="${product.image[0]}" alt="${product.name}" title="product" />
+                                                <img class="hover blur-up lazyload" src="${product.image[1]}" alt="${product.name}" title="product" />
+                                            </a>
+                                        </div>
+                                        <div class="product-details text-center">
+                                            <div class="product-name">
+                                                <a href="">${product.name}</a>
+                                            </div>
+                                            <div class="product-price">
+                                                <span class="price">${product.price}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                `;
+                            });
+    
+                            // Update pagination links if totalPages > 1
+                            paginationContainer.innerHTML = '';
+                            if (totalPages > 1) {
+                                paginationContainer.innerHTML = `
+                                    <div class="infinitpaginOuter" style="display: flex; justify-content: center;">
+                                        <div class="infinitpagin">    
+                                            <ul class="pagination">
+                                                ${Array.from({ length: totalPages }, (_, i) => `
+                                                    <li class="btn-dark page-item ${i + 1 === currentPage ? 'active' : ''}" style="background-color: aliceblue;">
+                                                        <a class="page-link2" style="margin: 2px;" 
+                                                            data-category="${categoryData}" 
+                                                            data-page="${i + 1}" 
+                                                            data-min-Value="${minValue}" 
+                                                            data-max-Value="${maxValue}" 
+                                                            data-search-Term="${searchTerm}">
+                                                            <p style="font-size: 15px; color: black;">${i + 1}</p>
+                                                        </a>
+                                                    </li>`).join('')
+                                                }
+                                            </ul>
+                                        </div>
+                                    </div>`;
+                            }
+
+
+
+
+                            const paginationLinks = document.querySelectorAll('.page-link2');
+                paginationLinks.forEach(link => {
+                    link.addEventListener('click', async function(event) {
+                        event.preventDefault(); // Prevent default link behavior
+    
+                        const categoryData = this.dataset.category;
+                        const page = this.dataset.page;
+                        const minValue = this.dataset.minValue;
+                        const maxValue = this.dataset.maxValue;
+                        const searchTerm = this.dataset.searchTerm;
+
+                        console.log(categoryData, page, minValue, maxValue, searchTerm );// categoryData, page,  consoled rest of its undefined why
+    
+                        try {
+                            const response = await fetch(`/category/fetch/${categoryData}`, {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                },
+                                body: JSON.stringify({ page, minValue, maxValue, searchTerm }),
+                            });
+                            if (!response.ok) {
+                                throw new Error(`HTTP error! Status: ${response.status}`);
+                            }
+                            // Process the response data
+                            const responseData = await response.json();
+                            const { sortedProducts, totalPages, currentPage } = responseData;
+    
+                            productListContainer.innerHTML = ''; // Clear existing products
+                            sortedProducts.forEach(product => {
+                                productListContainer.innerHTML += `
+                                    <div class="col-6 col-sm-6 col-md-4 col-lg-3 item">
+                                        <div class="product-image">
+                                            <a href="/productdetails/${product._id}">
+                                                <img class="primary blur-up lazyload" src="${product.image[0]}" alt="${product.name}" title="product" />
+                                                <img class="hover blur-up lazyload" src="${product.image[1]}" alt="${product.name}" title="product" />
+                                            </a>
+                                        </div>
+                                        <div class="product-details text-center">
+                                            <div class="product-name">
+                                                <a href="">${product.name}</a>
+                                            </div>
+                                            <div class="product-price">
+                                                <span class="price">${product.price}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                `;
+                            });
+    
+                            // Update pagination links if totalPages > 1
+                            paginationContainer.innerHTML = '';
+                            if (totalPages > 1) {
+                                paginationContainer.innerHTML = `
+                                    <div class="infinitpaginOuter" style="display: flex; justify-content: center;">
+                                        <div class="infinitpagin">    
+                                            <ul class="pagination">
+                                                ${Array.from({ length: totalPages }, (_, i) => `
+                                                    <li class="btn-dark page-item ${i + 1 === currentPage ? 'active' : ''}" style="background-color: aliceblue;">
+                                                        <a class="page-link2" style="margin: 2px;" 
+                                                            data-category="${categoryData}" 
+                                                            data-page="${i + 1}" 
+                                                            data-min-Value="${minValue}" 
+                                                            data-max-Value="${maxValue}" 
+                                                            data-search-Term="${searchTerm}">
+                                                            <p style="font-size: 15px; color: black;">${i + 1}</p>
+                                                        </a>
+                                                    </li>`).join('')
+                                                }
+                                            </ul>
+                                        </div>
+                                    </div>`;
+                            }
+
+
+
+
+                        } catch (error) {
+                            console.error('Error:', error);
+                        }
+                    });
+                });
+
+
+
+
+
+
+
+                        } catch (error) {
+                            console.error('Error:', error);
+                        }
+                    });
+                });
+
+
+                        } catch (error) {
+                            console.error('Error:', error);
+                        }
+                    });
+                });
+
+
+                //end forth
+                        } catch (error) {
+                            console.error('Error:', error);
+                        }
+                    });
+                });
+
+
+
+
+
+
+
+
+                //end third
+                        } catch (error) {
+                            console.error('Error:', error);
+                        }
+                    });
+                });
+
+
+                //end second
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        };
+    });
+    </script>
 
 
 
@@ -285,20 +853,15 @@
 <!-- search filter  by name-->
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-
-        
         const searchInput = document.getElementById('search-value');
         const searchButton = document.getElementById('search-btn');
-        
         searchButton.addEventListener('click', function () {                       
             const searchTerm = searchInput.value.trim();                            
             const value = document.getElementById('amount').value.trim();
             console.log(464,'gfh')
             fetchData('/category/<%=categoryName%>/searchProduct',  {searchTerm ,value });   
         });
-
         const fetchData = async (url,  value ) => {
-
             try {
                 const response = await fetch(url, {
                     method: 'POST',
@@ -310,91 +873,141 @@
                 if (!response.ok) {
                     throw new Error(`HTTP error! Status: ${response.status}`);
                 }
-
                 const searchProducts = await response.json();
-                console.log(searchProducts);
                 const searchProductsArray = searchProducts.searchProducts;
-                const totalPages = searchProducts.totalPages
-                console.log('totalPage:', totalPages);
-                const currentPage = searchProducts.currentPage
-                console.log('currentPage :',currentPage);
-                const categoryData = searchProducts.categoryData
-                console.log(categoryData);
-                const minValue =searchProducts.minValue
-                console.log(minValue);
-                const maxValue = searchProducts.maxValue
-                console.log(maxValue);
-                const searchTerm = searchProducts.searchTerm
-                console.log(searchTerm);
-
-                
+                const {  totalPages, currentPage, categoryData, minValue, maxValue, searchTerm } =searchProducts
 
                 const productListContainer = document.getElementById('orginalList');
                 productListContainer.innerHTML = ''; 
                 const paginationContainer = document.getElementById('orginalPagination')
-                paginationContainer.innerHTML = '';
                 searchProductsArray.forEach(product => {
                     console.log(product.image[0]);
                     productListContainer.innerHTML +=  
                         `  
-
                         <div class="col-6 col-sm-6 col-md-4 col-lg-3 item">
                             <div class="product-image">
                                 <a href="/productdetails/${product._id}">
                                     <img class="primary blur-up lazyload"  data-src="${product.image[0]}"    src="${product.image[0]}" alt="image" title="product" />
-                                   
                                     <img class="hover blur-up lazyload"  data-src="${product.image[1]}"    src="${product.image[1]}" alt="image" title="product" />
-                                    
                                 </a>
-                              
-
-                          
                             </div>
-                       
                             <div class="product-details text-center">
-                              
                                 <div class="product-name">
                                     <a href="">${product.name}</a>
                                 </div>
-                               
                                 <div class="product-price">
                                     <span class="price">${product.price}</span>
                                 </div>
-                              
-                                
-                               
                             </div>
-                           
                         </div>
                     `
                 });
 
-
+                paginationContainer.innerHTML = '';
                 if (totalPages > 1) {
-        paginationContainer.innerHTML += `
-    <div class="infinitpaginOuter" style="display: flex; justify-content: center;">
-        <div class="infinitpagin">	
-            ${
-                totalPages > 1 ? 
-                `<ul class="pagination">
-                    ${Array.from({ length: totalPages }, (_, i) => `
-                        <li class="btn-dark page-item ${i + 1 === currentPage ? 'active' : ''}" style="background-color: aliceblue;">
-                            <a class="page-link" style="margin: 2px; "href="/fetch/category/${categoryData}?page=${i+1}&minValue=${minValue}&maxValue=${maxValue}&searchTerm=${searchTerm}""  >
-                                <p style="font-size: 15px; color: black;">${i+1}</p>
-                            </a>
-                        </li>`).join('')
-                    }
-                </ul>` 
-                : ''
-            }
-        </div>
-    </div>
-`;
-    }
+                                paginationContainer.innerHTML = `
+                                    <div class="infinitpaginOuter" style="display: flex; justify-content: center;">
+                                        <div class="infinitpagin">    
+                                            <ul class="pagination">
+                                                ${Array.from({ length: totalPages }, (_, i) => `
+                                                    <li class="btn-dark page-item ${i + 1 === currentPage ? 'active' : ''}" style="background-color: aliceblue;">
+                                                        <a class="page-link2" style="margin: 2px;"
+                                                            data-category="${categoryData}" 
+                                                            data-page="${i + 1}" 
+                                                            data-min-Value="${minValue}" 
+                                                            data-max-Value="${maxValue}" 
+                                                            data-search-Term="${searchTerm}">
+                                                            <p style="font-size: 15px; color: black;">${i + 1}</p>
+                                                        </a>
+                                                    </li>`).join('')
+                                                }
+                                            </ul>
+                                        </div>
+                                    </div>`;
+                            }
+
+                            const paginationLinks = document.querySelectorAll('.page-link2');
+                paginationLinks.forEach(link => {
+                    link.addEventListener('click', async function(event) {
+                        event.preventDefault(); // Prevent default link behavior
+    
+                        const categoryData = this.dataset.category;
+                        const page = this.dataset.page;
+                        const minValue = this.dataset.minValue;
+                        const maxValue = this.dataset.maxValue;
+                        const searchTerm = this.dataset.searchTerm;
+
+                        console.log(categoryData, page, minValue, maxValue, searchTerm );// categoryData, page,  consoled rest of its undefined why
+    
+                        try {
+                            const response = await fetch(`/category/fetch/${categoryData}`, {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                },
+                                body: JSON.stringify({ page, minValue, maxValue, searchTerm }),
+                            });
+                            if (!response.ok) {
+                                throw new Error(`HTTP error! Status: ${response.status}`);
+                            }
+                            // Process the response data
+                            const responseData = await response.json();
+                            const { sortedProducts, totalPages, currentPage } = responseData;
+    
+                            productListContainer.innerHTML = ''; // Clear existing products
+                            sortedProducts.forEach(product => {
+                                productListContainer.innerHTML += `
+                                    <div class="col-6 col-sm-6 col-md-4 col-lg-3 item">
+                                        <div class="product-image">
+                                            <a href="/productdetails/${product._id}">
+                                                <img class="primary blur-up lazyload" src="${product.image[0]}" alt="${product.name}" title="product" />
+                                                <img class="hover blur-up lazyload" src="${product.image[1]}" alt="${product.name}" title="product" />
+                                            </a>
+                                        </div>
+                                        <div class="product-details text-center">
+                                            <div class="product-name">
+                                                <a href="">${product.name}</a>
+                                            </div>
+                                            <div class="product-price">
+                                                <span class="price">${product.price}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                `;
+                            });
+    
+                            // Update pagination links if totalPages > 1
+                            paginationContainer.innerHTML = '';
+                            if (totalPages > 1) {
+                                paginationContainer.innerHTML = `
+                                    <div class="infinitpaginOuter" style="display: flex; justify-content: center;">
+                                        <div class="infinitpagin">    
+                                            <ul class="pagination">
+                                                ${Array.from({ length: totalPages }, (_, i) => `
+                                                    <li class="btn-dark page-item ${i + 1 === currentPage ? 'active' : ''}" style="background-color: aliceblue;">
+                                                        <a class="page-link2" style="margin: 2px;" 
+                                                            data-category="${categoryData}" 
+                                                            data-page="${i + 1}" 
+                                                            data-min-Value="${minValue}" 
+                                                            data-max-Value="${maxValue}" 
+                                                            data-search-Term="${searchTerm}">
+                                                            <p style="font-size: 15px; color: black;">${i + 1}</p>
+                                                        </a>
+                                                    </li>`).join('')
+                                                }
+                                            </ul>
+                                        </div>
+                                    </div>`;
+                            }
 
 
 
-
+                            
+                        } catch (error) {
+                            console.error('Error:', error);
+                        }
+                    });
+                });
 
 
             } catch (error) {
@@ -402,10 +1015,98 @@
             }
 
         };
+
     });
 </script>
 
+<!-- fetch  -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const paginationLinks = document.querySelectorAll('.page-link2');
+    console.log(67);
+    paginationLinks.forEach(link => {
+        link.addEventListener('click', async function(event) {
+            event.preventDefault(); // Prevent default link behavior
 
+            const categoryData = this.dataset.category;
+            const page = this.dataset.page;
+            const minValue = this.dataset.minValue;
+            const maxValue = this.dataset.maxValue;
+            const searchTerm = this.dataset.searchTerm;
+
+            try {
+                const response = await fetch(`/category/fetch/${categoryData}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ page, minValue, maxValue, searchTerm }),
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+
+                // Process the response data
+                const responseData = await response.json();
+                const { sortedProducts, totalPages, currentPage } = responseData;
+
+                const productListContainer = document.getElementById('orginalList');
+                productListContainer.innerHTML = ''; // Clear existing products
+
+                sortedProducts.forEach(product => {
+                    productListContainer.innerHTML += `
+                        <div class="col-6 col-sm-6 col-md-4 col-lg-3 item">
+                            <div class="product-image">
+                                <a href="/productdetails/${product._id}">
+                                    <img class="primary blur-up lazyload" src="${product.image[0]}" alt="${product.name}" title="product" />
+                                    <img class="hover blur-up lazyload" src="${product.image[1]}" alt="${product.name}" title="product" />
+                                </a>
+                            </div>
+                            <div class="product-details text-center">
+                                <div class="product-name">
+                                    <a href="">${product.name}</a>
+                                </div>
+                                <div class="product-price">
+                                    <span class="price">${product.price}</span>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                // Update pagination links if totalPages > 1
+                const paginationContainer = document.getElementById('orginalPagination');
+                paginationContainer.innerHTML = '';
+                if (totalPages > 1) {
+                    paginationContainer.innerHTML = `
+                        <div class="infinitpaginOuter" style="display: flex; justify-content: center;">
+                            <div class="infinitpagin">    
+                                <ul class="pagination">
+                                    ${Array.from({ length: totalPages }, (_, i) => `
+                                        <li class="btn-dark page-item ${i + 1 === currentPage ? 'active' : ''}" style="background-color: aliceblue;">
+                                            <a class="page-link2" style="margin: 2px;" 
+                                                data-category="${categoryData}" 
+                                                data-page="${i + 1}" 
+                                                data-minValue="${minValue}" 
+                                                data-maxValue="${maxValue}" 
+                                                data-searchTerm="${searchTerm}">
+                                                <p style="font-size: 15px; color: black;">${i + 1}</p>
+                                            </a>
+                                        </li>`).join('')
+                                    }
+                                </ul>
+                            </div>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        });
+    });
+});
+</script>
 
 
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>

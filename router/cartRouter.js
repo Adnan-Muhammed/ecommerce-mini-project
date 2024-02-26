@@ -17,15 +17,19 @@ const cartManagement = require('../controller/cartManagement')
    console.log(cartId);
     req.session.cartId=cartId
    console.log('cartRouter cartSession creates here');
+  //  if(req.session.cartProduct){
+    // req.session.cartProduct=null
+    // res.redirect(`/productdetails/${cartId}`)
+  //  }
 
     next()
  }
 
 
-router.get('/cartpage',userSessionHandling.userlogged,cartManagement.cartPage)
-router.get('/cart/:id', cartSession,userSessionHandling.userlogged,cartManagement.addtoCart)//
-router.get('/remove/:productId',userSessionHandling.userlogged, cartManagement.removeFromCart);
-// router.post('/update-cart', userSessionHandling.userlogged, cartManagement.updateCartQuantities);
+ router.get('/cartpage',userSessionHandling.userlogged,cartManagement.cartPage)
+ router.get('/cart/:id', cartSession,userSessionHandling.userlogged,cartManagement.addtoCart)//
+ router.get('/cart/remove/:productId',userSessionHandling.userlogged, cartManagement.removeFromCart);
+ // router.post('/update-cart', userSessionHandling.userlogged, cartManagement.updateCartQuantities);
 router.post('/updateQuantity',userSessionHandling.userlogged, cartManagement.updateQuantity);
 
 

@@ -36,18 +36,19 @@
                                                 <a href="#">
                                                     <img data-product-id="<%= item.productId %>" data-images="<%= JSON.stringify(item.images) %>" class="cart__image"
                                                     class="img-fluid  mx-auto mb-4" 
-                                                         src="<%= item.images[0] %>"
+                                                         src="<%= item.images[1] %>"
                                                          style="width: 100px; height: 100px;"  
                                                          alt="<%= item.productId %>">
                                                 </a>
                                             </td>
                                             <td class="cart__meta small--text-left cart-flex-item">
                                                 <div class="list-view-item__title">
-                                                    <a href="#"><%= item.name %> </a>
+                                                    <a><%= item.name %> </a>
                                                 </div>
                                             </td>
                                             <td style=" text-align: center;" class="cart__price-wrapper cart-flex-item">
                                                 <span id="unitPrice" data-product-id="<%= item.productId %>" class="money">$<%= item.unitPrice %></span>
+
                                             </td>
                                             <td style=" text-align: center;" class="cart__price-wrapper cart-flex-item">
                                                 <span id="stockElement" data-product-id="<%= item.productId %>"  data-product-stock="<%= item.stock %>" class="money"><%= item.stock %></span>
@@ -68,7 +69,8 @@
                                             <td  class="text-right small--hide cart-price">
                                                  <div id="productPrice" value="<%= item.price %>" data-product-id="<%= item.productId%>"  >
                                                     <span  class="money">$<%= item.price %></span>
-                                                </div>
+                                                    
+                                                 </div>
                                                 <div id="alertDiv2" data-product-id="<%= item.productId %>"><p style="color:darkred;"></p></div>
                                             </td>
                                             <td class="text-center small--hide">
@@ -173,7 +175,7 @@
         button.addEventListener('click', function (event) {
           event.preventDefault();
           const productId = button.dataset.productId;
-          fetch(`/remove/${productId}`, {
+          fetch(`/cart/remove/${productId}`, {
             method: 'GET',
           })
           .then(response => {

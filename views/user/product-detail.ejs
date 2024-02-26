@@ -6,22 +6,36 @@
         <div class="row">
             <div class="col-lg-6 col-md-6 col-sm-12 col-12">
                 <div class="product-details-img" style="width: 400px; height: 400px;" >
+                    
                     <div class="product-thumb">
                         <div id="gallery" class="product-dec-slider-2 product-tab-left">
-                            <% productDetails.image.forEach(function(image, index) { %>
+                             <% productDetails.image.forEach(function(image, index) { %>
                               <a data-image="<%= image %>" data-zoom-image="<%= image %>" class="slick-slide slick-cloned" data-slick-index="<%= index - productDetails.image.length %>" aria-hidden="true" tabindex="-1">
                                 <img class="blur-up lazyload" data-src="<%= image %>" src="<%= image %>" alt="" />
                               </a>
-                            <% }); %>
+                            <% }); %> 
+
+
+
+
+                            <!-- <a data-image="https://www.copahost.com/blog/wp-content/uploads/2019/07/imgsize2.png" data-zoom-image="https://www.copahost.com/blog/wp-content/uploads/2019/07/imgsize2.png" class="slick-slide slick-cloned" data-slick-index="-3" aria-hidden="true" tabindex="-1">
+                                <img class="blur-up lazyload" src="https://www.copahost.com/blog/wp-content/uploads/2019/07/imgsize2.png" alt="" />
+                            </a> -->
+                            
+
+
+
+
+
                           </div>
-                          
                     </div>
-                    <div class="zoompro-wrap product-zoom-right pl-20">
+
+                     <div class="zoompro-wrap product-zoom-right pl-20">
                         <div class="zoompro-span">
                             <img class="blur-up lazyload zoompro" data-zoom-image="<%= productDetails.image[0] %>" alt="" src="<%= productDetails.image[0] %>" />
                         </div>
                         
-                    </div>
+                    </div> 
                     <div class="lightboximages">
                         <a href="<%= productDetails.image[0] %>" data-size="1462x2048"></a>
                         <a href="<%= productDetails.image[1] %>" data-size="1462x2048"></a>
@@ -105,10 +119,14 @@
                                         <a style="background-color: cadetblue; color: beige;"   href="/cart/<%= productDetails._id %>"><button class="btn btn-addto-cart" type="button" tabindex="0">Add To Cart</button></a> 
                                     </div>
                                 <!-- </form> -->
+                                <br>
 
-                                <div style="margin-top: 10px;" class="shopify-payment-button" data-shopify="payment-button">
-                                    <button type="button" class="shopify-payment-button__button shopify-payment-button__button--unbranded"> <i class="icon anm anm-heart-l" aria-hidden="true"></i>ADD TO WISHLIST</button>
+                                <div style="background-color:brown;"  style="margin-top: 10px;" class="shopify-payment-button" data-shopify="payment-button">
+                                    <a  style="background-color:brown;"  href="/wishList/<%= productDetails._id %>"><button class="btn btn-addto-wishList" type="button" tabindex="0">Add To WishList</button></a> 
+                                    <!-- <button type="button" class="shopify-payment-button__button shopify-payment-button__button--unbranded"> <i class="icon anm anm-heart-l" aria-hidden="true"></i>ADD TO WISHLIST</button> -->
                                 </div>
+
+
                             </div>
                         </div>
                         <!-- End Product Action -->
@@ -130,4 +148,9 @@
     <!--End Product Fearure-->
     </div>
 
+ 
 <%-include('footer')-%>   
+    
+</body>
+
+</html>

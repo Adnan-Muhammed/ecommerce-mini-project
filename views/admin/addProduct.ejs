@@ -1,3 +1,11 @@
+
+
+<!-- Cropper.js CSS -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css" rel="stylesheet">
+
+<!-- Cropper.js JavaScript -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
+
 <%-include('header')-%>
 
 
@@ -5,89 +13,123 @@
 
 
     <div class="container-fluid pt-4 px-4">
-        <div class="row g-4">
+      <div class="row g-4">
 
 
 
 
 
-            <div class="col-sm-12 col-xl-6">
-                <div class="bg-light rounded h-100 p-4">
-                    <h6 class="mb-4">Add Product</h6>
+          <div class="col-sm-12 col-xl-6">
+              <div class="bg-light rounded h-100 p-4">
+                  <h6 class="mb-4">Add Product</h6>
+                
+                  <form action="/admin/productadded" method="post" enctype="multipart/form-data">
+
+                      <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="productName" placeholder="productname" name="productName">
+                        <label for="floatingInput">Product Name</label>
+                        <div id="productNameError" class="error" style="color: red;"></div>
+                      </div>
                   
-                    <form action="/admin/productadded" method="post" enctype="multipart/form-data">
-
-                        <div class="form-floating mb-3">
-                          <input type="text" class="form-control" id="productName" placeholder="productname" name="productName">
-                          <label for="floatingInput">Product Name</label>
-                          <div id="productNameError" class="error" style="color: red;"></div>
-                        </div>
-                    
-                        <div class="form-floating mb-3">
-                          <input type="number" class="form-control" id="productStock" placeholder="productquantity" name="productStock"
-                          min="1" >
-                          <label for="floatingInput">Stock</label>
-                          <div id="productStockError" class="error" style="color: red;"></div>
-                        </div>
-                    
-                        <div class="form-floating mb-3">
-                          <input type="number" class="form-control" id="productPrice" placeholder="productPrice" name="productPrice"
-                          min="1">
-                          <label for="productPrice">Price</label>
-                          <div id="productPriceError" class="error" style="color: red;"></div>
-                        </div>
-                    
-                        
-                    
-
-                        <% if (locals.categoryList) { %>
-                            <div class="form-floating mb-3">
-                                <select class="form-select" name="productCategory" id="floatingSelect"
-                                    aria-label="Floating label select example">
-                                    <% categoryList.forEach(category=> { %>
-                                        <option>
-                                            <%= category.name %>
-                                        </option>
-                                        <% }); %>
-                                </select>
-                                <label for="floatingSelect">Select Category</label>
-                            </div>
-                            <% } %>
-
-
-
-
-                        <div class="mb-3">
-                          <label for="formFileMultiple" class="form-label">Multiple files input example (Max 4 files)</label>
-                          <input class="form-control" type="file" name="images" id="formFileMultiple" multiple>
-                          <p id="imageError" class="error" style="color: red;"></p>
-                        </div>
-
-                        
+                      <div class="form-floating mb-3">
+                        <input type="number" class="form-control" id="productStock" placeholder="productquantity" name="productStock"
+                        min="1" >
+                        <label for="floatingInput">Stock</label>
+                        <div id="productStockError" class="error" style="color: red;"></div>
+                      </div>
+                  
+                      <div class="form-floating mb-3">
+                        <input type="number" class="form-control" id="productPrice" placeholder="productPrice" name="productPrice"
+                        min="1">
+                        <label for="productPrice">Price</label>
+                        <div id="productPriceError" class="error" style="color: red;"></div>
+                      </div>
+                  
                       
+                  
 
-                        <div class="form-floating">
-                            <textarea name="productDescription" class="form-control" placeholder="Leave a comment here" id="floatingTextarea"
-                              style="height: 150px;"></textarea>
-                            <label for="floatingTextarea">Description</label>
-                            <div id="productDescriptionError" class="error" style="color: red;"></div>
+                      <!-- <% if (locals.categoryList) { %>
+                          <div class="form-floating mb-3">
+                              <select class="form-select" name="productCategory" id="floatingSelect"
+                                  aria-label="Floating label select example">
+                                  <% categoryList.forEach(category=> { %>
+                                      <option>
+                                          <%= category.name %>
+                                      </option>
+                                      <% }); %>
+                              </select>
+                              <label for="floatingSelect">Select Category</label>
                           </div>
-                    
-                        <button type="submit" class="btn btn-primary">Submit</button>
-                      </form>
-                    
+                          <% } %> -->
 
-                </div>
+                          <% if (locals.categoryList) { %>
+                            <div class="form-floating mb-3">
+                                <select class="form-select" name="productCategory" id="floatingSelect" aria-label="Floating label select example">
+                                    <% categoryList.forEach(category => { %>
+                                    <option value="<%= category._id %>">
+                                        <%= category.name %>
+                                    </option>
+                                    <% }); %>
+                                  </select>
+                                  <label for="floatingSelect">Select Category</label>
+                                </div>
+                                <% } %>
+                                
+
+
+
+                      <div class="mb-3">
+                        <label for="formFileMultiple" class="form-label">Multiple files input example (Max 4 files)</label>
+                        <!-- <input class="form-control" type="file" name="images" id="formFileMultiple" multiple> -->
+
+                        <input class="form-control" type="file" name="images" id="formFileMultiple" multiple onchange="handleFileSelect(event)">
+
+                        <p id="imageError" class="error" style="color: red;"></p>
+                      </div>
+
+
+
+                      
+                      
+                      
+                      <div class="form-floating">
+                        <textarea name="productDescription" class="form-control" placeholder="Leave a comment here" id="floatingTextarea"
+                        style="height: 150px;"></textarea>
+                        <label for="floatingTextarea">Description</label>
+                        <div id="productDescriptionError" class="error" style="color: red;"></div>
+                      </div>
+                  
+                      <button type="submit" class="btn btn-primary">Submit</button>
+                    </form>
+                    
+                    
+              </div>
+          </div>
+
+
+
+
+          <div class="col-sm-12 col-xl-6">
+            <div class="bg-light rounded h-100 p-4">
+              
+    <canvas id="croppedImage" style="max-width:100%;"></canvas>
+               
+                  
+                  
             </div>
-
-
-
-
-
-
-
         </div>
-    </div>
+
+
+
+
+
+
+      </div>
+
+
+      
+      
+  </div>
     <!-- Form End -->
 
 
@@ -188,6 +230,50 @@
     });
   </script>
 
+
+<script>
+  function handleFileSelect(event) {
+      const files = event.target.files;
+      const cropper = new Cropper('#croppedImage', {
+          aspectRatio: 1 / 1, // You can adjust the aspect ratio as per your requirements
+          viewMode: 1, // Adjust the view mode as needed
+          autoCropArea: 1, // Adjust the auto crop area as needed
+          ready: function() {
+              // Do something when Cropper is ready
+          },
+      });
+
+      if (files && files[0]) {
+          const reader = new FileReader();
+          reader.onload = function(event) {
+              cropper.replace(event.target.result);
+          };
+          reader.readAsDataURL(files[0]);
+      }
+  }
+</script>
+
+
+<script>
+  function handleFileSelect(event) {
+      const files = event.target.files;
+      if (files && files[0]) {
+          const cropper = new Cropper('#croppedImage', {
+              aspectRatio: 1 / 1,
+              viewMode: 1,
+              autoCropArea: 1,
+              ready: function() {
+                  // Do something when Cropper is ready
+              },
+          });
+          const reader = new FileReader();
+          reader.onload = function(event) {
+              cropper.replace(event.target.result);
+          };
+          reader.readAsDataURL(files[0]);
+      }
+  }
+</script>
 
 
 

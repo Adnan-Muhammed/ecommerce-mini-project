@@ -22,19 +22,59 @@ const cartPage = async (req, res) => {
       if (!user) {
         return res.status(404).send('User not found');
       }
-   // console.log(56789);
+      console.log('hj');
+   console.log(56789);
       const cartItems = await CartDB.find({ userId: user._id });
-   // console.log(1,cartItems); //no need
+      console.log('hj');
+      
       if(cartItems.length>0){
-     // console.log(1);
-
+        console.log(1);
+        
         const productIds = cartItems.map(cartItem => cartItem.productId);
-   // console.log(2,'www');
-      const products = await ProductDB.find({ _id: { $in: productIds  } });
-   // console.log(3,'eee');
+        console.log(2,'www');
 
-      const detailedCartItems = cartItems.map(cartItem => {
-        const product = products.find(p => p._id.equals(cartItem.productId ));
+
+       
+
+      //   const products = await ProductDB.find({ 
+      //     _id: { $in: productIds },
+      //     isAvailable: false 
+      // })
+      // .populate('categoryId',null, { name: "KIDS" });
+
+      // Find products where categoryId's isAvailable is true
+
+
+// const products = await ProductDB.find({ 
+//   _id: { $in: productIds },
+//   isAvailable: true 
+// }).populate({
+//   path: 'categoryId',
+//   match: { isAvailable: false } // Match condition for categoryId's isAvailable field
+// });
+
+const products = await ProductDB.find({
+  _id: { $in: productIds  },
+  isAvailable:true
+  })
+  .populate('categoryId')
+
+     
+
+      
+        console.log(3,'eeeg cartItem look at productId');
+        console.log(1,cartItems); //no need
+        console.log('next');
+        console.log(productIds);
+        console.log('next products look at productId populated');
+        console.log(products);
+       // till  working well    no more
+
+      console.log(1,'ikiki');
+
+        
+        const detailedCartItems = cartItems.map(cartItem => {
+          const product = products.find(p => p._id.equals(cartItem.productId ));
           return {
             productId: cartItem._id,
             quantity: cartItem.quantity,
@@ -47,6 +87,8 @@ const cartPage = async (req, res) => {
             isAvailable: product.isAvailable,
           };
       });
+      console.log(detailedCartItems);
+      console.log(2, 'ikiki');
   
       let totalPrice = 0;
 for (const cartItem of detailedCartItems) {
@@ -65,23 +107,107 @@ res.render('user/cart', { cartItems: detailedCartItems, isLogged, primaryCategor
    // console.log(878787);
     } catch (err) {
       // console.error('Error fetching cart items:', err);
-      res.status(500).send('Internal Server Error');
+      res.status(500).send('Internal Server Error right now');
     }
   };
+
+  
+const cartPage2 = async (req, res) => {
+  const isLogged = determineIsLogged(req.session);
+  const { primaryCategories, otherCategories } = await fetchCategoryMiddleware.fetchCategories();
+  const emailId = (req.session.user) ? req.session.user.email : req.session.userNew.email;
+  try {
+    const user = await UserDB.findOne({ email: emailId });
+    if (!user) {
+      return res.status(404).send('User not found');
+    }
+
+    const cartItems = await CartDB.find({ userId: user._id });
+    
+    if(cartItems.length>0){
+      
+      const productIds = cartItems.map(cartItem => cartItem.productId);
+
+
+     
+const products = await ProductDB.find({
+_id: { $in: productIds  },
+isAvailable:true
+})
+.populate('categoryId')
+
+   
+
+    
+      console.log('cartItems length',cartItems.length);
+      console.log(cartItems); //no need
+      console.log('productId collected from cartList' ,productIds.length);
+      console.log(productIds);       
+      console.log('productList by fetch in cartList productId',products.length);
+      console.log(products);
+     // till  working well    no more
+
+    // console.log(1,'ikiki');
+
+      
+
+    const detailedCartItems = cartItems.map(cartItem => {
+      const product = products.find(p => p._id.equals(cartItem.productId));
+      return {
+        // asdfg: product,
+
+          productId: cartItem._id,
+          quantity: cartItem.quantity,
+          name: product.name,
+          images: product.image,
+          stock: product.stock,
+          unitPrice: product.price,
+          price: cartItem.price,
+          description: product.description,
+          isAvailable: product.isAvailable,
+      };
+  });
+  console.log(detailedCartItems);
+  
+    console.log(2, 'ikikjgvhcgcgi');
+    
+   
+
+    let totalPrice = 0;
+for (const cartItem of products) {
+totalPrice += cartItem.price;
+}
+console.log(totalPrice);
+const taxValue = 10.00; // You can change this to your actual tax value
+const grandTotal = totalPrice + taxValue;
+console.log('hello welcome    cart page');
+console.log(detailedCartItems[0].price);
+res.render('user/cart', { cartItems: products, isLogged, primaryCategories, otherCategories ,totalprice:totalPrice,taxValue, grandTotal });
+
+    }else{
+   // console.log(404);
+      res.render('user/cart', {isLogged, primaryCategories, otherCategories  });
+    }
+ // console.log(878787);
+  } catch (err) {
+    // console.error('Error fetching cart items:', err);
+    res.status(500).send('Internal Server Error right now');
+  }
+};
+
   
 
 
 
 
 
-const addtoCart=async (req,res)=>{
+const addtoCart2=async (req,res)=>{
     const isLogged = determineIsLogged(req.session);
     const { primaryCategories, otherCategories } = await fetchCategoryMiddleware.fetchCategories();
 
     const email=(req.session.user)?req.session.user.email:req.session.userNew.email
     const productId= req.params.id
-    // console.log(email);
-    // console.log(productId);
+
     try{
       const user = await UserDB.findOne({email:email});
       const product = await ProductDB.findById(productId);
@@ -90,20 +216,20 @@ const addtoCart=async (req,res)=>{
     if (!user || !product.stock>0) {
         // Handle user or product not found
         console.log(66666);
-        return res.redirect(`/cart/${req.params.id}`)
+        req.session.cartProduct=true
+        return res.redirect(`/productdetails/${req.params.id}`)
       }
-
       if (product.stock >= newQuantity) {
+
         const cartItem = new CartDB({
             userId: user._id,
             productId: product._id,
             quantity: newQuantity,
             price: product.price * newQuantity,
         });
-
         await cartItem.save();
     }
-
+   
     // Redirect to the cart page after a successful addition
     res.redirect('/cartpage');
 
@@ -113,6 +239,56 @@ const addtoCart=async (req,res)=>{
     res.status(500).send('Internal Server Error');
 }
 }
+
+const addtoCart = async (req, res) => {
+  const isLogged = determineIsLogged(req.session);
+  const { primaryCategories, otherCategories } = await fetchCategoryMiddleware.fetchCategories();
+
+  const email = (req.session.user) ? req.session.user.email : req.session.userNew.email;
+  const productId = req.params.id;
+
+  try {
+      const user = await UserDB.findOne({ email: email });
+      const product = await ProductDB.findById(productId);
+      const newQuantity = 1;
+
+      if (!user || !product || product.stock <= 0) {
+          // Handle user not found or product not available
+          req.session.cartProduct = true;
+          return res.redirect(`/productdetails/${req.params.id}`);
+      }
+
+      let cartItem = await CartDB.findOne({ userId: user._id, productId: product._id });
+
+      if (cartItem) {
+          // If the product already exists in the cart, update its quantity and price
+          await CartDB.findOneAndUpdate(
+              { userId: user._id, productId: product._id },
+              {
+                  $inc: { quantity: newQuantity }, // Increment quantity
+                  $set: { price: cartItem.price + (product.price * newQuantity) } // Update price
+              }
+          );
+      } else {
+          // If the product doesn't exist, create a new cart item
+          cartItem = new CartDB({
+              userId: user._id,
+              productId: product._id,
+              quantity: newQuantity,
+              price: product.price * newQuantity,
+          });
+          await cartItem.save();
+      }
+
+      // Redirect to the cart page after a successful addition
+      res.redirect('/cartpage');
+  } catch (err) {
+      // Handle errors appropriately
+      console.error(err);
+      res.status(500).send('Internal Server Error');
+  }
+};
+
 
 
 
@@ -126,6 +302,7 @@ const removeFromCart = async (req, res) => {
   const emailId = (req.session.user) ? req.session.user.email : req.session.userNew.email;
 
   try {
+    console.log('123456789asdfghjk');
     const user = await UserDB.findOne({ email: emailId });
 
     if (!user) {

@@ -33,6 +33,8 @@
                                                     <% } else { %>
                                                         <button class="btn btn-info unblock-btn" data-user-id="<%= data._id %>">to list</button>
                                                     <% } %>
+                                                    <button class="btn btn-info edit-btn" data-user-id="<%= data._id %>">edit</button>
+
                                                 </td>
                                             </tr>
                                         <% }); %>
@@ -87,6 +89,25 @@
                                 }).then((willUnblock) => {
                                     if (willUnblock) {
                                         window.location.href = `/admin/show/${categoryId}`;
+                                    }
+                                });
+                            });
+                        });
+
+                        // /categoryEdited/:id
+
+                        document.querySelectorAll('.edit-btn').forEach(btn => {
+                            btn.addEventListener('click', function() {
+                                const categoryId = this.getAttribute('data-user-id');
+                                swal({
+                                    title: 'Are you sure?',
+                                    text: 'Do you want  to edit  this category?',
+                                    icon: 'warning',
+                                    buttons: ['Cancel', 'to edit '],
+                                    dangerMode: true,
+                                }).then((willBlock) => {
+                                    if (willBlock) {
+                                        window.location.href = `/admin/edit/${categoryId}`;
                                     }
                                 });
                             });

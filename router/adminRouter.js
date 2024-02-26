@@ -26,10 +26,14 @@ router.get('/unblocked/:id',adminSessionMiddleware.requireAdmin, userManagement.
 const categoryManagement = require('../controller/categoryManagement.js');
 router.get('/categoryList', adminSessionMiddleware.requireAdmin, categoryManagement.categorylist);
 router.get('/addCategory', adminSessionMiddleware.requireAdmin, categoryManagement.addCategory);
+
 router.post('/categoryAdded', adminSessionMiddleware.requireAdmin, categoryManagement.checkCategory);
-router.post('/newCategoryAdded',adminSessionMiddleware.requireAdmin, categoryManagement.categoryAddedPost)
+router.post('/categoryAdded2', adminSessionMiddleware.requireAdmin, categoryManagement.checkCategory2);
+router.post('/newCategoryAdded',adminSessionMiddleware.requireAdmin, categoryManagement.categoryAddedPost)  
 router.get('/show/:id',adminSessionMiddleware.requireAdmin,categoryManagement.show);
 router.get('/hide/:id',adminSessionMiddleware.requireAdmin,categoryManagement.hide);
+router.get('/edit/:id', adminSessionMiddleware.requireAdmin, categoryManagement.editCategory);
+router.post('/categoryEdited/:id',()=>console.log('eeee'), adminSessionMiddleware.requireAdmin, categoryManagement.editCategoryPost);
 
 
 
