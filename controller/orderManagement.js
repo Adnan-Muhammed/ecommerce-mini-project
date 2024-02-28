@@ -28,42 +28,49 @@ const orderUpdates = async (req, res) => {
 
 
 // user OrderPlacing
-const placeOrder = async (req, res) => {
+const placeOrder2 = async (req, res) => {
   const emailId = req.session.user
     ? req.session.user.email
     : req.session.userNew.email;
   try {
     const { selectedAddress, orderItems, shipping, tax, grandTotal } =
       req.body.orderData;
-    // console.log(77777);
-    // console.log(orderItems);
-    // console.log(6666);
-    // for (const { productId, quantity } of orderItems) {
-    //   await ProductDB.( productId, quantity );
-    //  }
-    //update  product stock when order placed
-    for (const { productId, quantity } of orderItems) {
-      await ProductDB.findOneAndUpdate(
+console.log('uiuiu');
+      console.log(orderItems);
+
+      for (const { productId, quantity } of orderItems) {
+        await ProductDB.findOneAndUpdate(
         { _id: productId },
         { $inc: { stock: -quantity } }
         // { new: true } // Return the updated document
       );
     }
+   
+    for (const { productId, quantity } of orderItems) {
+      const cartItem = await CartDB.findOne({ productId: productId });
+      if (cartItem) {
+        const updatedStock = cartItem.stock - quantity;
+        const updatedQuantity = Math.min(cartItem.quantity, updatedStock);
 
+        await CartDB.findOneAndUpdate(
+          { productId: productId },
+          { $set: { stock: updatedStock, quantity: updatedQuantity } }
+        );
+      }
+    }
+    
+    
+    
     const user = await UserDB.findOne(
       { email: emailId },
       { _id: 1, billingDetails: { $elemMatch: { _id: selectedAddress } } }
     );
-
     const billingAddress = user.billingDetails[0];
-
     // cart updation
     await CartDB.deleteMany({ userId: user._id });
 
     console.log(user.email);
     console.log("updating here");
-
-    // Create a new order using the OrderDB model
     const newOrder = new OrderDB({
       userId: user._id,
       userEmailId: emailId,
@@ -89,6 +96,136 @@ const placeOrder = async (req, res) => {
     res.status(500).send("Internal Server Error");
   }
 };
+
+
+
+
+
+
+// user OrderPlacing
+const placeOrder = async (req, res) => {
+  const emailId = req.session.user
+    ? req.session.user.email
+    : req.session.userNew.email;
+  try {
+    const { selectedAddress, orderItems, shipping, tax, grandTotal } =
+      req.body.orderData;
+console.log('uiuiu');
+      console.log(orderItems);
+
+    //   for (const { productId, quantity } of orderItems) {
+    //     await ProductDB.findOneAndUpdate(
+    //     { _id: productId },
+    //     { $inc: { stock: -quantity } }
+    //     // { new: true } // Return the updated document
+    //   );
+    // }
+   
+    // for (const { productId, quantity } of orderItems) {
+    //   let i=1
+    //   const cartItem = await CartDB.findOne({ productId: productId }).skip(i-1);
+    //   if (cartItem) {
+    //     const updatedStock = cartItem.stock - quantity;
+    //     const updatedQuantity = Math.min(cartItem.quantity, updatedStock);
+
+    //     await CartDB.findOneAndUpdate(
+    //       { productId: productId },
+    //       { $set: { stock: updatedStock, quantity: updatedQuantity } }
+    //     );
+    //   }
+    //   i++
+    // }
+
+
+
+
+    // for (const { productId, quantity } of orderItems) {
+    //   // Update product stock in ProductDB
+    //   await ProductDB.findOneAndUpdate(
+    //     { _id: productId },
+    //     { $inc: { stock: -quantity } }
+    //   );
+    
+    //   // Update cart items in CartDB
+    //   const cartItems = await CartDB.find({ productId: productId });
+    //   for (const cartItem of cartItems) {
+    //     const updatedStock = cartItem.stock - quantity;
+    //     const updatedQuantity = Math.min(cartItem.quantity, updatedStock);
+    //     const price = cartItem.price /cartItem.stock
+    //     const updatedPrice = Math.min(cartItem.price , price)
+    //     await CartDB.findOneAndUpdate(
+    //       { _id: cartItem._id }, // Update based on cart item's _id
+    //       { $set: { stock: updatedStock, quantity: updatedQuantity ,price:updatedPrice } }
+    //     );
+    //   }
+    // }
+    
+    for (const { productId, quantity } of orderItems) {
+      // Update product stock in ProductDB
+      await ProductDB.findOneAndUpdate(
+          { _id: productId },
+          { $inc: { stock: -quantity } }
+      );
+  
+      // Update cart items in CartDB
+      const cartItems = await CartDB.find({ productId: productId });
+      for (const cartItem of cartItems) {
+          const updatedStock = cartItem.stock - quantity;
+          const updatedQuantity = Math.min(cartItem.quantity, updatedStock);
+          // Adjust the price based on the updated stock
+        
+          console.log( cartItem.stock );
+          const cartPrice = cartItem.price/cartItem.quantity
+          console.log(cartPrice,'676','ioio')
+          // const updatedPrice = (updatedStock < cartItem.stock) ? (cartItem.price / cartItem.stock) * updatedStock : 0;
+          // const updatedPrice = (updatedStock < cartItem.stock) ? cartItem.price : 0;
+          const updatedPrice = cartPrice* updatedQuantity
+          await CartDB.findOneAndUpdate(
+              { _id: cartItem._id }, // Update based on cart item's _id
+              { $set: { stock: updatedStock, quantity: updatedQuantity, price: updatedPrice } }
+          );
+      }
+  }
+  
+    
+    
+    const user = await UserDB.findOne(
+      { email: emailId },
+      { _id: 1, billingDetails: { $elemMatch: { _id: selectedAddress } } }
+    );
+    const billingAddress = user.billingDetails[0];
+    // cart updation
+    await CartDB.deleteMany({ userId: user._id });
+
+    console.log(user.email);
+    console.log("updating here");
+    const newOrder = new OrderDB({
+      userId: user._id,
+      userEmailId: emailId,
+      billingAddress: billingAddress,
+      orderItems,
+      shipping,
+      tax,
+      grandTotal,
+      // paymentMethod: orderDetails.paymentMethod, / now its work default
+      // paymentStatus: orderDetails.paymentStatus,
+      // orderStatus: orderDetails.orderStatus,
+    });
+   
+    const savedOrder = await newOrder.save();
+
+    res.status(201).json(savedOrder);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Internal Server Error");
+  }
+};
+
+
+
+
+
+
 
 const orderPlacedSuccess = async (req, res) => {
   const isLogged = determineIsLogged(req.session);

@@ -64,7 +64,7 @@
                                                         <div id="alertDiv" data-product-id="<%= item.productId %>"><p style="color:darkred;"></p></div> -->
 
                                                         <!-- <a  style="background-color: aqua;"  href="/cart/<%= item.productId %>"><button class="btn btn-info addToCart-btn" data-product-id="<%= item.productId %>" >Add To Cart</button></a> -->
-                                                        <a  style="background-color: aqua;"  href="/cart/<%= item.productId %>"><button class="btn  addto-cart" type="button"data-product-id="<%= item.productId %>" tabindex="0">Add To Cart</button></a> 
+                                                        <a  style="background-color: aqua;"  href="/cart/<%= item.productId%>"><button class="btn  addto-cart" type="button"data-product-id="<%= item.productId %>" tabindex="0">Add To Cart</button></a> 
                                                         
                                                         <!-- <a style="background-color: rgb(40, 156, 176);" href="/cart/<%= item.productId %>"
                                                              class="btn btn-addto-cart" type="button" tabindex="0">Add To Cart
@@ -75,7 +75,8 @@
                                             </td>
                                            
                                             <td class="text-center small--hide">
-                                                <a href="" class="btn btn--secondary wishlist__remove" title="Remove tem" data-stock="<%= item.stock %>"   data-product-id="<%= item.productId %>"><i class="icon icon anm anm-times-l"></i></a>
+                                                <!-- <a href="/remove/wishlist/<%=item.productId%>" class="btn btn--secondary wishlist__remove" title="Remove tem" data-stock="<%= item.stock %>"   data-product-id="<%= item.productId %>"><i class="icon icon anm anm-times-l"></i></a> -->
+                                                <a href="#" class="btn btn--secondary wishlist__remove" title="Remo" data-stock="<%= item.stock %>"   data-wishlist-id="<%= item.wishlistId %>"><i class="icon icon anm anm-times-l"></i></a>
 
                                             
                                             </td>
@@ -114,31 +115,48 @@
 
 <!-- remove product from wishlist -->
 
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-      const removeButtons = document.querySelectorAll('.wishlist__remove');
-      removeButtons.forEach(button => {
-        button.addEventListener('click', function (event) {
-          event.preventDefault();
-          const productId = button.dataset.productId;
-          fetch(`/wishlist/remove/${productId}`, {
-            method: 'GET',
-          })
-          .then(response => {
-            if (!response.ok) {
-              throw new Error(`HTTP error! Status: ${response.status}`);
-            }
-            window.location.reload();
-          })
-          .catch(error => {
-            console.error('Error removing product:', error);
-          });
+
+
+
+
+
+
+
+
+  <!-- remove wishlist -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const removeLinks = document.querySelectorAll('.wishlist__remove');
+        removeLinks.forEach(link => {
+            link.addEventListener('click', async (event) => {
+                event.preventDefault();
+                const productId = link.dataset.wishlistId
+                console.log(productId);
+
+                try {
+                    const response = await fetch(`/remove/wishlist/${productId}`, {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    });
+                    const responseData = await response.json();
+                    if (!response.ok) {
+                        throw new Error(responseData.error || 'Failed to remove item from wishlist');
+                    }
+                    // link.closest('.wishlist-item').remove();
+                    window.location.reload()
+
+                    // alert(responseData.message );
+                    console.log('Item removed from wishlist');
+                } catch (error) {
+                    console.error('Error:', error.message);
+                    alert(error.message || 'Internal Server Error');
+                }
+            });
         });
-      });
     });
-  </script>
-
-
+</script>
 
 
 

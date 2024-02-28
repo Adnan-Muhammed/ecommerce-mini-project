@@ -12,9 +12,11 @@ const cartItemSchema = new mongoose.Schema({
     ref: 'productDB',
     required: true,
   },
+  stock:{
+    type :Number,
+  },
   quantity: {
     type: Number,
-    default: 1,
   },
   price: {
     type: Number, // Add a field to store the price for this cart item

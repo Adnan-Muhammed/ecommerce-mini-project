@@ -320,22 +320,33 @@ const productDetail = async (req, res) => {
   try {
     // console.log(isLogged);
     const productId = req.params.id;
-    // console.log(productId,1111);
+    console.log(111,'productId is ',productId);
 
     // Extract the valid ObjectId from the provided string
     const validObjectId = new mongoose.Types.ObjectId(productId);
 
     // Use the valid ObjectId to query the database
-    const productDetails = await productDB.findById(validObjectId);
+    // const productDetails = await productDB.findById(validObjectId);
 
-    // const productDetails=await productDB.findById(productId)
+    const productDetails=await productDB.findById(productId)
     // console.log(productDetails,444);
     // console.log(222);
     // const session = req.session.cartProduct
     const session = (req.session.cartProduct)??null
     delete req.session.cartProduct
+    
+
+    let wishlistsession =  (req.session.wishlist)??null
+    delete req.session.wishlist
+
+
+console.log(wishlistsession);
+console.log('rtyuio');
+console.log(productDetails);
+
     res.render("user/product-detail", {
       session,
+      wishlistsession,
       productDetails,
       isLogged,
       primaryCategories,
@@ -406,7 +417,7 @@ const productListUser = async (req, res) => {
     //   .skip(offset)
     //   .limit(limit);
 
-    console.log(products);
+    // console.log(products);
 
 
 

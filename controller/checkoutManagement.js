@@ -33,33 +33,46 @@ const checkoutPage = async (req, res) => {
       const products = await ProductDB.find({ _id: { $in: productIds } });
       const detailedCartItems = cartItems.map(cartItem => {
         const product = products.find(p => p._id.equals(cartItem.productId));
-        return {
-          _id:cartItem._id,
-          userId:cartItem.userId,
-          productId: cartItem.productId,
-          quantity: cartItem.quantity,
-          name:product.name,
-          images: product.image,
-          stock: product.stock,
-          unitPrice: product.price,
-          price:cartItem.price,
-          description: product.description,
-          isAvailable: product.isAvailable,
-        };
+        if(product.stock>=1){
+          return {
+            _id:cartItem._id,
+            userId:cartItem.userId,
+            productId: cartItem.productId,
+            quantity: cartItem.quantity,
+            name:product.name,
+            images: product.image,
+            stock: product.stock,
+            unitPrice: product.price,
+            price:cartItem.price,
+            description: product.description,
+            isAvailable: product.isAvailable,
+          };
+        }else{
+          return null;
+        }
       });
+      
     
   // console.log(987654321);
       let totalPrice = 0;
+    // for (const cartItem of detailedCartItems) {
+    //     totalPrice += cartItem.price;
+    //     }
+
     for (const cartItem of detailedCartItems) {
-        totalPrice += cartItem.price;
-        }
+      if (cartItem && cartItem.stock >= 1) { // Check if cartItem exists and stock is greater than or equal to 1
+          totalPrice += cartItem.price;
+      }
+  }
+
+
       const taxValue = 10.00; // You can change this to your actual tax value
       const grandTotal = totalPrice + taxValue
       const billingDetails = user.billingDetails || []; 
    // console.log('hello welcome checkout page');
    // console.log(detailedCartItems[0].images[0]);
 
-      res.render('user/checkout', { cartItems: detailedCartItems, billingDetails ,isLogged, primaryCategories, otherCategories ,totalprice:totalPrice,taxValue, grandTotal });
+      res.render('user/checkout', { cartItems: detailedCartItems.filter(Boolean), billingDetails ,isLogged, primaryCategories, otherCategories ,totalprice:totalPrice,taxValue, grandTotal });
       }else{
 
      // console.log(9999999912345678);

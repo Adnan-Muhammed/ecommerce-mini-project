@@ -27,84 +27,44 @@ const wishlist = async (req, res) => {
    console.log(56789);
       const wishlistItems = await WishlistDB.find({ userId: user._id });
       console.log('hj');
-      
       if(wishlistItems.length>0){
         console.log(1);
-        
         const productIds = wishlistItems.map(wishlistItems => wishlistItems.productId);
         console.log(2,'www');
 
+            const products = await ProductDB.find({
+              _id: { $in: productIds  },
+              isAvailable:true
+              })
+              .populate('categoryId')
 
-       
-
-      //   const products = await ProductDB.find({ 
-      //     _id: { $in: productIds },
-      //     isAvailable: false 
-      // })
-      // .populate('categoryId',null, { name: "KIDS" });
-
-      // Find products where categoryId's isAvailable is true
-
-
-// const products = await ProductDB.find({ 
-//   _id: { $in: productIds },
-//   isAvailable: true 
-// }).populate({
-//   path: 'categoryId',
-//   match: { isAvailable: false } // Match condition for categoryId's isAvailable field
-// });
-
-const products = await ProductDB.find({
-  _id: { $in: productIds  },
-  isAvailable:true
-  })
-  .populate('categoryId')
-
-     
-
-      
-        console.log(3,'eeeg cartItem look at productId');
-        console.log(1,wishlistItems); //no need
+              console.log('hello',12345);
+console.log(1,wishlistItems);
+        console.log(1,wishlistItems[0].productId); //no need
         console.log('next');
-        console.log(productIds);
+        // console.log(productIds);
         console.log('next products look at productId populated');
-        console.log(products);
+        // console.log(products);
        // till  working well    no more
-
       console.log(1,'ikiki');
-
-        
         const detailedwishlistItems = wishlistItems.map(wishlist => {
           const product = products.find(p => p._id.equals(wishlist.productId ));
           return {
-            productId: wishlist._id,
-            // quantity: product.quantity,
+            productId: wishlist.productId,
+            wishlistId: wishlist._id,
             name: product.name,
             images: product.image,
-
-
             stock: product.stock,
             unitPrice: product.price,
             // price: cartItem.price,
             // description: product.description,
             // isAvailable: product.isAvailable,
-
-
           };
       });
-      console.log(detailedwishlistItems);
+      // console.log(detailedwishlistItems);
       console.log(2, 'ikiki');
-  
-//       let totalPrice = 0;
-// for (const cartItem of detailedCartItems) {
-//   totalPrice += cartItem.price;
-// }
-// const taxValue = 10.00; // You can change this to your actual tax value
-// const grandTotal = totalPrice + taxValue;
-console.log('hello welcome    wishlist');
-console.log(detailedwishlistItems[0].images[0]);
+// console.log(detailedwishlistItems[0].images[0]);
 res.render('user/wishlist', { wishlistItems: detailedwishlistItems, isLogged, primaryCategories, otherCategories });
-
       }else{
      // console.log(404);
         res.render('user/wishlist', {isLogged, primaryCategories, otherCategories  });
@@ -123,88 +83,58 @@ res.render('user/wishlist', { wishlistItems: detailedwishlistItems, isLogged, pr
 const addtoWishlist = async (req, res) => {
     const isLogged = determineIsLogged(req.session);
     const { primaryCategories, otherCategories } = await fetchCategoryMiddleware.fetchCategories();
-  
     const email = (req.session.user) ? req.session.user.email : req.session.userNew.email;
     const productId = req.params.id;
-  
     try {
         const user = await UserDB.findOne({ email: email });
         const product = await ProductDB.findById(productId);
-        // const newQuantity = 1;
-  
         if (!user || !product || product.stock <= 0) {
-            // Handle user not found or product not available
             req.session.wishlistProduct = true;
-
             return res.redirect(`/productdetails/${req.params.id}`);
         }
-  
-        // let cartItem = await CartDB.findOne({ userId: user._id, productId: product._id });
-  
-        // if (cartItem) {
-        //     // If the product already exists in the cart, update its quantity and price
-        //     await CartDB.findOneAndUpdate(
-        //         { userId: user._id, productId: product._id },
-        //         {
-        //             $inc: { quantity: newQuantity }, // Increment quantity
-        //             $set: { price: cartItem.price + (product.price * newQuantity) } // Update price
-        //         }
-        //     );
-        // } else {
-            // If the product doesn't exist, create a new cart item
-            wishlistItem = new WishlistDB({
-                userId: user._id,
-                productId: product._id,
-                // quantity: newQuantity,
-                // price: product.price * newQuantity,
-            });
-            await wishlistItem.save();
-        // }
-  
-        // Redirect to the cart page after a successful addition
-        res.redirect('/wishlist');
+        let wishlistItem = await WishlistDB.findOne({ userId: user._id, productId: product._id });
+        if(!wishlistItem){
+          wishlistItem = new WishlistDB({
+              userId: user._id,
+              productId: product._id,
+          });
+          await wishlistItem.save();
+      res.redirect('/wishlist');
+        }else{
+          req.session.wishlist=true
+          res.redirect(`/productdetails/${productId}`)
+        }
     } catch (err) {
-        // Handle errors appropriately
         console.error(err);
         res.status(500).send('Internal Server Error');
     }
   };
   
 
- const removeFromWishlist= async (req, res) => {
-    const productIdToRemove = req.params.productId;
-    const emailId = (req.session.user) ? req.session.user.email : req.session.userNew.email;
-  
+
+
+
+
+
+const removeFromWishlist = async (req, res) => {
+    const wishlistIdToRemove = req.params.wishlistId;
+    console.log(wishlistIdToRemove);
+    console.log(1234);
     try {
-      console.log('123456789asdfghjk');
-      const user = await UserDB.findOne({ email: emailId });
-  
-      if (!user) {
-        // console.log('User not found');
-        return res.status(404).send('User not found');
-      }
-  
-      const idstr=user._id.toString()
-      // console.log(22);
-      // console.log(user._id);
-      // console.log(idstr);
-  
-      // console.log(productIdToRemove);
-      // console.log(55);
-  
-      // Find and remove the item from the cart
-      // await CartDB.findOneAndDelete({ userId: idstr, productId: productIdToRemove });
-      await WishlistDB.findOneAndDelete({ _id:productIdToRemove });//first
-  
-  
-      // Redirect back to the cart page or send a success response
-      res.redirect('/wishlist'); // You can change this to the appropriate URL
-  
-    } catch (err) {
-      // console.error('Error removing product from cart:', err);
-      res.status(500).send('Internal Server Error');
+      const removedItem =   await WishlistDB.findOneAndDelete({ _id: wishlistIdToRemove });//first
+        // const removedItem = await WishlistDB.findByIdAndRemove(wishlistIdToRemove);
+        if (!removedItem) {
+            return res.status(404).json({ error: 'Wishlist item not found' });
+        }
+        res.status(200).json({ message: 'Item removed from wishlist successfully' });
+    } catch (error) {
+        console.error('Error removing item from wishlist:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
     }
-  };
+};
+
+
+  
 
 module.exports={
     addtoWishlist,

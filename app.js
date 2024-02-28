@@ -43,6 +43,19 @@ app.set("views", path.join(__dirname, "views")); // Assuming your views are in a
 
 app.use(express.static(path.join(__dirname, "public")));
 
+// app.get('/wishlist/remove/:wishlistId', async (req,res)=>{
+//   const WishlistDB = require('./models/wishlist');
+//   const wishlistIdToRemove = req.params.wishlistId
+
+//   await WishlistDB.findOneAndDelete({ _id: wishlistIdToRemove });//first
+  
+  
+//       // Redirect back to the cart page or send a success response
+//       res.redirect('/wishlist'); // You can change this to the appropriate URL
+  
+// });
+
+
 app.use("/", userRoute);
 app.use("/admin", adminRoute);
 app.use(cartRoute);

@@ -115,17 +115,21 @@
                             </div>                                
                             <div  class="product-form__item--submit">
                                 <!-- <form style="background-color: cadetblue;" class="variants add" action="#" onclick="window.location.href='cart.html'"method="post"> -->
+                                    <%if(locals.session){%>
+                                        <span class="alert" style="color: brown;">out of stock</span>  
+                                    <%}%>
                                     <div  style="background-color: cadetblue;">
                                         <a style="background-color: cadetblue; color: beige;"   href="/cart/<%= productDetails._id %>"><button class="btn btn-addto-cart" type="button" tabindex="0">Add To Cart</button></a> 
                                     </div>
                                 <!-- </form> -->
-                                <br>
-
+                                <%if(locals.wishlistsession){%>
+                                    <span class="alert" style="color: brown;">already added in wishlist</span>  
+                                <%}%>
+                              <br>
                                 <div style="background-color:brown;"  style="margin-top: 10px;" class="shopify-payment-button" data-shopify="payment-button">
                                     <a  style="background-color:brown;"  href="/wishList/<%= productDetails._id %>"><button class="btn btn-addto-wishList" type="button" tabindex="0">Add To WishList</button></a> 
                                     <!-- <button type="button" class="shopify-payment-button__button shopify-payment-button__button--unbranded"> <i class="icon anm anm-heart-l" aria-hidden="true"></i>ADD TO WISHLIST</button> -->
                                 </div>
-
 
                             </div>
                         </div>
@@ -148,7 +152,19 @@
     <!--End Product Fearure-->
     </div>
 
- 
+ <script>
+    document.addEventListener('DOMContentLoaded', () => {
+
+        const alertion = document.querySelectorAll('.alert')
+        if (alertion) {
+                setTimeout(() => {
+                    alertion.style.display = 'none';
+                }, 3000); // Adjust the timeout period (in milliseconds) as needed
+            }
+
+    })
+
+ </script>
 <%-include('footer')-%>   
     
 </body>

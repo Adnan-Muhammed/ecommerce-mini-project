@@ -26,7 +26,8 @@ const wishlistManagement = require('../controller/wishlistController')
 
 router.get('/wishlist',userSessionHandling.userlogged,wishlistManagement.wishlist)
 router.get('/wishlist/:id', userSessionHandling.userlogged,wishlistManagement.addtoWishlist)
-router.get('/wishlist/remove/:productId',userSessionHandling.userlogged, wishlistManagement.removeFromWishlist);
+router.get('/remove/wishlist/:wishlistId', (req,res,next)=>{console.log(req.params.wishlistId,'12345_____----'),next()}, userSessionHandling.userlogged,wishlistManagement.removeFromWishlist);
+// router.get('/wishlist/remove/:wishlistId', (req,res,next)=>{console.log(req.params.wishlistId),next()}, userSessionHandling.userlogged,wishlistManagement.removeFromWishlist);
 
 
 

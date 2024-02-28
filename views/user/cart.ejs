@@ -24,7 +24,7 @@
                                     <th colspan="2" class="text-center" >Product</th>
                                     <th class="text-center">Price</th>
                                     <th class="text-center">current stock</th>
-                                    <th class="text-center">Quantity</th>
+                                    <th style=" width: 180px;" class="text-center">Quantity</th>
                                     <th  class="text-right">Total</th>
                                     <th class="action">&nbsp;</th>
                                 </tr>
@@ -55,22 +55,34 @@
 
                                             </td>
                                             <td class="cart__update-wrapper cart-flex-item text-right">
-                                                <div class="cart__qty text-center">
-                                                    <div class="qtyField"  >
-
-                                                        <a data-product-id="<%= item.productId %>" class="qtyBtn minus" onclick="qty('minus', '<%= item.productId %>')"><i class="icon icon-minus"></i></a>
-                                                        <input data-product-id="<%= item.productId %>" data-stock="<%= item.stock %>" class="cart__qty-input qty" type="text" name="updates[]" max="<%= item.stock %>" value="<%= item.quantity %>" pattern="[0-9]*">
-                                                        <a data-product-id="<%= item.productId %>" class="qtyBtn plus" onclick="qty('plus', '<%= item.productId %>')"><i class="icon icon-plus"></i></a>
+                                                <div class="cart__qty text-center"   style=" width: 180px;" >
+                                                    <div class="qtyField"    >
+                                                        <% if (item.stock >= 1) { %>
+                                                            <a data-product-id="<%= item.productId %>" class="qtyBtn minus" onclick="qty('minus', '<%= item.productId %>')"><i class="icon icon-minus"></i></a>
+                                                            <input data-product-id="<%= item.productId %>" data-stock="<%= item.stock %>" class="cart__qty-input qty" type="text" name="updates[]" max="<%= item.stock %>" value="<%= item.quantity %>" pattern="[0-9]*">
+                                                            <a data-product-id="<%= item.productId %>" class="qtyBtn plus" onclick="qty('plus', '<%= item.productId %>')"><i class="icon icon-plus"></i></a>
+                                                        <% } else { %>
+                                                            <div style>
+                                                            <!-- <p style="color: red;">Product stock is less than 1. Please remove it from your cart before checkout.</p> -->
+                                                            </div>
+                                                        <% } %>
                                                         <div id="alertDiv" data-product-id="<%= item.productId %>"><p style="color:darkred;"></p></div>
-
                                                     </div>
                                                 </div>
                                             </td>
+                                            
+
+
                                             <td  class="text-right small--hide cart-price">
+                                                <% if (item.stock >= 1) { %>
+
                                                  <div id="productPrice" value="<%= item.price %>" data-product-id="<%= item.productId%>"  >
                                                     <span  class="money">$<%= item.price %></span>
                                                     
                                                  </div>
+
+                                                 <% } %>
+
                                                 <div id="alertDiv2" data-product-id="<%= item.productId %>"><p style="color:darkred;"></p></div>
                                             </td>
                                             <td class="text-center small--hide">
@@ -153,7 +165,7 @@
     
     <%-include('footer')-%>
   
-  <script>
+  <!-- <script>
     const checkoutButton = document.getElementById('cartCheckout');
     function goToNextPage() {
       checkoutButton.disabled = false;
@@ -163,7 +175,59 @@
       });
     }
     goToNextPage();
-  </script>
+  </script> -->
+
+
+  <script>
+    const checkoutButton = document.getElementById('cartCheckout');
+    function goToNextPage() {
+      checkoutButton.disabled = false;
+      checkoutButton.addEventListener('click', async function(event) {
+        event.preventDefault();
+        
+        const productStockInfo = await checkProductStock();
+        
+        const productsWithStockLessThanOne = productStockInfo.filter(product => product.stock < 1);
+
+        if (productsWithStockLessThanOne.length > 0) {
+          // Display messages for products with stock less than 1
+          productsWithStockLessThanOne.forEach(product => {
+            const alertDiv = document.querySelector(`#alertDiv[data-product-id="${product.productId}"]`);
+            alertDiv.innerHTML = '<p style="color: red;">Product stock is less than 1. Please remove it from your cart before checkout.</p>';
+          });
+        } else {
+          // If no product has stock less than 1, proceed to checkout
+          window.location.href = '/checkout';
+        }
+      });
+    }
+
+    async function checkProductStock() {
+      const productStocks = document.querySelectorAll('[data-product-stock]');
+      const productStockInfo = [];
+      productStocks.forEach(stockElement => {
+        const productId = stockElement.dataset.productId;
+        const stock = parseInt(stockElement.dataset.productStock);
+        productStockInfo.push({ productId, stock });
+      });
+      return productStockInfo;
+    }
+    
+    goToNextPage();
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 <!-- remove product from cart -->
@@ -175,6 +239,7 @@
         button.addEventListener('click', function (event) {
           event.preventDefault();
           const productId = button.dataset.productId;
+          console.log(productId);
           fetch(`/cart/remove/${productId}`, {
             method: 'GET',
           })
