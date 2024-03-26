@@ -288,19 +288,15 @@ for (const item of detailedCartItems) {
 
   // Find other carts containing the same product
   const otherCarts = await CartDB.find({ productId: productId, userId: { $ne: user._id } });
-  
   for (const cart of otherCarts) {
-    
    if(cart.quantity> product.stock){
     await CartDB.findByIdAndUpdate(cart._id, { quantity: product.stock ,price:product.price * product.stock,stock:product.stock});
     }
     else{
       await CartDB.findByIdAndUpdate(cart._id, { stock:product.stock});  
     }
-    
 }
 }
-
     // Log transaction if payment is fulfilled
     if (paymentStatus === "fulfilled") {
       const transaction = {
@@ -311,11 +307,9 @@ for (const item of detailedCartItems) {
       user.transactions.push(transaction);
       await user.save();
     }
-
     // Return success response
     console.log('---__--_____');
     res.status(201).json(savedOrder);
-
   } catch (err) {
     console.error(err);
     res.status(500).send("Internal Server Error");
@@ -351,10 +345,8 @@ const orderStatus = async (req, res) => {
   try {
     const orderId = req.params.orderId;
     const newStatus = req.body.status;
-
     console.log(orderId, "admin side");
     console.log(newStatus, "admin side");
-
     const updatedOrder = await OrderDB.findByIdAndUpdate(
       orderId,
       { $set: { "orderStatus.type": newStatus } },

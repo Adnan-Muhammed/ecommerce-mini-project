@@ -50,13 +50,10 @@ const pdfDownloading = (req, res) => {
     // Set response headers for PDF download
     res.setHeader('Content-Disposition', 'attachment; filename="report.pdf"');
     res.setHeader('Content-Type', 'application/pdf');
-    
     // Pipe the PDF document to the response
     doc.pipe(res);
-
     // Add content to the PDF document
     doc.fontSize(14).text('Recent Sales Report', { align: 'center' }).moveDown();
-
     deliveredOrders.forEach(order => {
         doc.text(`Date: ${order.orderDate.toLocaleDateString()}`);
         doc.text(`Invoice: ${order._id}`);
@@ -65,7 +62,6 @@ const pdfDownloading = (req, res) => {
         doc.text(`Status: ${order.orderStatus.type}`);
         doc.moveDown();
     });
-
     // Finalize the PDF document
     doc.end();
 };
@@ -76,9 +72,12 @@ const salesReport=  async (req, res) => {
     try {
       const orders = await generateSalesReport();
       console.log(orders.length);
+    //   obj={name:"Adnan",payment:"fulfilled",products:[{productName:"A",price:30},{productName:"B",price:20}]} 
+    //   res.render('admin/salesReport',{obj})
     //   res.json(orders);
-      res.render('admin/salesReport',{orders})
-    } catch (err) {
+    res.render('admin/salesReport',{orders})
+    // res.render('admin/salesReport2',{orders})
+} catch (err) {
       console.error(err);
       res.status(500).json({ error: 'Internal Server Error' });
     }
@@ -90,12 +89,10 @@ const salesReport=  async (req, res) => {
 
 async function generateSalesReport() {
     // const salesAggregate = await OrderDB.aggregate([
-    //     {
-    //         $unwind: "$orderItems" // Unwind the orderItems array
-    //     },
+    //     { $unwind: "$orderItems" }, // Unwind the orderItems array
     //     {
     //         $project: {
-    //             _id:"$orderItems._id",
+    //             _id: "$orderItems._id",
     //             userName: 1,
     //             "orderItems.productId": 1,
     //             "orderItems.productName": 1,
@@ -119,16 +116,104 @@ async function generateSalesReport() {
     //             orderStatus: 1,
     //             orderDate: 1
     //         }
+    //     },
+    //     {
+    //         $match: {
+    //             $or: [
+    //                 { "paymentStatus.type": "fulfilled" },
+    //                 { "orderStatus.type": "delivered" }
+    //             ]
+    //         }
+    //     }
+    // ]);
+    
+    
+    // const salesAggregate = await OrderDB.aggregate([
+    //     {
+    //       $project: {
+    //         userId: 1,
+    //         userName: 1,
+    //         orderItems: 1,
+    //         paymentMethod: 1,
+    //         paymentStatus: 1,
+    //         orderStatus: 1,
+    //         orderDate: 1,
+    //         grandTotal: 1,
+    //         tax: 1,
+    //         couponName: 1,
+    //         couponDiscount: 1,
+    //         couponDiscountPercentage: 1
+    //       }
+    //     }
+    //   ])
+
+    // const salesAggregate = await OrderDB.aggregate([
+    //     {
+    //       $project: {
+    //         userName: 1,
+    //         orderItems: {
+    //           $map: {
+    //             input: "$orderItems",
+    //             as: "item",
+    //             in: {
+    //               productName: "$$item.productName",
+    //               unitPrice: "$$item.unitPrice",
+    //               quantity: "$$item.quantity",
+    //               price: "$$item.price",
+    //               categoryOffer: "$$item.categoryOffer",
+    //               categoryDiscountPecentage: "$$item.categoryDiscountPecentage",
+    //               productOffer: "$$item.productOffer",
+    //               productDiscountPercentage: "$$item.productDiscountPercentage",
+    //               totalPrice: "$$item.totalPrice"
+    //             }
+    //           }
+    //         },
+    //         tax: 1,
+    //         couponDiscount: 1,
+    //         couponDiscountPercentage: 1,
+    //         grandTotal: 1,
+    //         paymentMethod: 1,
+    //         paymentStatus: 1,
+    //         orderStatus: 1,
+    //         orderDate: 1
+    //       }
+    //     }
+    //   ])
+      
+    // const salesAggregate = await OrderDB.find({},{billingAddress:0,_id:0,createdAt,updatedAt,couponId,shipping,tax,images,productId,userId})
+
+    // const salesAggregate = await OrderDB.find()
+    // const salesAggregate = await OrderDB.aggregate([
+    //     {
+    //         $project: {
+    //             "_id": 1,
+    //             "userName": 1,
+    //             "billingAddress": 1,
+    //             "paymentMethod": 1,
+    //             "paymentStatus": 1,
+    //             "orderStatus": 1,
+    //             "orderDate": 1,
+    //             "grandTotal": 1,
+    //             "orderItems": 1,
+    //             "tax": 1,
+    //             "couponName": 1,
+    //             "couponDiscount": 1,
+    //             "couponDiscountPercentage": 1,
+    //             "shipping": 1
+    //         }
     //     }
     // ]);
 
-
     const salesAggregate = await OrderDB.aggregate([
-        { $unwind: "$orderItems" }, // Unwind the orderItems array
         {
             $project: {
-                _id: "$orderItems._id",
-                userName: 1,
+                "_id": 1,
+                "userName": 1,
+                "paymentMethod": 1,
+                "paymentStatus": 1,
+                "orderStatus": 1,
+                "orderDate": 1,
+                "grandTotal": 1,
                 "orderItems.productId": 1,
                 "orderItems.productName": 1,
                 "orderItems.unitPrice": 1,
@@ -140,30 +225,23 @@ async function generateSalesReport() {
                 "orderItems.productOffer": 1,
                 "orderItems.productDiscountPercentage": 1,
                 "orderItems.totalPrice": 1,
-                tax: 1,
-                couponId: 1,
-                couponName: 1,
-                couponDiscount: 1,
-                couponDiscountPercentage: 1,
-                grandTotal: 1,
-                paymentMethod: 1,
-                paymentStatus: 1,
-                orderStatus: 1,
-                orderDate: 1
-            }
-        },
-        {
-            $match: {
-                $or: [
-                    { "paymentStatus.type": "fulfilled" },
-                    { "orderStatus.type": "delivered" }
-                ]
+                "tax": 1,
+                "couponName": 1,
+                "couponDiscount": 1,
+                "couponDiscountPercentage": 1,
+                "shipping": 1
             }
         }
     ]);
     
+    
+
     return salesAggregate;
   }
+
+
+
+
 
 module.exports={
     adminLogin,

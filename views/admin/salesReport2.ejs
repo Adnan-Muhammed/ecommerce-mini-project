@@ -1,0 +1,120 @@
+<%-include('header')-%>
+
+
+            <!-- Table Start -->
+            <div class="container-fluid pt-4 px-4">
+                <div class="row g-4">
+                        <div class="bg-light rounded h-100 p-4">
+                            <h6 class="mb-4">Sales Report</h6>
+
+                            
+                            <div class="table-responsive">
+                                <table border="1">
+                                    <thead>
+                                        <tr>
+                                            <th rowspan="2">User Name</th>
+                                            <th rowspan="2">Order Date</th>
+                                            <th rowspan="2">Grand Total</th>
+                                            
+                                            <th rowspan="2">paymentStatus  &<br> OrderStatus</th>
+                                            <th rowspan="2">Coupon </th>
+                            
+                                            <th colspan="8"  style="text-align: center;">Order Items</th>
+                                            
+                                        </tr>
+                                        <tr>
+                                            <th>Product Name</th>
+                                            <th>Unit Price</th>
+                                            <th>Quantity</th>
+                                            <th>Product Price</th>
+                                            <th>Category Offer</th>
+                                            <th>Product Offer</th>
+                                            <th >total Price</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <% orders.forEach(order => { %>
+                                            <% order.orderItems.forEach((item, index) => { %>
+                                                <tr>
+                                                    <% if (index === 0) { %>
+                                                        <td rowspan="<%= order.orderItems.length %>"><%= order.userName %></td>
+                                                        <td rowspan="<%= order.orderItems.length %>"><%= new Date(order.orderDate).toLocaleString('en-US', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: true }) %></td>
+                            
+                                                        <td rowspan="<%= order.orderItems.length %>"><%= order.grandTotal %></td>
+                                                        <td rowspan="<%= order.orderItems.length %>">
+                                                            <%= order.paymentStatus.type %>
+                                                            <br>
+                                                            <%= order.orderStatus.type %>
+                                                        </td>
+                                                        <td rowspan="<%= order.orderItems.length %>">
+                                                            <%if(order.couponName){%>
+                                                                <%= order.couponName %>
+                                                                <br>
+                                                                <%= order.couponDiscountPercentage %> %
+                                                                <br>
+                                                                <%= order.couponDiscount %>
+                                                            <%}else{%>
+                                                                N/A
+                                                            <%}%>
+                                                        </td>
+                            
+                                                    <% } %>
+                                                    <td><%= item.productName %></td>
+                                                    <td><%= item.unitPrice %></td>
+                                                    <td><%= item.quantity %></td>
+                                                    <td><%= item.price %></td>
+                                                    <td>
+                                                        <%= item.categoryDiscountPecentage %>%
+                                                        <br>
+                                                        <%= item.categoryOffer %>
+                                                    </td>
+                                                    <td>
+                                                        <%= item.productDiscountPercentage %>%
+                                                        <br>
+                                                        <%= item.productOffer %>
+                            
+                                                    </td>
+                                                    
+                                                    <td><%= item.totalPrice %></td>
+                            
+                                                    <!-- <% if (index === 0) { %> -->
+                            
+                                                        <!-- <td rowspan="<%= order.orderItems.length %>"><%= order.tax %></td> -->
+                                                        <!-- <td rowspan="<%= order.orderItems.length %>"><%= order.couponName %></td> -->
+                                                        <!-- <td rowspan="<%= order.orderItems.length %>"><%= order.couponDiscount %></td> -->
+                            
+                            
+                                                        <!-- <td rowspan="<%= order.orderItems.length %>">
+                                                            <%= order.totalPrice %>
+                                                            <br>
+                                                            <%= order.couponDiscountPercentage %>
+                                                            <br>
+                                                            <%= order.couponDiscount %></td> -->
+                            
+                                                        <!-- </td>rowspan="<%= order.orderItems.length %>">5000</td>
+                                                        <td rowspan="<%= order.orderItems.length %>"><%= order.shipping %></td> -->
+                            
+                            
+                                                    <!-- <% } %> -->
+
+                                                </tr>
+                                            <% }); %>
+                                        <% }); %>
+                                    </tbody>
+                                </table>
+
+                                <ul class="pagination">
+                                    <% for(let i = 1; i <= totalPages; i++) { %>
+                                        <li class="page-item <%= i === currentPage ? 'active' : '' %>">
+                                            <a class="page-link" href="?page=<%= i %>"><%= i %></a>
+                                        </li>
+                                    <% } %>
+                                </ul>
+                                
+                            </div>
+                        </div>
+                </div>
+            </div>
+            <!-- Table End -->
+
+            <%-include('footer')-%>
