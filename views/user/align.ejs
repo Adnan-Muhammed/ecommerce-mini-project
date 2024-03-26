@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body></body>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      // Click event for the "Place order" button
+      $(".btn-place-order").on("click", function (event) {
+        // Prevent the default form submission
+        event.preventDefault();
+
+        // Get the selected checkbox button value
+        const selectedAddress = $(
+          "input[name='address-selection']:checked"
+        ).data("address-id");
+
+        // Select the chooseAddressMessage element
+        const chooseAddressMessage = $("#chooseAddressMessage");
+
+        if (!selectedAddress) {
+          // If no address is selected, show the message and stop the script
+          chooseAddressMessage.show();
+          return;
+        }
+
+        // If an address is selected, hide the message
+        chooseAddressMessage.hide();
+        // Get the dataset values from the table
+        const cartItems = [];
+        $("table tbody")
+          .find("tr")
+          .each(function () {
+            const productId = $(this)
+              .find("td[data-product-id]")
+              .data("product-id");
+            const productName = $(this)
+              .find("td[data-product-name]")
+              .data("product-name");
+            const unitPrice = $(this)
+              .find("td[data-product-unitPrice]")
+              .data("product-unitprice");
+            const quantity = $(this)
+              .find("td[data-product-quantity]")
+              .data("product-quantity");
+            const price = $(this)
+              .find("td[data-product-price]")
+              .data("product-price");
+            const imagesData = $(this)
+              .find("td[data-product-image]")
+              .data("product-image");
+
+            cartItems.push({
+              productId: productId, // Include the productId
+              productName: productName,
+              unitPrice: unitPrice,
+              quantity: quantity,
+              images: imagesData, // Include the image data
+              price: price,
+            });
+          });
+
+        // Get the dataset values from the footer
+        const shipping = $("tfoot td[data-shipping-value]").data(
+          "shipping-value"
+        );
+        const tax = $("tfoot td[data-tax-value]").data("tax-value");
+        const couponId =
+          $("td#couponAppliedValue").data("coupon-id") ?? undefined;
+        const couponDiscount =
+          $("td#couponAppliedValue").data("coupon-discount") ?? undefined;
+
+        console.log(couponId, "565", 909);
+
+        const grandTotalElement = $("tfoot td[data-grandTotal-value]");
+        const grandTotalHtml = grandTotalElement.html(); // Assuming this returns "$2010.00"
+        const grandTotal = parseFloat(grandTotalHtml.replace(/[^0-9.-]+/g, ""));
+
+        // Check the selected payment method
+        const isOnlinePaymentSelected = $("#online-payment").is(":checked");
+        const isCashOnDeliverySelected = $("#cash-on-delivery").is(":checked");
+        const isWalletPaymentSelected = $("#wallet-payment").is(":checked");
+
+        const selectedPaymentMethod = $(
+          "input[name='payment-method']:checked"
+        ).val();
+
+        // Create an object with all the data
+        const orderData = {
+          selectedAddress: selectedAddress,
+          orderItems: cartItems,
+          shipping: shipping,
+          tax: tax,
+          grandTotal: grandTotal,
+          paymentMethod: selectedPaymentMethod,
+          discountCoupon: couponId, // Adding the couponId variable to the orderData object
+          discountPrice: couponDiscount,
+        };
+
+        // Execute the appropriate payment method logic
+        if (isOnlinePaymentSelected) {
+          // Execute Razorpay payment integration
+          executeRazorpayPayment(orderData);
+        } else if (isCashOnDeliverySelected) {
+          console.log("COD", selectedPaymentMethod);
+
+          // return
+          // Execute fetch method for cash on delivery
+          executeCashOnDelivery(orderData);
+        } else if (isWalletPaymentSelected) {
+          console.log("wallet", selectedPaymentMethod);
+          executeWalletPayment(orderData);
+
+          // executeCashOnDelivery(orderData);
+        } else {
+          // Handle other payment methods if needed
+          console.log("Payment method not supported");
+        }
+      });
+
+      // Change event for the address selection
+      $("input[name='address-selection']").on("change", function () {
+        // Hide the chooseAddressMessage when an address is selected
+        $("#chooseAddressMessage").hide();
+      });
+    });
+    function executeRazorpayPayment(orderData) {
+      // AJAX call to create order ID
+      var settings = {
+        url: "/create/orderId",
+        method: "POST",
+        timeout: 0,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        data: JSON.stringify({
+          amount: orderData.grandTotal * 100,
+        }),
+      };
+
+      $.ajax(settings).done(function (response) {
+        const orderId = response.orderId;
+
+        // Razorpay payment integration
+        var options = {
+          key: "rzp_test_EPbDs3EDqJVES2",
+          amount: orderData.grandTotal * 100,
+          currency: "INR",
+          name: "Velocity",
+          description: "Online Payment",
+          image: "",
+          order_id: orderId,
+          handler: function (response) {
+            // Fetch to place order after successful payment
+
+            executePlaceOrder(orderData);
+          },
+        };
+
+        var rzp1 = new Razorpay(options);
+        rzp1.open();
+      });
+    }
+    function executeCashOnDelivery(orderData) {
+      // Fetch to place order for cash on delivery
+      console.log("its cash on delivery");
+      executePlaceOrder(orderData);
+    }
+    function executeWalletPayment(orderData) {
+      executePlaceOrder(orderData);
+    }
+    function executePlaceOrder(orderData) {
+      fetch("/placeOrder", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          orderData,
+        }),
+      })
+        .then((response) => {
+          if (!response.ok) {
+            console.log(4444);
+            $("#BalanceMessage").text("Insufficijtfhent wallet Balance").show();
+
+            console.log(response);
+            throw new Error();
+          }
+          console.log(1);
+          console.log(response);
+          // return response.json();
+        })
+        .then((data) => {
+          console.log(2);
+          console.log(data);
+          // return
+          window.location.href = "/orderplaced/success";
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+          if (error && error.message === "Insufficient wallet balance") {
+            $("#BalanceMessage").text("Insufficient wallet Balance").show();
+          }
+        });
+    }
+  </script>
+</html>

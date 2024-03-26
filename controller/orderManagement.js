@@ -2,9 +2,13 @@ const UserDB = require("../models/user");
 const ProductDB = require("../models/product");
 const CartDB = require("../models/cart");
 const OrderDB = require("../models/order");
+const mongoose = require('mongoose');
+
 
 const fetchCategoryMiddleware = require("../middleware/fetchCategoryData");
 const { log } = require("console");
+const CouponDB = require("../models/coupon");
+const { logout } = require("./userManagement");
 
 const determineIsLogged = (session) => {
   return session.user
@@ -18,8 +22,9 @@ const determineIsLogged = (session) => {
 //admin orderList
 const orderUpdates = async (req, res) => {
   try {
-    const orderList = await OrderDB.find();
     console.log(898,'lok');
+    
+    const orderList = await OrderDB.find();
      console.log(orderList);
 
     res.render("admin/orderlist", { orderList });
@@ -27,199 +32,296 @@ const orderUpdates = async (req, res) => {
 };
 
 
-// user OrderPlacing
-const placeOrder2 = async (req, res) => {
-  const emailId = req.session.user
-    ? req.session.user.email
-    : req.session.userNew.email;
-  try {
-    const { selectedAddress, orderItems, shipping, tax, grandTotal } =
-      req.body.orderData;
-console.log('uiuiu');
-      console.log(orderItems);
-
-      for (const { productId, quantity } of orderItems) {
-        await ProductDB.findOneAndUpdate(
-        { _id: productId },
-        { $inc: { stock: -quantity } }
-        // { new: true } // Return the updated document
-      );
-    }
-   
-    for (const { productId, quantity } of orderItems) {
-      const cartItem = await CartDB.findOne({ productId: productId });
-      if (cartItem) {
-        const updatedStock = cartItem.stock - quantity;
-        const updatedQuantity = Math.min(cartItem.quantity, updatedStock);
-
-        await CartDB.findOneAndUpdate(
-          { productId: productId },
-          { $set: { stock: updatedStock, quantity: updatedQuantity } }
-        );
-      }
-    }
-    
-    
-    
-    const user = await UserDB.findOne(
-      { email: emailId },
-      { _id: 1, billingDetails: { $elemMatch: { _id: selectedAddress } } }
-    );
-    const billingAddress = user.billingDetails[0];
-    // cart updation
-    await CartDB.deleteMany({ userId: user._id });
-
-    console.log(user.email);
-    console.log("updating here");
-    const newOrder = new OrderDB({
-      userId: user._id,
-      userEmailId: emailId,
-      billingAddress: billingAddress,
-      orderItems,
-      shipping,
-      tax,
-      grandTotal,
-      // paymentMethod: orderDetails.paymentMethod,
-      // paymentStatus: orderDetails.paymentStatus,
-      // orderStatus: orderDetails.orderStatus,
-    });
-    // console.log(99999);
-    // console.log(newOrder)
-    // console.log(787);
-
-    // Save the new order to the database
-    const savedOrder = await newOrder.save();
-
-    res.status(201).json(savedOrder);
-  } catch (err) {
-    console.error(err);
-    res.status(500).send("Internal Server Error");
-  }
-};
 
 
 
-
-
-
-// user OrderPlacing
+// its correct
 const placeOrder = async (req, res) => {
-  const emailId = req.session.user
-    ? req.session.user.email
-    : req.session.userNew.email;
   try {
-    const { selectedAddress, orderItems, shipping, tax, grandTotal } =
-      req.body.orderData;
-console.log('uiuiu');
-      console.log(orderItems);
+    const emailId = req.session.user ? req.session.user.email : req.session.userNew.email;
+    const { selectedAddress, shipping, paymentMethod ,totalValue } = req.body.orderData;
+    console.log(req.body.orderData);
 
-    //   for (const { productId, quantity } of orderItems) {
-    //     await ProductDB.findOneAndUpdate(
-    //     { _id: productId },
-    //     { $inc: { stock: -quantity } }
-    //     // { new: true } // Return the updated document
-    //   );
-    // }
-   
-    // for (const { productId, quantity } of orderItems) {
-    //   let i=1
-    //   const cartItem = await CartDB.findOne({ productId: productId }).skip(i-1);
-    //   if (cartItem) {
-    //     const updatedStock = cartItem.stock - quantity;
-    //     const updatedQuantity = Math.min(cartItem.quantity, updatedStock);
+    // Extract discountCoupon and discountPrice conditionally
+    let discountCouponId, couponDiscount;
+    if ('discountCoupon' in req.body.orderData) {
+      discountCouponId = req.body.orderData.discountCoupon.trim();
+    }
+    if ('discountPrice' in req.body.orderData) {
+      couponDiscount = req.body.orderData.discountPrice;
+    }
 
-    //     await CartDB.findOneAndUpdate(
-    //       { productId: productId },
-    //       { $set: { stock: updatedStock, quantity: updatedQuantity } }
-    //     );
-    //   }
-    //   i++
-    // }
+    console.log('discountCouponId:', discountCouponId);
+    console.log('discountPrice:', couponDiscount);
 
 
+    console.log('-=-=-=-orderplacing-=-=');
+    // return
+    // Retrieve user's wallet balance
+    const user = await UserDB.findOne({ email: emailId });
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Check if payment method is wallet and if user has sufficient balance
+    if (paymentMethod === "wallet-payment" && user.wallet < totalValue) {
+      return res.status(400).json({ message: "Insufficient wallet balance" });
+    }
+
+    // Deduct amount from wallet if payment method is wallet
+    if (paymentMethod === "wallet-payment") {
+      await UserDB.findOneAndUpdate({ email: emailId }, { $inc: { wallet: -totalValue } });
+    }
 
 
-    // for (const { productId, quantity } of orderItems) {
-    //   // Update product stock in ProductDB
-    //   await ProductDB.findOneAndUpdate(
-    //     { _id: productId },
-    //     { $inc: { stock: -quantity } }
-    //   );
+
     
-    //   // Update cart items in CartDB
-    //   const cartItems = await CartDB.find({ productId: productId });
-    //   for (const cartItem of cartItems) {
-    //     const updatedStock = cartItem.stock - quantity;
-    //     const updatedQuantity = Math.min(cartItem.quantity, updatedStock);
-    //     const price = cartItem.price /cartItem.stock
-    //     const updatedPrice = Math.min(cartItem.price , price)
-    //     await CartDB.findOneAndUpdate(
-    //       { _id: cartItem._id }, // Update based on cart item's _id
-    //       { $set: { stock: updatedStock, quantity: updatedQuantity ,price:updatedPrice } }
-    //     );
-    //   }
-    // }
-    
-    for (const { productId, quantity } of orderItems) {
-      // Update product stock in ProductDB
-      await ProductDB.findOneAndUpdate(
-          { _id: productId },
-          { $inc: { stock: -quantity } }
-      );
-  
-      // Update cart items in CartDB
-      const cartItems = await CartDB.find({ productId: productId });
-      for (const cartItem of cartItems) {
-          const updatedStock = cartItem.stock - quantity;
-          const updatedQuantity = Math.min(cartItem.quantity, updatedStock);
-          // Adjust the price based on the updated stock
-        
-          console.log( cartItem.stock );
-          const cartPrice = cartItem.price/cartItem.quantity
-          console.log(cartPrice,'676','ioio')
-          // const updatedPrice = (updatedStock < cartItem.stock) ? (cartItem.price / cartItem.stock) * updatedStock : 0;
-          // const updatedPrice = (updatedStock < cartItem.stock) ? cartItem.price : 0;
-          const updatedPrice = cartPrice* updatedQuantity
-          await CartDB.findOneAndUpdate(
-              { _id: cartItem._id }, // Update based on cart item's _id
-              { $set: { stock: updatedStock, quantity: updatedQuantity, price: updatedPrice } }
-          );
-      }
+      const cartItems = await CartDB.find({ userId: user._id });
+// if (cartItems.length > 0) {
+  if(cartItems.length < 1){
+    return res.status(404).json({ message: 'error found' });
   }
-  
-    
-    
-    const user = await UserDB.findOne(
-      { email: emailId },
-      { _id: 1, billingDetails: { $elemMatch: { _id: selectedAddress } } }
+
+const currentDate = new Date()
+  const productIds = cartItems.map((cartItem) => cartItem.productId);
+  const productsData = await ProductDB.find({
+    _id: { $in: productIds },
+    isAvailable: true,
+  }).populate({
+    path: "categoryId",
+    match: { isAvailable: true }, // Add condition for category's isAvailable field
+  });
+
+  // Now products only contain items where the associated category is available
+
+  const products = productsData.filter((data) => data.categoryId !== null);
+  // Fetch category offers and calculate product offers
+  const categoryOffers = {}; // Store category offers
+  const productOffers = {}; // Store product offers
+
+  for (const product of products) {
+    const categoryId = product.categoryId._id.toString();
+    const categoryDiscount = product.categoryId.discountPercentage;
+
+    // Calculate product offer
+    if (product.discountPercentage > 0) {
+      // Check if expiry date is available and not expired
+      if (!product.expiryDate || product.expiryDate >= currentDate) {
+        productOffers[product._id.toString()] = product.discountPercentage;
+      }
+    }
+
+    if (product.categoryId.startDate && product.categoryId.endDate) {
+      const startDate = new Date(product.categoryId.startDate);
+      const endDate = new Date(product.categoryId.endDate);
+
+      // Check if the current date is within the discount offer period
+      if (currentDate >= startDate && currentDate <= endDate) {
+        if (!categoryOffers[categoryId]) {
+          categoryOffers[categoryId] = {
+            discountPercentage: categoryDiscount,
+            categoryName: product.categoryId.name,
+            products: [],
+          };
+        }
+        categoryOffers[categoryId].products.push(product);
+      }
+    } else {
+      // If start and end dates are not available, consider the offer as permanent
+      if (!categoryOffers[categoryId]) {
+        categoryOffers[categoryId] = {
+          discountPercentage: categoryDiscount,
+          categoryName: product.categoryId.name,
+          products: [],
+        };
+      }
+      categoryOffers[categoryId].products.push(product);
+    }
+  }
+
+  // Generate detailed cart items with offers applied
+  const detailedCartItems = cartItems
+    .map((cartItem) => {
+      const product = products.find((p) => p._id.equals(cartItem.productId));
+
+      if (!product) {
+        return null;
+      }
+
+      const categoryId = product.categoryId._id.toString();
+
+      // Calculate total price after applying product discount and category discount
+      let price = cartItem.price;
+      let categoryDiscount = 0;
+      let productDiscount = 0;
+      let categoryOffer = 0;
+      let productOffer = 0;
+
+      
+
+      // Apply category discount if available
+      if (categoryOffers[categoryId] && categoryOffers[categoryId].discountPercentage > 0) {
+        categoryDiscount = categoryOffers[categoryId].discountPercentage;
+        categoryOffer = (categoryDiscount * price) / 100
+        price -= (price * categoryDiscount) / 100;
+        console.log(categoryDiscount,'-=-=-=-=-','-=-=-=-=-',9086);
+      }
+
+
+      // Apply product discount if available
+      if (productOffers[product._id.toString()]) {
+
+        productDiscount = productOffers[product._id.toString()];
+        productOffer = (productDiscount * price) / 100
+        price -= (price * productDiscount) / 100;
+
+      }
+
+
+
+
+      return {
+        productId: product._id,
+        productName: product.name,
+        images: product.image,
+        quantity: cartItem.quantity,
+        unitPrice: product.price,
+        price: cartItem.price,
+        description: product.description,
+        // isAvailable: product.isAvailable,
+        categoryOffer,
+        productOffer,
+        categoryDiscountPecentage:
+          categoryDiscount > 0 ? categoryDiscount : null,
+        productDiscountPercentage: productDiscount > 0 ? productDiscount : null,
+        totalPrice: price,
+      };
+    })
+    .filter((item) => item !== null);
+
+  console.log("-=-=-detailedCartItems=-=-=-");
+
+  console.log(detailedCartItems);
+
+  console.log("-=-=-detailedCartItems=-=-=-");
+
+  // Calculate total price
+  let totalPrice = detailedCartItems.reduce(
+    (total, item) => total + item.totalPrice,
+    0
     );
-    const billingAddress = user.billingDetails[0];
-    // cart updation
+  // Apply tax
+  const taxValue = 10.0; // You can change this to your actual tax value
+  const grandTotalValue = totalPrice + taxValue
+
+
+  console.log(grandTotalValue);
+
+  console.log('-=-=-=-');
+  console.log('-=-=-=-');
+
+
+
+  let grandTotal;
+  let coupon;
+  let couponDiscountValue;
+
+
+ // is coupon used then  apply grandTotal
+  if (discountCouponId) {
+   coupon =  await CouponDB.findById( discountCouponId );
+   couponDiscountValue =(coupon.discountValue * totalPrice ) /100;
+   grandTotal = grandTotalValue - couponDiscountValue
+  }else {
+      grandTotal = grandTotalValue;
+  }
+  console.log(grandTotal);
+
+  
+
+  // return
+
     await CartDB.deleteMany({ userId: user._id });
 
-    console.log(user.email);
-    console.log("updating here");
+    // Determine payment status
+    const paymentStatus = paymentMethod !== "cash-on-delivery" ? "fulfilled" : undefined;
+
+    // Update coupon if provided
+    if (discountCouponId) {
+      await CouponDB.findByIdAndUpdate({ _id: discountCouponId }, { $addToSet: { userIds: user._id } });
+    }
+
+    // Create new order
     const newOrder = new OrderDB({
       userId: user._id,
       userEmailId: emailId,
-      billingAddress: billingAddress,
-      orderItems,
+      userName:user.name,
+      billingAddress: user.billingDetails.find(address => address._id.toString() === selectedAddress),
+      orderItems:detailedCartItems,
       shipping,
-      tax,
+      tax:taxValue,
+      couponId: discountCouponId,
+      couponName:coupon ? coupon.name : null,
+      couponDiscount:couponDiscountValue,
+      couponDiscountPercentage:coupon? coupon.discountValue: null,
       grandTotal,
-      // paymentMethod: orderDetails.paymentMethod, / now its work default
-      // paymentStatus: orderDetails.paymentStatus,
-      // orderStatus: orderDetails.orderStatus,
+      paymentMethod: { type: paymentMethod },
+      paymentStatus: { type: paymentStatus }
     });
-   
+
+    // Save the order
     const savedOrder = await newOrder.save();
 
+
+
+
+
+    // Reduce product stock
+for (const item of detailedCartItems) {
+  const productId = item.productId;
+  let purchasedQuantity = item.quantity;
+
+  // Update product stock
+  const product = await ProductDB.findByIdAndUpdate(productId, {
+    $inc: { stock: -purchasedQuantity }
+  },{new:true});
+
+  // Find other carts containing the same product
+  const otherCarts = await CartDB.find({ productId: productId, userId: { $ne: user._id } });
+  
+  for (const cart of otherCarts) {
+    
+   if(cart.quantity> product.stock){
+    await CartDB.findByIdAndUpdate(cart._id, { quantity: product.stock ,price:product.price * product.stock,stock:product.stock});
+    }
+    else{
+      await CartDB.findByIdAndUpdate(cart._id, { stock:product.stock});  
+    }
+    
+}
+}
+
+    // Log transaction if payment is fulfilled
+    if (paymentStatus === "fulfilled") {
+      const transaction = {
+        type: 'credit',
+        amount: grandTotal,
+        timestamp: Date.now()
+      };
+      user.transactions.push(transaction);
+      await user.save();
+    }
+
+    // Return success response
+    console.log('---__--_____');
     res.status(201).json(savedOrder);
+
   } catch (err) {
     console.error(err);
     res.status(500).send("Internal Server Error");
   }
 };
+
 
 
 
@@ -278,85 +380,294 @@ const orderStatus = async (req, res) => {
   }
 };
 
-// const cancelOrder = async (req, res) => {
-//   try {
-//       const orderId = req.params.orderId;
-//       console.log("orderId:", orderId);
-//       const status = req.body.orderStatus
 
-//       // Update order status to 'cancelled' in the database
-//       const orderCancel = await OrderDB.findByIdAndUpdate(
-//         orderId,
-//         { $set: { 'orderStatus.type': status } },
-//         { new: true } // To return the updated order document
-//       );
-//       // Check if orderCancel is null (no order found with the provided ID)
-//       if (!orderCancel) {
-//           return res.status(404).json({ message: 'Order not found' });
-//       }
-//       console.log(" haaai 111",orderCancel);
-//       console.log('after user updation');
-//       console.log(status," what change");
-//       console.log(orderCancel.orderStatus);
-//       console.log(orderCancel.orderStatus.type);
-//       // Respond with the updated order docuyment
-//       return res.status(200).json({ message: 'Order cancelled successfully', order: orderCancel });
-//   } catch (err) {
-//       // Handle any errors that occur during the cancellation process
-//       console.error('Error cancelling order:', err);
-//       return res.status(500).json({ message: 'Failed to cancel order. Please try again later.' });
-//   }
-// };
-
-
-// user edit Order cancellation   && return
 const handleOrderStatusUpdate = async (req, res) => {
   try {
     const orderId = req.params.orderId;
-    console.log("orderId:", orderId);
-    const status = req.body.orderStatus; // Assuming you're passing the new status in the request body
+    const status = req.body.orderStatus;
+
+    const orderDocument = await OrderDB.findById(orderId);
+    const userId = orderDocument.userId.toString();
+    const productIds = orderDocument.orderItems.map(item => item.productId.toString());
 
     let orderUpdate;
     let message;
 
-    // Update order status based on the provided status
     if (status === "cancelled") {
-      // Update order status to 'cancelled' in the database
       orderUpdate = await OrderDB.findByIdAndUpdate(
         orderId,
         { $set: { "orderStatus.type": status } },
-        { new: true } // To return the updated order document
+        { new: true }
       );
+
+     
+      if (!orderUpdate) {
+        return res.status(404).json({ message: "Order not found" });
+      }
+
+      for (const item of orderDocument.orderItems) {
+        const product = await ProductDB.findById(item.productId);
+        if (!product) {
+          continue; // Skip if product not found
+        }
+        product.stock += item.quantity; // Return canceled quantity back to stock
+        await product.save();
+      }
+
+      if (orderDocument.paymentStatus.type === "fulfilled") {
+        const user = await UserDB.findById(userId);
+        if (!user) {
+          return res.status(404).json({ message: "User not found" });
+        }
+        user.wallet += orderDocument.grandTotal; // Return total amount to user wallet
+        await user.save();
+        // Log the transaction
+        const transaction = {
+          type: 'credit',
+          amount: orderDocument.grandTotal,
+          timestamp: Date.now(),
+          isReturned:true
+        };
+        user.transactions.push(transaction);
+        await user.save();
+
+        
+        orderDocument.paymentStatus.type='returned'
+        await orderDocument.save()
+        
+      }
+
+
+      // orderUpdate.paymentStatus.type = "returned";
+      //   await orderUpdate.save();
+
       message = "Order cancelled successfully";
     } else if (status === "returned") {
-      // Update order status to 'returned' in the database
       orderUpdate = await OrderDB.findByIdAndUpdate(
         orderId,
         { $set: { "orderStatus.type": status } },
-        { new: true } // To return the updated order document
+        { new: true }
       );
-      message = "Order returned successfully";
-    } else {
-      // Invalid status provided
-      return res.status(400).json({ message: "Invalid order status" });
-    }
+      //new adding
+      if (!orderUpdate) {
+        return res.status(404).json({ message: "Order not found" });
+      }
+      for (const item of orderDocument.orderItems) {
+        const product = await ProductDB.findById(item.productId);
+        if (!product) {
+          continue; // Skip if product not found
+        }
+        product.stock += item.quantity; // Return canceled quantity back to stock
+        await product.save();
+      }
 
-    // Check if orderUpdate is null (no order found with the provided ID)
-    if (!orderUpdate) {
-      return res.status(404).json({ message: "Order not found" });
+      if (orderDocument.paymentStatus.type === "fulfilled") {
+        const user = await UserDB.findById(userId);
+        if (!user) {
+          return res.status(404).json({ message: "User not found" });
+        }
+        user.wallet += orderDocument.grandTotal; // Return total amount to user wallet
+        await user.save();
+
+        // Log the transaction
+        const transaction = {
+          type: 'credit',
+          amount: orderDocument.grandTotal,
+          timestamp: Date.now(),
+          isReturned:true
+        };
+        user.transactions.push(transaction);
+        await user.save();
+      }
+
+
+
+      message = "Order returned successfully";
+
+
+
+
+
+
+    } else {
+      return res.status(400).json({ message: "Invalid order status" });
     }
 
     console.log("Updated order:", orderUpdate);
     console.log("After updating order status to:", status);
 
-    // Respond with the updated order document
     return res.status(200).json({ message, order: orderUpdate });
   } catch (err) {
-    // Handle any errors that occur during the update process
     console.error("Error updating order:", err);
-    return res
-      .status(500)
-      .json({ message: "Failed to update order. Please try again later." });
+    return res.status(500).json({ message: "Failed to update order. Please try again later." });
+  }
+};
+
+
+
+
+
+
+const placeOrderchecking = async (req, res) => {
+  const isLogged = determineIsLogged(req.session);
+  const { primaryCategories, otherCategories } = await fetchCategoryMiddleware.fetchCategories();
+  const emailId = req.session.user ? req.session.user.email : req.session.userNew.email;
+
+
+
+  try {
+      const user = await UserDB.findOne({ email: emailId });
+      if (!user) {
+          return res.status(404).send('User not found');
+      }
+      const currentDate = new Date(); // Get the current date
+      // Fetch available coupons for the user
+      const coupons = await CouponDB.find({
+          isAvailable: true,
+          userIds: { $not: { $in: [user._id] } },
+          expiryDate: { $gt: currentDate } // Filter by expiry date greater than current date
+
+      });
+      console.log(coupons);
+      // return
+
+      const cartItems = await CartDB.find({ userId: user._id });
+      if (cartItems.length > 0) {
+          const productIds = cartItems.map((cartItem) => cartItem.productId);
+          const productsData = await ProductDB.find({
+            _id: { $in: productIds },
+            isAvailable: true,
+        }).populate({
+            path: 'categoryId',
+            match: { isAvailable: true } // Add condition for category's isAvailable field
+        });
+
+      // Now products only contain items where the associated category is available
+      
+        const products = productsData.filter(data => data.categoryId !== null)
+          // Fetch category offers and calculate product offers
+          const categoryOffers = {}; // Store category offers
+          const productOffers = {}; // Store product offers
+
+          for (const product of products) {
+              const categoryId = product.categoryId._id.toString();
+              const categoryDiscount = product.categoryId.discountPercentage;
+
+              // Calculate product offer
+              if (product.discountPercentage > 0) {
+                  // Check if expiry date is available and not expired
+                  if (!product.expiryDate || product.expiryDate >= currentDate) {
+                      productOffers[product._id.toString()] = product.discountPercentage;
+                  }
+              }
+
+              
+              if (product.categoryId.startDate && product.categoryId.endDate) {
+                const startDate = new Date(product.categoryId.startDate);
+                const endDate = new Date(product.categoryId.endDate);
+
+                  // Check if the current date is within the discount offer period
+                  if (currentDate >= startDate && currentDate <= endDate) {
+                      if (!categoryOffers[categoryId]) {
+                          categoryOffers[categoryId] = {
+                              discountPercentage: categoryDiscount,
+                              categoryName: product.categoryId.name,
+                              products: [],
+                          };
+                      }
+                      categoryOffers[categoryId].products.push(product);
+                  }
+              } else {
+                  // If start and end dates are not available, consider the offer as permanent
+                  if (!categoryOffers[categoryId]) {
+                      categoryOffers[categoryId] = {
+                          discountPercentage: categoryDiscount,
+                          categoryName: product.categoryId.name,
+                          products: [],
+                      };
+                  }
+                  categoryOffers[categoryId].products.push(product);
+              }
+
+
+
+
+
+          }
+
+          // Generate detailed cart items with offers applied
+          const detailedCartItems = cartItems.map((cartItem) => {
+              const product = products.find((p) => p._id.equals(cartItem.productId));
+
+              if(!product){
+                return null
+              }
+
+              
+
+              const categoryId = product.categoryId._id.toString();
+
+              // Calculate total price after applying product discount and category discount
+              let price = cartItem.price;
+              let categoryDiscount = 0;
+              let productDiscount = 0;
+
+              // Apply product discount if available
+              if (productOffers[product._id.toString()]) {
+                  productDiscount = productOffers[product._id.toString()];
+                  price -= (price * productDiscount) / 100;
+              }
+
+              // Apply category discount if available
+              if (categoryOffers[categoryId] && categoryOffers[categoryId].discountPercentage > 0) {
+                  categoryDiscount = categoryOffers[categoryId].discountPercentage;
+                  price -= (price * categoryDiscount) / 100;
+              }
+
+              return {
+                  productId: cartItem._id,
+                  quantity: cartItem.quantity,
+                  name: product.name,
+                  images: product.image,
+                  stock: product.stock,
+                  unitPrice: product.price,
+                  // price: price,
+                  price:Math.round( price),
+                  description: product.description,
+                  isAvailable: product.isAvailable,
+                  // Include category offer and product offer details if available
+                  categoryOffer: categoryDiscount > 0 ? { discountPercentage: categoryDiscount, categoryName: categoryOffers[categoryId].categoryName } : null,
+                  productOffer: productDiscount > 0 ? { discountPercentage: productDiscount } : null,
+              };
+
+
+            })
+            .filter(item => item !== null);
+
+          // Calculate total price
+          let totalPrice = Math.round(detailedCartItems.reduce((total, item) => total + item.price, 0))
+
+          // Apply tax
+          const taxValue = 10.00; // You can change this to your actual tax value
+          const grandTotal =Math.round( totalPrice + taxValue)
+
+          res.render('user/cart', {
+              cartItems: detailedCartItems,
+              isLogged,
+              primaryCategories,
+              otherCategories,
+              totalPrice,
+              taxValue,
+              grandTotal,
+              coupons,
+              categoryOffers,
+              productOffers,
+          });
+        } else {
+          res.render('user/cart', { isLogged, primaryCategories, otherCategories, coupons });
+        }
+  } catch (err) {
+      res.status(500).send('Internal Server Error right now');
   }
 };
 

@@ -73,18 +73,23 @@
             <!-- Sales Chart End -->
 
 
+
+
+
             <!-- Recent Sales Start -->
-            <div class="container-fluid pt-4 px-4">
+
+
+
+            <!-- <div class="container-fluid pt-4 px-4">
                 <div class="bg-light text-center rounded p-4">
                     <div class="d-flex align-items-center justify-content-between mb-4">
-                        <h6 class="mb-0">Recent Salse</h6>
+                        <h6 class="mb-0">Recent Sales</h6>
                         <a href="">Show All</a>
                     </div>
                     <div class="table-responsive">
                         <table class="table text-start align-middle table-bordered table-hover mb-0">
                             <thead>
                                 <tr class="text-dark">
-                                    <th scope="col"><input class="form-check-input" type="checkbox"></th>
                                     <th scope="col">Date</th>
                                     <th scope="col">Invoice</th>
                                     <th scope="col">Customer</th>
@@ -95,7 +100,6 @@
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td><input class="form-check-input" type="checkbox"></td>
                                     <td>01 Jan 2045</td>
                                     <td>INV-0123</td>
                                     <td>Jhon Doe</td>
@@ -104,7 +108,6 @@
                                     <td><a class="btn btn-sm btn-primary" href="">Detail</a></td>
                                 </tr>
                                 <tr>
-                                    <td><input class="form-check-input" type="checkbox"></td>
                                     <td>01 Jan 2045</td>
                                     <td>INV-0123</td>
                                     <td>Jhon Doe</td>
@@ -113,7 +116,6 @@
                                     <td><a class="btn btn-sm btn-primary" href="">Detail</a></td>
                                 </tr>
                                 <tr>
-                                    <td><input class="form-check-input" type="checkbox"></td>
                                     <td>01 Jan 2045</td>
                                     <td>INV-0123</td>
                                     <td>Jhon Doe</td>
@@ -122,7 +124,6 @@
                                     <td><a class="btn btn-sm btn-primary" href="">Detail</a></td>
                                 </tr>
                                 <tr>
-                                    <td><input class="form-check-input" type="checkbox"></td>
                                     <td>01 Jan 2045</td>
                                     <td>INV-0123</td>
                                     <td>Jhon Doe</td>
@@ -131,7 +132,6 @@
                                     <td><a class="btn btn-sm btn-primary" href="">Detail</a></td>
                                 </tr>
                                 <tr>
-                                    <td><input class="form-check-input" type="checkbox"></td>
                                     <td>01 Jan 2045</td>
                                     <td>INV-0123</td>
                                     <td>Jhon Doe</td>
@@ -143,7 +143,72 @@
                         </table>
                     </div>
                 </div>
-            </div>
+            </div> -->
+
+
+
+            <% if (deliveredOrders.length > 0) { %>
+                <div class="container-fluid pt-4 px-4">
+                    <div class="bg-light text-center rounded p-4">
+                        <div class="d-flex align-items-center justify-content-between mb-4">
+                            <h6 class="mb-0">Recent Sales</h6>
+                            <a href="">Show All</a>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table text-start align-middle table-bordered table-hover mb-0">
+                                <thead>
+                                    <tr class="text-dark">
+                                        <th scope="col">Date</th>
+                                        <th scope="col">Invoice</th>
+                                        <th scope="col">Customer</th>
+                                        <th scope="col">Amount</th>
+                                        <th scope="col">Status</th>
+                                        <th scope="col">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% deliveredOrders.forEach(order => { %>
+                                        <tr>
+                                            <td><%= order.orderDate.toLocaleDateString() %></td>
+                                            <td><%= order._id %></td>
+                                            <td><%= order.userEmailId %></td>
+                                            <td>$<%= order.grandTotal %></td>
+                                            <td><%= order.orderStatus.type %></td>
+                                            <td><a class="btn btn-sm btn-primary" href="">Detail</a></td>
+                                        </tr>
+                                    <% }); %>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="container mt-4 text-center">
+                    <p>Download PDF Report Here:</p>
+                    <a href="/admin/download-pdf" class="btn btn-primary">Download PDF</a>
+                </div>
+            <% } %>
+            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             <!-- Recent Sales End -->
 
 
@@ -157,6 +222,49 @@
 
 
 
+<script>
+    // Function to handle the click event of the "Download PDF" button
+    function downloadPDF() {
+        // Fetch data from the table
+        const tableRows = document.querySelectorAll('.table tbody tr');
+        const data = [];
+
+        // Iterate over table rows to collect data
+        tableRows.forEach(row => {
+            const columns = row.querySelectorAll('td');
+            const rowData = {
+                orderDate: columns[0].innerText.trim(),
+                invoice: columns[1].innerText.trim(),
+                customer: columns[2].innerText.trim(),
+                amount: columns[3].innerText.trim(),
+                status: columns[4].innerText.trim()
+            };
+            data.push(rowData);
+        });
+
+        // Send data to the server via Fetch API
+        fetch('/admin/download-pdf', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+        .then(response => {
+            // Handle response
+            if (response.ok) {
+                // PDF downloaded successfully
+                console.log('PDF downloaded successfully');
+            } else {
+                // Error handling
+                console.error('Error downloading PDF:', response.status);
+            }
+        })
+        .catch(error => {
+            console.error('Error downloading PDF:', error);
+        });
+    }
+</script>
 
 
         <!-- Back to Top -->

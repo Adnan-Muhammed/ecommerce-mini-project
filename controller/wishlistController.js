@@ -88,7 +88,7 @@ const addtoWishlist = async (req, res) => {
     try {
         const user = await UserDB.findOne({ email: email });
         const product = await ProductDB.findById(productId);
-        if (!user || !product || product.stock <= 0) {
+        if (!user || !product ) {
             req.session.wishlistProduct = true;
             return res.redirect(`/productdetails/${req.params.id}`);
         }

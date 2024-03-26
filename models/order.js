@@ -6,6 +6,10 @@ const orderSchema = new mongoose.Schema({
     ref: 'usercollections', // Reference to the user model
     required: true,
   },
+  userName:{
+    type:String,
+    required:true,
+  },
   userEmailId: {
     type: String,
     required: true,
@@ -69,8 +73,28 @@ const orderSchema = new mongoose.Schema({
         type: Number,
         required: true,
       },
+      description:{
+        type:String,
+      },
+      categoryOffer:{
+        type:Number,
+      },
+      categoryDiscountPecentage:{
+        type:Number,
+      },
+      productOffer:{
+        type:Number,
+      },
+      productDiscountPercentage:{
+        type:Number,
+      },
+      totalPrice:{
+        type:Number,
+        required:true,
+      }
     },
   ],
+
   shipping: {
     type: String,
     required: true,
@@ -79,6 +103,19 @@ const orderSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
+  couponId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'couponCollections', // Reference to the product model
+  },
+  couponName:{
+    type:String,
+  },
+  couponDiscount:{
+    type:Number
+  },
+  couponDiscountPercentage:{
+    type:Number,
+  },
   grandTotal: {
     type: Number,
     required: true,
@@ -86,8 +123,8 @@ const orderSchema = new mongoose.Schema({
   paymentMethod: {
     type: {
       type: String,
-      enum: ['credit_card', 'paypal', 'cash_on_delivery', 'other'],
-      default:'cash_on_delivery',
+      enum: ["cash-on-delivery", "online-payment", "wallet-payment"],
+      default:"cash-on-delivery",
       required: true,
     },
     // details: {
@@ -98,7 +135,7 @@ const orderSchema = new mongoose.Schema({
   paymentStatus: {
     type: {
       type: String,
-      enum: ['pending', 'completed', 'failed', 'other'],
+      enum: ['pending', 'fulfilled', 'failed', 'returned'],
       default:'pending',
       required: true,
     },

@@ -13,7 +13,18 @@ const  categorySchema=new  mongoose.Schema(
         isAvailable:{
             type:Boolean,
             default:true,
+        },
+        discountPercentage:{
+            type:Number,
+        },
+        startDate:{
+            type:Date,
+        },
+        endDate:{
+            type:Date,
         }
+
+
     }
 )
 //model create

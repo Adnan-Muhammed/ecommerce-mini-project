@@ -1,200 +1,531 @@
-<%-include('header')-%>
-
-<!--Body Content-->
-<div id="page-content">
-    <!--Page Title-->
-    <div class="page section-header text-center">
-        <div class="page-title">
-            <div class="wrapper"><h1 class="page-width">BILLING DETAILS</h1></div>
-          </div>
-    </div>
-    <!--End Page Title-->
-
-    <div class="container">
-        <div class="row">
-           
-            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 sm-margin-30px-bottom">
-                <div class="create-ac-content bg-light-gray padding-20px-all">
-
-                    <div id="your-address" class="coupon-checkout-content">
-                        <div class="discount-coupon">
-                            <h2 class="login-title mb-3">Billing Address</h2>
-                    
-                            <% billingDetails.forEach((billingDetail, index) => { %>
-                                <div class="row">
-                                    <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
-                                        <span>First Name:</span>
-                                        <span><%= billingDetail.name %></span>
-                                    </div>
-                    
-                                    <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
-                                        <span>Telephone:</span>
-                                        <span><%= billingDetail.telephone %></span>
-                                    </div>
-                                </div>
-                    
-                                <div class="row">
-                                    <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
-                                        <span>Address:</span>
-                                        <span><%= billingDetail.address %></span>
-                                    </div>
-                                    <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
-                                        <span>City:</span>
-                                        <span><%= billingDetail.city %></span>
-                                    </div>
-                                </div>
-                    
-                                <div class="row">
-                                    <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
-                                        <span>Post Code:</span>
-                                        <span><%= billingDetail.postCode %></span>
-                                    </div>
-                                    <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
-                                        <span>Region / State:</span>
-                                        <span><%= billingDetail.regionState %></span>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
-                                        <span>select</span>
-                                        <!-- <input type="radio" name="address-selection" value="address1" data-user-id="<%=userId %>"  data-address-id="<%= billingDetail._id %>"> -->
-                                    </div>
-                                    <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
-                                        <a href="" class="btn btn--secondary billingAddress__remove" title="Remove tem" data-user-id="<%=userId %>"  data-address-id="<%= billingDetail._id %>"><i class="icon icon anm anm-times-l"></i></a>
-
-                                    </div>
-                                </div>
-                                <hr>
-                            <% }); %>
-                        </div>
-                    </div>
-
-                    <div class="customer-box customer-coupon">
-                        <h3 class="font-15 xs-font-13"><i class=""></i>  <a href="#add-address" class="text-white text-decoration-underline" data-toggle="collapse">Add Address</a></h3>
-                    </div>  
-
-                    <div id="add-address" class="collapse coupon-checkout-content">
-                        <div class="discount-coupon">
-                            <form  id="address-form" action="/address-added" method="POST">
-                                    <h2 class="login-title mb-3">Billing details</h2>
-                                    <div class="row">
-                                        <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
-                                            <label for="input-name">First Name <span class="required-f">*</span></label>
-                                            <input name="name"  id="input-name" type="text">
-                                            <div class="error" style="color: red;"></div>
-                                        </div>
-
-                                        <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
-                                            <label for="input-telephone">Telephone <span class="required-f">*</span></label>
-                                            <input name="telephone"  id="input-telephone" type="tel">
-                                            <div class="error" style="color: red;"></div>
-                                        </div>
-
-
-                                    </div>
-                                    
-        
-                                    <div class="row">
-                                        <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
-                                            <label for="input-homeAddress">Address <span class="required-f">*</span></label>
-                                            <input name="homeAddress"  id="input-homeAddress" type="text">
-                                            <div class="error" style="color: red;"></div>
-                                        </div>
-
-                                        <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
-                                            <label for="input-city">City <span class="required-f">*</span></label>
-                                            <input name="city"  id="input-city" type="text">
-                                            <div class="error" style="color: red;"></div>
-                                        </div>
-
-                                    </div>
-                                   
-                                    <div class="row">
-                                        <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
-                                            <label for="input-postcode">Post Code <span class="required-f">*</span></label>
-                                            <input name="postcode"  id="input-postcode" type="text">
-                                            <div class="error" style="color: red;"></div>
-                                        </div>
-
-                                        <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
-                                            <label for="input-zone">Region / State <span class="required-f">*</span></label>
-                                            <input name="state"  id="input-state" type="text">
-                                            <div class="error" style="color: red;"></div>
-                                        </div>
-                                        <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
-                                            <button class="btn" style="background-color: cadetblue;" type="submit">Submit</button>
-                                        </div>
-                                    </div>
-                            </form> 
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-
-            
-
-
-
-        
-        </div>
-    </div>
-</div>
-<!--End Body Content-->
-
-<!-- Include SweetAlert library -->
+<% function formatDate(dateString) { const options = { day: 'numeric', month:
+'short', year: 'numeric' }; const formattedDate = new
+Date(dateString).toLocaleDateString('en-US', options); return formattedDate; }
+function formatTimeWithoutStandardTime(timeString) { const options = { hour:
+'numeric', minute: 'numeric', hour12: false }; const formattedTime = new
+Date(timeString).toLocaleTimeString('en-US', options); return formattedTime; }
+%> <%-include('header')-%>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+  integrity="sha512-REPLACE_WITH_YOUR_INTEGRITY_CHECK"
+  crossorigin="anonymous"
+/>
+<section style="background-color: #000000">
+  <div class="container py-5">
+    <div class="row">
+      <div class="col-lg-4">
+        <div class="card mb-4">
+          <div class="card-body text-center">
+            <img
+              src="https://cdn1.iconfinder.com/data/icons/public-company-solid/32/employee_employe_workman_user_profiles_avatar_people_human_persons_icon_1-512.png"
+              alt="avatar"
+              class="rounded-circle img-fluid"
+              style="width: 150px"
+            />
+            <h5 class="my-3"></h5>
+          </div>
+        </div>
+        <div class="card mb-4 mb-lg-0">
+          <div class="card-body p-0">
+            <ul class="list-group list-group-flush rounded-3">
+              <li
+                class="list-group-item d-flex justify-content-between align-items-center p-3"
+              >
+                <p class="mb-0"><a href="/userprofile">MY PROFILE</a></p>
+              </li>
+              <li
+                class="list-group-item d-flex justify-content-between align-items-center p-3"
+              >
+                <p class="mb-0"><a href="/editUserName">EDIT PROFILE</a></p>
+              </li>
+              <!-- <li class="list-group-item d-flex justify-content-between align-items-center p-3">
+                        <p class="mb-0"> <a href="/userAddAddress">ADDRESS</a> </p>
+                      </li> -->
+              <li
+                class="list-group-item d-flex justify-content-between align-items-center p-3"
+              >
+                <p class="mb-0"><a href="/orderDetails">ORDER STATUS</a></p>
+              </li>
+              <li
+                class="list-group-item d-flex justify-content-between align-items-center p-3"
+              >
+                <p class="mb-0">
+                  <a href="/changePassword">CHANGE PASSWORD</a>
+                </p>
+              </li>
+              <li
+                class="list-group-item d-flex justify-content-between align-items-center p-3"
+              >
+                <p class="mb-0"><a href="/wallet">WALLET</a></p>
+              </li>
+              <li
+                class="list-group-item d-flex justify-content-between align-items-center p-3"
+              >
+                <p class="mb-0"><a href="/referralCode">REFER AND EARN</a></p>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-8">
+        <div class="row" style="background-color: white">
+          <div class="row ml-2" style="background-color: white">
+            <!-- Billing Address Section -->
+            <div id="your-address" class="coupon-checkout-content">
+              <div class="discount-coupon">
+                <h2 class="login-title mb-3">Billing Address</h2>
+                <% billingDetails.forEach((billingDetail, index) => { %>
+                <div class="row">
+                  <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
+                    <span>First Name:</span>
+                    <span><%= billingDetail.name %></span>
+                  </div>
+                  <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
+                    <span>Telephone:</span>
+                    <span><%= billingDetail.telephone %></span>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
+                    <span>Address:</span>
+                    <span><%= billingDetail.address %></span>
+                  </div>
+                  <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
+                    <span>City:</span>
+                    <span><%= billingDetail.city %></span>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
+                    <span>Post Code:</span>
+                    <span><%= billingDetail.postCode %></span>
+                  </div>
+                  <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
+                    <span>Region / State:</span>
+                    <span><%= billingDetail.regionState %></span>
+                  </div>
+                </div>
+                <div class="row">
+                  <div
+                    class="form-group col-md-6 col-lg-6 col-xl-6 required"
+                  ></div>
+                  <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
+                    <a
+                      href=""
+                      class="btn btn--secondary billingAddress__remove"
+                      title="Remove tem"
+                      data-user-id="<%=userId %>"
+                      data-address-id="<%= billingDetail._id %>"
+                      ><i class="icon icon anm anm-times-l"></i
+                    ></a>
+                    <a
+                      href="#"
+                      class="btn btn-primary edit-address"
+                      style="margin-left: 10px"
+                      data-toggle="modal"
+                      data-target="#exampleModal<%=billingDetail._id%>"
+                      data-address-id="<%= billingDetail._id %>"
+                      >Edit Address</a
+                    >
+                  </div>
+                </div>
+                <% }); %>
+              </div>
+            </div>
+
+            <!-- Modal for Adding/Edit Billing Details -->
+            <% billingDetails.forEach((billingDetail, index) => { %>
+            <div
+              class="modal fade"
+              id="exampleModal<%= billingDetail._id %>"
+              tabindex="-1"
+              role="dialog"
+              aria-labelledby="editBillingAddressModalLabel"
+              aria-hidden="true"
+            >
+              <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="editBillingAddressModalLabel">
+                      Edit Billing Details
+                    </h5>
+                    <input
+                      name="addressId"
+                      style="display: none"
+                      id="addressId<%= billingDetail._id %>"
+                      type="text"
+                      value="<%= billingDetail._id %>"
+                    />
+                    <button
+                      type="button"
+                      class="close"
+                      data-dismiss="modal"
+                      aria-label="Close"
+                    >
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <div class="modal-body">
+                    <form id="editBillingAddressForm<%= billingDetail._id %>">
+                      <div class="row">
+                        <div
+                          class="form-group col-md-6 col-lg-6 col-xl-6 required"
+                        >
+                          <label for="editName<%= billingDetail._id %>"
+                            >First Name <span class="required-f">*</span></label
+                          >
+                          <input
+                            type="text"
+                            class="form-control"
+                            id="editName<%= billingDetail._id %>"
+                            name="editName<%= billingDetail._id %>"
+                            value="<%= billingDetail.name %>"
+                          />
+                          <div class="error" style="color: red"></div>
+                        </div>
+                        <div
+                          class="form-group col-md-6 col-lg-6 col-xl-6 required"
+                        >
+                          <label for="editTelephone<%= billingDetail._id %>"
+                            >Telephone <span class="required-f">*</span></label
+                          >
+                          <input
+                            type="tel"
+                            class="form-control"
+                            id="editTelephone<%= billingDetail._id %>"
+                            name="editTelephone<%= billingDetail._id %>"
+                            value="<%= billingDetail.telephone %>"
+                          />
+                          <div class="error" style="color: red"></div>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div
+                          class="form-group col-md-6 col-lg-6 col-xl-6 required"
+                        >
+                          <label for="editAddress<%= billingDetail._id %>"
+                            >Address <span class="required-f">*</span></label
+                          >
+                          <input
+                            type="text"
+                            class="form-control"
+                            id="editAddress<%= billingDetail._id %>"
+                            name="editAddress<%= billingDetail._id %>"
+                            value="<%= billingDetail.address %>"
+                          />
+                          <div class="error" style="color: red"></div>
+                        </div>
+                        <div
+                          class="form-group col-md-6 col-lg-6 col-xl-6 required"
+                        >
+                          <label for="editCity<%= billingDetail._id %>"
+                            >City <span class="required-f">*</span></label
+                          >
+                          <input
+                            type="text"
+                            class="form-control"
+                            id="editCity<%= billingDetail._id %>"
+                            name="editCity<%= billingDetail._id %>"
+                            value="<%= billingDetail.city %>"
+                          />
+                          <div class="error" style="color: red"></div>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div
+                          class="form-group col-md-6 col-lg-6 col-xl-6 required"
+                        >
+                          <label for="editPostcode<%= billingDetail._id %>"
+                            >Post Code <span class="required-f">*</span></label
+                          >
+                          <input
+                            type="text"
+                            class="form-control"
+                            id="editPostcode<%= billingDetail._id %>"
+                            name="editPostcode<%= billingDetail._id %>"
+                            value="<%= billingDetail.postCode %>"
+                          />
+                          <div class="error" style="color: red"></div>
+                        </div>
+                        <div
+                          class="form-group col-md-6 col-lg-6 col-xl-6 required"
+                        >
+                          <label for="editState<%= billingDetail._id %>"
+                            >Region / State
+                            <span class="required-f">*</span></label
+                          >
+                          <input
+                            type="text"
+                            class="form-control"
+                            id="editState<%= billingDetail._id %>"
+                            name="editState<%= billingDetail._id %>"
+                            value="<%= billingDetail.regionState %>"
+                          />
+                          <div class="error" style="color: red"></div>
+                        </div>
+                      </div>
+                    </form>
+                  </div>
+                  <div class="modal-footer">
+                    <button
+                      type="button"
+                      class="btn btn-secondary"
+                      data-dismiss="modal"
+                    >
+                      Close
+                    </button>
+                    <button
+                      type="button"
+                      data-billing-id="<%= billingDetail._id %>"
+                      class="btn btn-primary saveBillingDetailsChanges"
+                    >
+                      Save Changes
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <% }); %>
+            <hr>
+            <br>
+          <div class="customer-box customer-coupon" >
+            <h3 class="font-15 xs-font-13"   style="display: inline;"><i class=""></i>  <a href="#add-address" class="text-white text-decoration-underline"  data-toggle="collapse">Add Address</a></h3>
+        <hr>
+          </div>  
+          <div id="add-address" class="collapse coupon-checkout-content">
+            <div class="discount-coupon">
+              <form id="address-form" action="/address-added" method="POST">
+                <h2 class="login-title mb-3">Billing details</h2>
+
+                <div class="row">
+                  <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
+                    <label for="input-name"
+                      >First Name <span class="required-f">*</span></label
+                    >
+                    <input name="name" id="input-name" type="text" />
+                    <div class="error" style="color: red"></div>
+                  </div>
+
+                  <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
+                    <label for="input-telephone"
+                      >Telephone <span class="required-f">*</span></label
+                    >
+                    <input name="telephone" id="input-telephone" type="tel" />
+                    <div class="error" style="color: red"></div>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
+                    <label for="input-homeAddress"
+                      >Address <span class="required-f">*</span></label
+                    >
+                    <input
+                      name="homeAddress"
+                      id="input-homeAddress"
+                      type="text"
+                    />
+                    <div class="error" style="color: red"></div>
+                  </div>
+
+                  <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
+                    <label for="input-city"
+                      >City <span class="required-f">*</span></label
+                    >
+                    <input name="city" id="input-city" type="text" />
+                    <div class="error" style="color: red"></div>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
+                    <label for="input-postcode"
+                      >Post Code <span class="required-f">*</span></label
+                    >
+                    <input name="postcode" id="input-postcode" type="text" />
+                    <div class="error" style="color: red"></div>
+                  </div>
+
+                  <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
+                    <label for="input-zone"
+                      >Region / State <span class="required-f">*</span></label
+                    >
+                    <input name="state" id="input-state" type="text" />
+                    <div class="error" style="color: red"></div>
+                  </div>
+                  <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
+                    <button
+                      class="btn"
+                      style="background-color: cadetblue"
+                      type="submit"
+                    >
+                      Submit
+                    </button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
 <script>
-  document.addEventListener('DOMContentLoaded', function () {
-    const removeButtons = document.querySelectorAll('.billingAddress__remove');
-    removeButtons.forEach(button => {
-      button.addEventListener('click', function (event) {
+  document.addEventListener("DOMContentLoaded", function () {
+    const form = document.getElementById("address-form");
+
+    form.addEventListener("submit", async function (event) {
+      event.preventDefault();
+
+      let valid = validateForm();
+
+      if (valid) {
+        const formData = new FormData(form);
+        const formObject = {};
+        formData.forEach((value, key) => {
+          formObject[key] = value;
+        });
+
+        // Now, formObject contains the form values
+        console.log(formObject);
+        try {
+          const response = await fetch("/address-added", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ formObject }),
+          });
+
+          if (response.ok) {
+            console.log("Form submitted successfully!");
+
+            window.location.reload();
+          } else {
+            console.error("Form submission failed:", response.statusText);
+          }
+        } catch (error) {
+          console.error("Error during form submission:", error);
+        }
+      }
+    });
+
+    function validateForm() {
+      let valid = true;
+
+      // Reset previous error messages
+      const errorMessages = form.querySelectorAll(".error");
+      errorMessages.forEach(function (error) {
+        error.textContent = "";
+      });
+
+      // Validate User Name
+      const name = form.querySelector("#input-name").value.trim();
+      if (name === "") {
+        valid = false;
+        displayError("input-name", "User Name is required.");
+      }
+
+      const telephone = form.querySelector("#input-telephone").value.trim();
+      if (telephone === "" || isNaN(telephone) || telephone.length !== 10) {
+        valid = false;
+        displayError("input-telephone", "Enter a valid 10-digit number.");
+      }
+
+      const postcode = form.querySelector("#input-postcode").value.trim();
+      if (postcode === "" || isNaN(postcode) || postcode.length !== 6) {
+        valid = false;
+        displayError("input-postcode", "Enter a valid postcode.");
+      }
+
+      const cityName = form.querySelector("#input-city").value.trim();
+      if (cityName === "") {
+        valid = false;
+        displayError("input-city", "City is required.");
+      }
+
+      const address = form.querySelector("#input-homeAddress").value.trim();
+      if (address === "") {
+        valid = false;
+        displayError("input-homeAddress", "Address is required.");
+      }
+
+      const state = form.querySelector("#input-state").value.trim();
+      if (state === "") {
+        valid = false;
+        displayError("input-state", "State is required.");
+      }
+
+      return valid;
+    }
+
+    function displayError(elementId, errorMessage) {
+      const errorElement = form.querySelector(`#${elementId} + .error`);
+      if (errorElement) {
+        errorElement.textContent = errorMessage;
+      }
+    }
+  });
+</script>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const removeButtons = document.querySelectorAll(".billingAddress__remove");
+    removeButtons.forEach((button) => {
+      button.addEventListener("click", function (event) {
         event.preventDefault();
         const addressId = button.dataset.addressId;
         const userId = button.dataset.userId;
 
         // Display confirmation dialog using SweetAlert
         Swal.fire({
-          title: 'Are you sure?',
-          text: 'You are about to remove this billing address.',
-          icon: 'warning',
+          title: "Are you sure?",
+          text: "You are about to remove this billing address.",
+          icon: "warning",
           showCancelButton: true,
-          confirmButtonColor: '#3085d6',
-          cancelButtonColor: '#d33',
-          confirmButtonText: 'Yes, remove it!'
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Yes, remove it!",
         }).then((result) => {
           if (result.isConfirmed) {
             // Proceed with removal
             fetch(`/${userId}/remove/${addressId}`, {
-              method: 'GET',
+              method: "GET",
               headers: {
-                'Content-Type': 'application/json',
+                "Content-Type": "application/json",
               },
             })
-            .then(response => {
-              if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
-              }
-              // Display success message using SweetAlert
-              Swal.fire({
-                title: 'Success!',
-                text: 'Billing address removed successfully.',
-                icon: 'success',
-              }).then(() => {
-                // Reload the page
-                window.location.reload();
+              .then((response) => {
+                if (!response.ok) {
+                  throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                // Display success message using SweetAlert
+                Swal.fire({
+                  title: "Success!",
+                  text: "Billing address removed successfully.",
+                  icon: "success",
+                }).then(() => {
+                  // Reload the page
+                  window.location.reload();
+                });
+              })
+              .catch((error) => {
+                console.error("Error removing billing address:", error);
+                // Display error message using SweetAlert
+                Swal.fire({
+                  title: "Error!",
+                  text: "Failed to remove billing address. Please try again later.",
+                  icon: "error",
+                });
               });
-            })
-            .catch(error => {
-              console.error('Error removing billing address:', error);
-              // Display error message using SweetAlert
-              Swal.fire({
-                title: 'Error!',
-                text: 'Failed to remove billing address. Please try again later.',
-                icon: 'error',
-              });
-            });
           }
         });
       });
@@ -203,153 +534,143 @@
 </script>
 
 
-<!-- <script>
-    document.addEventListener('DOMContentLoaded', function () {
-      const removeButtons = document.querySelectorAll('.billingAddress__remove');
-      removeButtons.forEach(button => {
-        button.addEventListener('click', function (event) {
-          event.preventDefault();
-          const addressId = button.dataset.addressId;
-          const userId = button.dataset.userId
 
-          console.log(addressId);//its get
-          console.log(userId);
-          console.log(999);
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    document
+      .querySelectorAll(".saveBillingDetailsChanges")
+      .forEach(function (button) {
+        button.addEventListener("click", function () {
+          const modal = button.closest(".modal");
+          const billingId = button.getAttribute("data-billing-id");
+          console.log(billingId);
 
-          fetch(`/${userId}/remove/${addressId}`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                },
-          })
-          .then(response => {
-            if (!response.ok) {
-              throw new Error(`HTTP error! Status: ${response.status}`);
-            }
-            window.location.reload();
-          })
-          .catch(error => {
-            console.error('Error removing product:', error);
+          const name = modal
+            .querySelector("#editName" + billingId)
+            .value.trim();
+          const telephone = modal
+            .querySelector("#editTelephone" + billingId)
+            .value.trim();
+          const address = modal
+            .querySelector("#editAddress" + billingId)
+            .value.trim();
+          const city = modal
+            .querySelector("#editCity" + billingId)
+            .value.trim();
+          const postcode = modal
+            .querySelector("#editPostcode" + billingId)
+            .value.trim();
+          const state = modal
+            .querySelector("#editState" + billingId)
+            .value.trim();
+
+          const errorDivs = document.querySelectorAll(".error");
+          errorDivs.forEach(function (div) {
+            div.innerHTML = "";
           });
+
+          let isValid = true;
+
+          if (name === "") {
+            document.getElementById(
+              "editName" + billingId
+            ).nextElementSibling.innerHTML = "Please enter your first name.";
+            isValid = false;
+          }
+          if (telephone === "") {
+            document.getElementById(
+              "editTelephone" + billingId
+            ).nextElementSibling.innerHTML =
+              "Please enter your telephone number.";
+            isValid = false;
+          }
+          if (address === "") {
+            document.getElementById(
+              "editAddress" + billingId
+            ).nextElementSibling.innerHTML = "Please enter your address.";
+            isValid = false;
+          }
+          if (city === "") {
+            document.getElementById(
+              "editCity" + billingId
+            ).nextElementSibling.innerHTML = "Please enter your city.";
+            isValid = false;
+          }
+          if (postcode === "") {
+            document.getElementById(
+              "editPostcode" + billingId
+            ).nextElementSibling.innerHTML = "Please enter your postcode.";
+            isValid = false;
+          }
+          if (state === "") {
+            document.getElementById(
+              "editState" + billingId
+            ).nextElementSibling.innerHTML = "Please enter your region/state.";
+            isValid = false;
+          }
+
+          if (!/^\d{10}$/.test(telephone)) {
+            document.getElementById(
+              "editTelephone" + billingId
+            ).nextElementSibling.innerHTML =
+              "Telephone number must be a 10-digit number.";
+            isValid = false;
+          }
+
+          if (!/^\d{6}$/.test(postcode)) {
+            document.getElementById(
+              "editPostcode" + billingId
+            ).nextElementSibling.innerHTML =
+              "Postcode must be a 6-digit number.";
+            isValid = false;
+          }
+
+          if (isValid) {
+            console.log(billingId);
+            console.log(898);
+            console.log(
+              name,
+              telephone,
+              address,
+              city,
+              postcode,
+              state,
+              billingId
+            );
+
+            const requestBody = {
+              name: name,
+              telephone: telephone,
+              address: address,
+              city: city,
+              postcode: postcode,
+              state: state,
+              billingId: billingId,
+            };
+
+            fetch("/editAddress", {
+              method: "POST",
+              body: JSON.stringify({
+                requestBody,
+              }),
+              headers: {
+                "Content-Type": "application/json",
+              },
+            })
+              .then((response) => response.json())
+              .then((data) => {
+                window.location.reload()
+                console.log("Success:", data);
+              })
+              .catch((error) => {
+                console.error("Error:", error);
+              });
+
+            $(`#exampleModal${billingId}`).modal("hide");
+          }
         });
       });
-    });
-  </script> -->
- 
-
-
-
-
-     <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const form = document.getElementById("address-form");
-    
-            form.addEventListener('submit', async function (event) {
-                event.preventDefault();
-    
-                let valid = validateForm();
-    
-                if (valid) {
-                    const formData = new FormData(form);
-                    const formObject = {};
-                    formData.forEach((value, key) => {
-                        formObject[key] = value;
-                    });
-
-                    
-
-                    // Now, formObject contains the form values
-                    console.log(formObject);
-                    try {
-                        const response = await fetch("/address-added", {
-                            method: "POST",
-                            headers: {
-                                'Content-Type': 'application/json',
-                            },
-                            body: JSON.stringify({ formObject  }),
-                        });
-
-
-                        
-    
-                        if (response.ok) {
-                            console.log("Form submitted successfully!");
-
-                            // window.location.href = '/checkout';
-                             window.location.reload();
-
-
-                        } else {
-                            console.error("Form submission failed:", response.statusText);
-                        }
-                    } catch (error) {
-                        console.error("Error during form submission:", error);
-                    }
-                }
-            });
-    
-            function validateForm() {
-                let valid = true;
-    
-                // Reset previous error messages
-                const errorMessages = form.querySelectorAll('.error');
-                errorMessages.forEach(function (error) {
-                    error.textContent = '';
-                });
-    
-                // Validate User Name
-                const name = form.querySelector('#input-name').value.trim();
-                if (name === '') {
-                    valid = false;
-                    displayError('input-name', 'User Name is required.');
-                }
-    
-                const telephone = form.querySelector("#input-telephone").value.trim();
-                if (telephone === '' || isNaN(telephone) || telephone.length !== 10) {
-                    valid = false;
-                    displayError('input-telephone', 'Enter a valid 10-digit number.');
-                }
-    
-                const postcode = form.querySelector("#input-postcode").value.trim();
-                if (postcode === '' || isNaN(postcode) || postcode.length !== 6) {
-                    valid = false;
-                    displayError('input-postcode', 'Enter a valid postcode.');
-                }
-    
-                const cityName = form.querySelector('#input-city').value.trim();
-                if (cityName === '') {
-                    valid = false;
-                    displayError('input-city', 'City is required.');
-                }
-    
-                const address = form.querySelector("#input-homeAddress").value.trim();
-                if (address === '') {
-                    valid = false;
-                    displayError('input-homeAddress', 'Address is required.');
-                }
-    
-                const state = form.querySelector("#input-state").value.trim();
-                if (state === '') {
-                    valid = false;
-                    displayError('input-state', 'State is required.');
-                }
-    
-                return valid;
-            }
-    
-            function displayError(elementId, errorMessage) {
-                const errorElement = form.querySelector(`#${elementId} + .error`);
-                if (errorElement) {
-                    errorElement.textContent = errorMessage;
-                }
-            }
-        });
-    </script>
-
+  });
+</script>
 
 <%-include('footer')-%>
-
-
-    
-</body>
-</html>

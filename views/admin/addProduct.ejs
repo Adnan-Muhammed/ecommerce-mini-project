@@ -1,5 +1,6 @@
 
 
+
 <!-- Cropper.js CSS -->
 <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css" rel="stylesheet">
 
@@ -45,22 +46,24 @@
                         <div id="productPriceError" class="error" style="color: red;"></div>
                       </div>
                   
-                      
-                  
+                      <!-- here  -->
 
-                      <!-- <% if (locals.categoryList) { %>
-                          <div class="form-floating mb-3">
-                              <select class="form-select" name="productCategory" id="floatingSelect"
-                                  aria-label="Floating label select example">
-                                  <% categoryList.forEach(category=> { %>
-                                      <option>
-                                          <%= category.name %>
-                                      </option>
-                                      <% }); %>
-                              </select>
-                              <label for="floatingSelect">Select Category</label>
-                          </div>
-                          <% } %> -->
+                      
+
+                       <!-- Offer Input (optional) -->
+                       <div class="form-floating mb-3" id="offerInputSection" >
+                        <input type="number" class="form-control" id="offerInput" placeholder="offerInput" name="offerInput" min="1" max="100"  >
+                        <label for="offerInput">Offer</label>
+                        <div id="offerInputError" class="error" style="color: red;"></div>
+                      </div>
+                      
+                      <!-- Expiry Date for Offer (optional) -->
+                      <div class="form-floating mb-3" id="expiryDateSection" >
+                        <input type="date" class="form-control" id="offerExpiryDate" placeholder="offerExpiryDate" name="offerExpiryDate">
+                        <label for="offerExpiryDate">Offer Expiry Date</label>
+                        <div id="offerExpiryDateError" class="error" style="color: red;"></div>
+                      </div>
+                  
 
                           <% if (locals.categoryList) { %>
                             <div class="form-floating mb-3">
@@ -98,7 +101,6 @@
                         <label for="floatingTextarea">Description</label>
                         <div id="productDescriptionError" class="error" style="color: red;"></div>
                       </div>
-                  
                       <button type="submit" class="btn btn-primary">Submit</button>
                     </form>
                     
@@ -150,10 +152,88 @@
     </div>
 
     
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+<!-- 
+ <script>
 
 
-<script>
+
     document.addEventListener('DOMContentLoaded', function () {
+
+      const offerCheckbox = document.getElementById('offerCheckbox');
+    const offerInputSection = document.getElementById('offerInputSection');
+    const expiryDateSection = document.getElementById('expiryDateSection');
+    const offerExpiryDateInput = document.getElementById('offerExpiryDate');
+    const offerInput = document.getElementById('offerInput');
+
+    let offerValid;
+    
+    offerInput.addEventListener('input', function() {
+   
+   const inputValue = offerInput.value;
+
+   // Validate if the entered value is a number
+   if (inputValue.trim() !== '' && !/^\d+$/.test(inputValue)) {
+    offerValid = false
+       showError('Please enter numbers only.', 'offerInputError');
+   } else {
+    offerValid = true
+       clearError('offerInputError');
+   }
+});
+
+function showError(message, errorFieldId) {
+   document.getElementById(errorFieldId).textContent = message;
+   
+}
+
+function clearError(errorFieldId) {
+   document.getElementById(errorFieldId).textContent = '';
+}
+
+   offerCheckbox.addEventListener('change', function () {
+     if (this.checked) {
+       offerInputSection.style.display = 'block';
+       expiryDateSection.style.display = 'block';
+     } else {
+       offerInputSection.style.display = 'none';
+       expiryDateSection.style.display = 'none';
+       offerInput.value = '';
+     }
+   });
+
+
+   flatpickr('#offerExpiryDate', {
+       dateFormat: "d/m/Y", // Format: dd/mm/yyyy
+       minDate: "today" // Set minimum date to today
+   });
+
+
+    offerCheckbox.addEventListener('change', function () {
+      if (this.checked) {
+        offerInputSection.style.display = 'block';
+        expiryDateSection.style.display = 'block';
+      } else {
+        offerInputSection.style.display = 'none';
+        expiryDateSection.style.display = 'none';
+        offerInput.value = '';
+      }
+    });
+
+
+    flatpickr('#offerExpiryDate', {
+        dateFormat: "d/m/Y", // Format: dd/mm/yyyy
+        minDate: "today" // Set minimum date to today
+    });
+
+
+
+
+
+
+
       const form = document.querySelector('form[action="/admin/productadded"]');
 
       form.addEventListener('submit', function (event) {
@@ -164,6 +244,11 @@
         errorFields.forEach(function (error) {
           error.textContent = '';
         });
+
+       if(!offerValid){
+        valid = false
+        displayError('offer input is empty', 'offerInputError');
+       }
 
         // Validate Product Name
         const productName = form.querySelector('input[name="productName"]').value.trim();
@@ -228,7 +313,135 @@
         errorField.textContent = message;
       }
     });
+  </script>  -->
+
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const form = document.querySelector('form[action="/admin/productadded"]');
+  
+      form.addEventListener('submit', function (event) {
+        let valid = true;
+  
+        // Reset previous error messages
+        const errorFields = form.querySelectorAll('.error');
+        errorFields.forEach(function (error) {
+          error.textContent = '';
+        });
+  
+        // Validate Product Name
+        const productName = form.querySelector('input[name="productName"]').value.trim();
+        if (productName === '') {
+          valid = false;
+          displayError('Product Name is required.', 'productNameError');
+        }
+  
+        // Validate Stock
+        const productStock = form.querySelector('input[name="productStock"]').value.trim();
+        if (productStock === '') {
+          valid = false;
+          displayError('Stock is required.', 'productStockError');
+        }
+  
+        // Validate Price
+        const productPrice = form.querySelector('input[name="productPrice"]').value.trim();
+        if (productPrice === '') {
+          valid = false;
+          displayError('Price is required.', 'productPriceError');
+        }
+  
+        // Validate Description
+        const productDescription = form.querySelector('textarea[name="productDescription"]').value.trim();
+        if (productDescription === '') {
+          valid = false;
+          displayError('Description is required.', 'productDescriptionError');
+        }
+  
+        // Validate Image Upload
+        const images = form.querySelector('input[name="images"]');
+        const imageFiles = images.files;
+  
+        if (imageFiles.length > 6) {
+          valid = false;
+          displayError('Maximum of 6 files allowed.', 'imageError');
+        } else {
+          for (let i = 0; i < imageFiles.length; i++) {
+            const file = imageFiles[i];
+            const fileType = file.type;
+  
+            if (!fileType.startsWith('image/')) {
+              valid = false;
+              displayError('Invalid file type. Please upload only images.', 'imageError');
+              break;
+            }
+          }
+        }
+  
+        if (imageFiles.length === 0) {
+          valid = false;
+          displayError('Image(s) are required.', 'imageError');
+        }
+  
+        // Validate Offer Input
+        const offerInput = form.querySelector('input[name="offerInput"]').value.trim();
+        if (offerInput && !(/^\d+$/.test(offerInput))) {
+          valid = false;
+          displayError('Offer input must be a number.', 'offerInputError');
+        }
+        
+
+
+
+  
+        // Validate Expiry Date
+        const expiryDate = form.querySelector('input[name="offerExpiryDate"]').value.trim();
+
+
+        
+
+
+        const offerInputValue = offerInput.trim();
+        if (offerInputValue !== '' && expiryDate === '') {
+          valid = false;
+          displayError('Expiry date is required if an offer is provided.', 'offerExpiryDateError');
+        }
+
+        if (offerInputValue === '' && expiryDate !== '') {
+          valid = false;
+          displayError('offer input is empty.', 'offerExpiryDateError');
+        }
+  
+        if (!valid) {
+          event.preventDefault(); // Prevent form submission if validation fails
+        }
+      });
+  
+      function displayError(message, errorFieldId) {
+        const errorField = document.getElementById(errorFieldId);
+        errorField.textContent = message;
+      }
+
+
+      flatpickr('#offerExpiryDate', {
+       dateFormat: "d/m/Y", // Format: dd/mm/yyyy
+       minDate: "today" // Set minimum date to today
+   });
+
+    });
   </script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 <script>
@@ -274,6 +487,10 @@
       }
   }
 </script>
+
+
+
+
 
 
 

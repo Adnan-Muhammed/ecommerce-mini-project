@@ -1,3 +1,8 @@
+require('dotenv').config();
+const key_id = process.env.key_id;
+const key_secret = process.env.key_secret;
+
+
 const userDB = require('../models/user');
 const productDB = require('../models/product')
 const CategoryDB =require('../models/category')
@@ -145,8 +150,51 @@ const userSignupPost = async (req, res) => {
         const { email, name, password } = req.body;
      // console.log(email, name, password);
 
-        const userData = await userDB.findOne({ email: email });
+    const  referralCode = (req.body.referralCode)??null
 
+    console.log(req.body);
+    console.log('----___----____----___');
+
+
+    // return
+    if (referralCode) {
+        console.log("Referral Code:", referralCode);
+    
+       
+        // const referredUser = await userDB.findOne(
+        //     { refferal: referralCode }, // Corrected field name
+        //     // { $inc: { wallet: 100 } }
+        // );
+
+        const referredUser = await userDB.findOneAndUpdate(
+            { referral: referralCode }, // Corrected field name
+            { $inc: { wallet: 100 } },
+            {new:true}
+        );
+
+
+        const transaction = {
+            type: 'credit',
+            amount: 100,
+            isReferral:true,
+            timestamp: Date.now()
+          };
+          referredUser.transactions.push(transaction);
+          await referredUser.save();
+
+
+
+
+
+
+
+
+
+    
+        console.log("Referred User:", referredUser);
+    }
+
+        const userData = await userDB.findOne({ email: email });
         if (userData) {
             req.session.userExist = userData.email;
             res.redirect('/signuppage');
@@ -166,7 +214,26 @@ const userSignupPost = async (req, res) => {
                 email: email,
                 password: hashedPassword, // Save the hashed password in the database
                 otp:otp,
+                wallet:(referralCode)?50:undefined,
+                transactions: [] // Initialize transactions array
+
             };
+
+
+            if (referralCode) {
+                const transaction = {
+                    type: 'credit',
+                    amount: 50,
+                    isReferral: true,
+                    timestamp: Date.now()
+                };
+                user.transactions.push(transaction); // Add transaction to user's transactions array
+            }
+
+
+
+
+
 
             req.session.newUser = {
                 email,
@@ -178,6 +245,13 @@ const userSignupPost = async (req, res) => {
          // console.log(req.session.userNew.email);
             await userDB.insertMany([user]);
          // console.log(9999);
+
+
+
+
+
+
+
 
             
 
@@ -341,6 +415,7 @@ const otpVerificationPost = async (req, res) => {
                 return res.status(400).json({ error: 'Incorrect OTP', otp: otp });
             } else {
 
+
                 if (req.session.newUser) req.session.newUser.otp = otp;
                 req.session.userNew = req.session.newUser??null
                 req.session.user && (req.session.user.otp = otp); //nullish coalesing
@@ -348,6 +423,10 @@ const otpVerificationPost = async (req, res) => {
                 // const email = req.session.email
                 console.log(email);
                 const name =await userDB.find({email:email},{name:1,_id:0})
+                const generatedReferralCode = otpGenerator.generate(6, { alphabets: true, upperCase: false, specialChars: false, digits: true });
+                console.log(generatedReferralCode);
+                const referralCode = await userDB.findOneAndUpdate({email:email}, { $set: { referral: generatedReferralCode } });
+
                 console.log(78787);
                 console.log(name);
                 const username=name[0].name
@@ -562,14 +641,18 @@ const userProfile=async (req,res)=>{
     const { primaryCategories, otherCategories } = await fetchCategoryMiddleware.fetchCategories();
     const emailId = (req.session.user) ? req.session.user.email : req.session.userNew.email;
 
-    try{
+
+
+    const isPasswordChanged=(req.session.changePassword)??null
+    req.session.changePassword =null
+       try{
         const user = await userDB.findOne({email:emailId})
 
         console.log(1234321);
        console.log(user);
 
     
-        res.render('user/profile2',{isLogged,user})
+        res.render('user/profile2',{isLogged,user,isPasswordChanged})
 
     }catch(err){
 
@@ -586,9 +669,10 @@ const userAddAddress = async(req,res)=>{
     try{
         const user = await userDB.findOne({ email: emailId });
         const billingDetails = user.billingDetails || []; 
-        const userId = user._id
+        const userIdJson = user._id
         // console.log(user.id);
-        // console.log(userId);
+        const userId=userIdJson.toString()
+        console.log(userId);
         res.render('user/addAddress',{isLogged,billingDetails,userId})
     }catch(err){
     }
@@ -614,6 +698,9 @@ const userOrderStatus = async(req,res)=>{
 
 
 
+
+
+
 const updatePassword = async (req,res)=>{
     const isLogged = determineIsLogged(req.session);
     const emailId = req.session.user ? req.session.user.email : req.session.userNew? req.session.userNew.email:null
@@ -633,6 +720,129 @@ const forgotPassword = (req,res)=>{
 }
 
 
+const wallet = async(req,res)=>{
+    const isLogged = determineIsLogged(req.session);
+    const { primaryCategories, otherCategories } = await fetchCategoryMiddleware.fetchCategories();
+    const emailId = (req.session.user) ? req.session.user.email : req.session.userNew.email;
+    try{
+
+        const user =await userDB.findOne({email:emailId})
+
+        console.log('12345',4567);
+
+        console.log(user)
+        console.log(user.wallet)
+
+        user.transactions.forEach(transaction => {
+            transaction.formattedTimestamp = new Date(transaction.timestamp).toLocaleString('en-US', {
+                weekday: 'short',
+                month: 'short',
+                day: 'numeric',
+                year: 'numeric',
+                hour: 'numeric',
+                minute: 'numeric'
+            });
+        });
+
+
+
+
+        res.render('user/wallet',{isLogged ,user})
+
+    }catch(err){
+
+    }
+
+}
+
+const changeName = async(req,res)=>{
+    const isLogged = determineIsLogged(req.session);
+    const { primaryCategories, otherCategories } = await fetchCategoryMiddleware.fetchCategories();
+    const emailId = (req.session.user) ? req.session.user.email : req.session.userNew.email;
+    try{
+
+        const user =await userDB.findOne({email:emailId})
+
+        console.log('hello cahnge m=name');
+        user.name = req.body.newName;
+        await user.save();
+
+
+        if( req.session.user){
+            req.session.user.name=user.name
+        }else if(req.session.userNew){
+            req.session.userNew.name=user.name
+        }
+
+        
+        
+
+        console.log(user)
+        res.status(200).json({ message: 'Name updated successfully', newName: user.name });
+
+        // res.render('user/changeName',{isLogged ,user})
+
+    }catch(err){
+        res.status(500).json({ error: 'Failed to update name' });
+
+    }
+
+}
+
+
+
+const editAddress=async(req,res)=>{
+    const isLogged = determineIsLogged(req.session);
+    const { primaryCategories, otherCategories } = await fetchCategoryMiddleware.fetchCategories();
+    const emailId = (req.session.user) ? req.session.user.email : req.session.userNew.email;
+    try{
+
+
+        const {billingId,name,telephone,address,city,postcode,state,} = req.body.requestBody
+
+        const telephoneParsed=  parseInt(telephone);
+        const postcodeParsed=  parseInt(postcode);
+        const _id = billingId
+
+const updatedAddress = {
+    name,
+    telephone:telephoneParsed,
+    address,
+    city,
+    postCode:postcodeParsed,
+    regionState:state,
+    _id:_id
+}
+
+        const user = await userDB.findOne({ email: emailId });
+
+
+        if (!user) {
+            throw new Error("User not found");
+        }
+
+        const index = user.billingDetails.findIndex(details => details._id.toString() === billingId);
+
+
+        console.log('__=__==__=--+__');
+        console.log(index);
+        console.log('__=__==__=--+__')
+
+        if (index === -1) {
+            throw new Error("Billing details not found");
+        }
+
+        console.log(updatedAddress);
+        user.billingDetails[index] = updatedAddress
+
+        await user.save();
+
+        res.status(200).json({ message: "Billing address updated successfully" });
+    } catch (err) {
+        console.error("Error updating billing address:", err);
+        res.status(500).json({ error: err.message });
+    }
+}
 
 
 
@@ -655,5 +865,8 @@ module.exports = {
     updatePassword,
     forgotPassword,
     updatePasswordPost,
+    wallet,
+    changeName,
+    editAddress,
 
 };

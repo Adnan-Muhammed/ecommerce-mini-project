@@ -99,14 +99,13 @@
                                 <i class="anm anm-user-al" aria-hidden="true"></i>
                                 <li><a href="/userProfile"><i class="bi bi-person"></i><%=isLogged%></a></li>
                                 <li><a href="/logout">logOut</a></li>
-                            <%}else{%>
-                                <li><a href="/loginpage">Login</a></li>
-                                <li><a href="/signuppage">Create Account</a></li>
-                            <%}%>
+                                <%}else{%>
+                                    <li><a href="/loginpage">Login</a></li>
+                                    <li><a href="/signuppage">Create Account</a></li>
+                                    <%}%>
+                                    <li><a href="/wishlist">Wishlist</a></li>
                                 
                             
-                            
-                            <li><a href="/wishlist">Wishlist</a></li>
                         </ul>
                     </div>
                 </div>
@@ -148,7 +147,7 @@
                                         <ul class="dropdown">
                                             <% locals.otherCategories.forEach(data => { %>
                                                 <li>
-                                                    <a href="/<%= data.toLowerCase().replace(/\s/g, '') %>Products" class="site-nav">
+                                                    <a href="/category/<%= data.toLowerCase().replace(/\s/g, '') %>" class="site-nav">
                                                         <%= data %>
                                                     </a>
                                                 </li>
@@ -161,8 +160,6 @@
                             </li>
                           </ul>
                         </nav>
-
-
 
 
                         <!--End Desktop Menu-->

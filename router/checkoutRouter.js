@@ -12,8 +12,9 @@ router.get('/checkout', userSessionHandling.isBlockedNow,checkoutManagement.chec
 
 router.post('/address-added',  userSessionHandling.isBlockedNow,checkoutManagement. addAddress );
 
-router.get('/:userId/remove/:addressId', userSessionHandling.isBlockedNow,checkoutManagement.removeBillingAddress)
-
+router.get('/user/remove/:addressId',  userSessionHandling.isBlockedNow,checkoutManagement.removeBillingAddress)
+// /couponApply'
+router.post('/couponApply',  userSessionHandling.isBlockedNow,checkoutManagement.couponApply   );
 
 
 

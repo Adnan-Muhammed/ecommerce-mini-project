@@ -16,15 +16,17 @@
                 </div>
               </div>
 
+
+
+              
+
               <div class="card mb-4 mb-lg-0">
                 <div class="card-body p-0">
                   <ul class="list-group list-group-flush rounded-3">
                     <li class="list-group-item d-flex justify-content-between align-items-center p-3">
                       <p class="mb-0"><a href="/userprofile">MY PROFILE</a></p>
                     </li>
-                    <li class="list-group-item d-flex justify-content-between align-items-center p-3">
-                      <p class="mb-0"> <a href="/editUser">EDIT PROFILE</a> </p>
-                    </li>
+                    
                     <li class="list-group-item d-flex justify-content-between align-items-center p-3">
                       <p class="mb-0"> <a href="/userAddAddress">ADDRESS</a> </p>
                     </li>
@@ -37,8 +39,11 @@
                     <li class="list-group-item d-flex justify-content-between align-items-center p-3">
                       <p class="mb-0"> <a href="/wallet">WALLET</a> </p>
                     </li>
-                    <li class="list-group-item d-flex justify-content-between align-items-center p-3">
+                    <!-- <li class="list-group-item d-flex justify-content-between align-items-center p-3">
                       <p class="mb-0"> <a href="/referralCode">REFER AND EARN</a> </p>
+                    </li> -->
+                    <li class="list-group-item d-flex justify-content-between align-items-center p-3">
+                      <p class="mb-0"> <a href="/availableCoupons">Available Coupons</a> </p>
                     </li>
                   </ul>
                 </div>
@@ -55,9 +60,34 @@
                     <div class="col-sm-3">
                       <p class="mb-0">Name:</p>
                     </div>
-                    <div class="col-sm-9">
-                      <p class="text-muted mb-0"><%=user.name%> </p>
-                    </div>
+                    
+<!-- 
+                  <div class="col-sm-9">
+                    <p class="text-muted mb-0" style="display: inline;"><%=user.name%></p>
+                    <a href="#" class="btn btn-primary" style="display: inline-block; padding: 1; margin: 0; color: black;">edit</a>
+                </div> -->
+                
+
+
+                <!-- <div class="col-sm-9">
+                  <p class="text-muted mb-0" style="display: inline;"><%= user.name %></p>
+                  <a href="#" class="btn btn-primary" style="margin-left: 10px;" onclick="showInput()">Edit</a>
+                  <input type="text" id="newNameInput" style="display: none;">
+                  <button class="btn btn-primary" style="display: none;">OK</button>
+              </div> -->
+
+              <div class="col-sm-9">
+                <p class="text-muted mb-0" style="display: inline;"><%= user.name %></p>
+                <a href="#" class="btn btn-primary" style="margin-left: 10px;" onclick="showInput()">Edit</a>
+                <input type="text" id="newNameInput" style="display: none;">
+                <p id="errMsg" class="text-muted mb-0" style="display: none;"></p>
+
+                <button id="editName" class="btn btn-primary" style="display: none;">OK</button>
+                <button id="cancelEdit" class="btn btn-primary" style="display: none;">Cancel</button>
+
+              </div>
+
+                    
                   </div>
                   <hr>
                   <div class="row">
@@ -84,4 +114,105 @@
         </div>
       </section>
 
+
+
+
+
+
+<script>
+  function showInput() {
+      const errMsg = document.getElementById("errMsg");
+      var inputField = document.getElementById("newNameInput");
+      inputField.style.display = "inline-block";
+      inputField.style.opacity = "1";
+
+      var editButton = document.querySelector('.btn.btn-primary');
+      editButton.style.display = "none";
+
+      const errorMessage = document.querySelector('#errorMsg');
+
+      var okButton = document.querySelector('#editName');
+      okButton.style.display = "inline-block";
+
+      var cancelButton = document.querySelector('#cancelEdit');
+      cancelButton.style.display = "inline-block";
+
+      // Clear error message when starting to edit
+      errMsg.style.display = "none";
+
+      // Add event listener for the Cancel button
+      cancelButton.addEventListener('click', cancelEditing);
+
+      // Function to cancel editing
+      function cancelEditing() {
+          console.log("Cancel Button Clicked"); // Debugging: Check if event listener is triggered
+          inputField.style.display = "none";
+          okButton.style.display = "none";
+          cancelButton.style.display = "none";
+          editButton.style.display = "inline-block";
+          errMsg.style.display = "none";
+      }
+
+      // Add event listener for the OK button
+      okButton.addEventListener('click', function() {
+          var newName = inputField.value.trim(); // Fetch the input value and trim any leading/trailing spaces
+
+          if (newName === '') {
+              errMsg.style.display = "block"; // Display the error message
+              errMsg.innerHTML = "Please enter a valid name";
+
+              setTimeout(function() {
+                  errMsg.style.display = "none"; // Hide the error message after 2 seconds
+              }, 2000); // 2000 milliseconds = 2 seconds
+
+              return false; // Stop further execution
+          }
+
+          // If validation passes, proceed with further actions (e.g., sending data to the server)
+          console.log("New Name:", newName);
+
+          // Example: Send the new name to the server using fetch
+          fetch('/updateUserName', {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({ newName: newName })
+          })
+          .then(response => {
+              if (response.ok) {
+                  // Handle success
+                  console.log("Name updated successfully.");
+                  window.location.reload(); // Reload the page
+              } else {
+                  // Handle error
+                  console.error("Failed to update name.");
+              }
+          })
+          .catch(error => {
+              console.error("Error:", error);
+          });
+
+          // Reset the input field and display buttons
+          inputField.style.display = "none";
+          inputField.value = ""; // Clear the input field
+          okButton.style.display = "none";
+          cancelButton.style.display = "none";
+          editButton.style.display = "inline-block";
+          errMsg.style.display = "none";
+      });
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+    
       <%-include('footer')-%>

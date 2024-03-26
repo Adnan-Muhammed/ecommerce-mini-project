@@ -9,6 +9,8 @@ const cartRoute = require("./router/cartRouter");
 const wishlistRoute = require("./router/wishlistRouter");
 const checkoutRoute = require("./router/checkoutRouter");
 const orderRouter = require("./router/orderRouter");
+const productRouter = require("./router/paymentRouter");
+
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -43,17 +45,6 @@ app.set("views", path.join(__dirname, "views")); // Assuming your views are in a
 
 app.use(express.static(path.join(__dirname, "public")));
 
-// app.get('/wishlist/remove/:wishlistId', async (req,res)=>{
-//   const WishlistDB = require('./models/wishlist');
-//   const wishlistIdToRemove = req.params.wishlistId
-
-//   await WishlistDB.findOneAndDelete({ _id: wishlistIdToRemove });//first
-  
-  
-//       // Redirect back to the cart page or send a success response
-//       res.redirect('/wishlist'); // You can change this to the appropriate URL
-  
-// });
 
 
 app.use("/", userRoute);
@@ -62,11 +53,11 @@ app.use(cartRoute);
 app.use(checkoutRoute);
 app.use(orderRouter);
 app.use(wishlistRoute);
+app.use(productRouter);
 
 app.get("/error", (req, res) => {
   res.render("user/404");
 });
-
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`server running on http://localhost:${PORT}`);

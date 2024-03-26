@@ -29,6 +29,47 @@
                           <label for="productPrice"><%=editProduct.price%></label>
                           <div id="productPriceError" class="error" style="color: red;"></div>
                         </div>
+
+                        
+
+                              <div class="form-check mb-3">
+                                <input class="form-check-input" type="checkbox" id="offerCheckbox" name="offerCheckbox">
+                                <label class="form-check-label" for="offerCheckbox">
+                                  Add Offer
+                                </label>
+                              </div>
+        
+                               <!-- Offer Input (optional) -->
+                               <div class="form-floating mb-3" id="offerInputSection" style="display: none;">
+                                <input type="text" class="form-control" id="offerInput" placeholder="offerInput" name="offerInput">
+                                <label for="offerInput">Offer</label>
+                                <div id="offerInputError" class="error" style="color: red;"></div>
+                              </div>
+                              
+                              <!-- Expiry Date for Offer (optional) -->
+                              <div class="form-floating mb-3" id="expiryDateSection" style="display: none;">
+                                <input type="date" class="form-control" id="offerExpiryDate" placeholder="offerExpiryDate" name="offerExpiryDate">
+                                <label for="offerExpiryDate">Offer Expiry Date</label>
+                                <div id="offerExpiryDateError" class="error" style="color: red;"></div>
+                              </div>
+
+
+
+                              <% if (locals.categoryList) { %>
+                                <div class="form-floating mb-3">
+                                    <select class="form-select" name="productCategory" id="floatingSelect" aria-label="Floating label select example">
+                                        <% categoryList.forEach(category => { %>
+                                        <option value="<%= category._id %>">
+                                            <%= category.name %>
+                                        </option>
+                                        <% }); %>
+                                      </select>
+                                      <label for="floatingSelect">Select Category</label>
+                                    </div>
+                                    <% }else{%>
+                                      <p>jhh</p>
+                                    <%} %>
+
                         
                         <div class="mb-3">
                           <label for="formFileMultiple" class="form-label">Multiple files input example (Max 4 files)</label>
@@ -226,6 +267,8 @@
 
     
 
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
     
 
@@ -233,16 +276,63 @@
     document.addEventListener('DOMContentLoaded', function () {
       const form = document.querySelector('form[action="/admin/productadded"]');
 
+
+    const offerCheckbox = document.getElementById('offerCheckbox');
+    const offerInputSection = document.getElementById('offerInputSection');
+    const expiryDateSection = document.getElementById('expiryDateSection');
+    const offerExpiryDateInput = document.getElementById('offerExpiryDate');
+    const offerInput = document.getElementById('offerInput');
+
+    offerInput.addEventListener('input', function() {
+   
+    const inputValue = offerInput.value;
+
+    // Validate if the entered value is a number
+    if (inputValue.trim() !== '' && !/^\d+$/.test(inputValue)) {
+        showError('Please enter numbers only.', 'offerInputError');
+    } else {
+        clearError('offerInputError');
+    }
+});
+
+function showError(message, errorFieldId) {
+    document.getElementById(errorFieldId).textContent = message;
+    
+}
+
+function clearError(errorFieldId) {
+    document.getElementById(errorFieldId).textContent = '';
+}
+
+    offerCheckbox.addEventListener('change', function () {
+      if (this.checked) {
+        offerInputSection.style.display = 'block';
+        expiryDateSection.style.display = 'block';
+      } else {
+        offerInputSection.style.display = 'none';
+        expiryDateSection.style.display = 'none';
+        offerInput.value = '';
+      }
+    });
+
+
+    flatpickr('#offerExpiryDate', {
+        dateFormat: "d/m/Y", // Format: dd/mm/yyyy
+        minDate: "today" // Set minimum date to today
+    });
+
       form.addEventListener('submit', function (event) {
         let valid = true;
 
-        // Reset previous error messages
         const errorFields = form.querySelectorAll('.error');
         errorFields.forEach(function (error) {
           error.textContent = '';
         });
 
-        // Validate Product Name
+   
+
+
+
         const productName = form.querySelector('input[name="productName"]').value.trim();
         if (productName === '') {
           valid = false;
@@ -263,8 +353,6 @@
           displayError('Price is required.', 'productPriceError');
         }
 
-        // Validate Description
-        // const productDescription = form.querySelector('input[name="productDescription"]').value.trim();
         const productDescription = form.querySelector('textarea[name="productDescription"]').value.trim();
 
         if (productDescription === '') {
@@ -272,7 +360,6 @@
           displayError('Description is required.', 'productDescriptionError');
         }
 
-        // Validate Image Upload
         const images = form.querySelector('input[name="images"]');
         const imageFiles = images.files;
 

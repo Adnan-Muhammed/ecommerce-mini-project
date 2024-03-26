@@ -1,67 +1,162 @@
-const mongoose=require('../database/mongodbConnect')
+// const mongoose=require('../database/mongodbConnect')
 
-//schema setup
+// //schema setup
 
-const  userSchema=new  mongoose.Schema(
-    {
-        name:{
-            type:String,
-            required:true
-        },
-        email:{
-            type:String,
-            required:true,
-            unique:true
-        },
-        password:{
-            type:String,
-            required:true
-        },
-        isBlocked:{
-            type:Boolean,
-            default:false
-        },
-        otp:{
-            type:String,
-        },
-        billingDetails: [{
-            name: {
-                type: String,
-                required: true
-            },
-            telephone: {
-                type: Number,
-                required: true
-            },
-            address: {
-                type: String,
-                required: true
-            },
-            city: {
-                type: String,
-                required: true
-            },
-            postCode: {
-                type: Number,
-                required: true
-            },
-            regionState: {
-                type: String,
-                required: true
-            },
+// const  userSchema=new  mongoose.Schema(
+//     {
+//         name:{
+//             type:String,
+//             required:true
+//         },
+//         email:{
+//             type:String,
+//             required:true,
+//             unique:true
+//         },
+//         password:{
+//             type:String,
+//             required:true
+//         },
+//         wallet:{
+//             type:Number,
+//             default:0
+//         },
+//         isBlocked:{
+//             type:Boolean,
+//             default:false
+//         },
+//         otp:{
+//             type:String,
+//         },
+//         billingDetails: [{
+//             name: {
+//                 type: String,
+//                 required: true
+//             },
+//             telephone: {
+//                 type: Number,
+//                 required: true
+//             },
+//             address: {
+//                 type: String,
+//                 required: true
+//             },
+//             city: {
+//                 type: String,
+//                 required: true
+//             },
+//             postCode: {
+//                 type: Number,
+//                 required: true
+//             },
+//             regionState: {
+//                 type: String,
+//                 required: true
+//             },
             
-        }]
+//         }]
+//     }
+// )
+// //model create
+// const userDB=new mongoose.model('userCollection',userSchema)
+
+
+
+
+
+// // Delete all documents except the ones identified by their _id
+
+
+
+// module.exports=userDB
+
+
+const mongoose = require('../database/mongodbConnect');
+
+// Transaction Schema
+const transactionSchema = new mongoose.Schema({
+    type: {
+        type: String,
+        enum: ['credit', 'debit'],
+        required: true
+    },
+    amount: {
+        type: Number,
+        required: true
+    },
+    isReferral: {
+        type: Boolean,
+        default: false // Assuming most transactions are not by referral
+    },
+    isReturned: {
+        type: Boolean,
+        default: false // Assuming most transactions are not by referral
+    },
+    timestamp: {
+        type: Date,
+        default: Date.now
     }
-)
-//model create
-const userDB=new mongoose.model('userCollection',userSchema)
+});
 
+// User Schema
+const userSchema = new mongoose.Schema({
+    name: {
+        type: String,
+        required: true
+    },
+    email: {
+        type: String,
+        required: true,
+        unique: true
+    },
+    password: {
+        type: String,
+        required: true
+    },
+    wallet: {
+        type: Number,
+        default: 0
+    },
+    isBlocked: {
+        type: Boolean,
+        default: false
+    },
+    otp: {
+        type: String
+    },
+    referral: {
+        type: String
+    },
+    billingDetails: [{
+        name: {
+            type: String,
+            required: true
+        },
+        telephone: {
+            type: Number,
+            required: true
+        },
+        address: {
+            type: String,
+            required: true
+        },
+        city: {
+            type: String,
+            required: true
+        },
+        postCode: {
+            type: Number,
+            required: true
+        },
+        regionState: {
+            type: String,
+            required: true
+        }
+    }],
+    transactions: [transactionSchema] // Linking transaction schema to user schema
+});
 
+// Model creation
+const User = mongoose.model('userCollection', userSchema);
 
-
-
-// Delete all documents except the ones identified by their _id
-
-
-
-module.exports=userDB
+module.exports = User;

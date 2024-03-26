@@ -1,6 +1,10 @@
 
 <%-include('header')-%>
 
+<% function formatDate(date) {%>
+    <% const options = { month: 'short', day: 'numeric', year: 'numeric' };%>
+    <% return date.toLocaleDateString('en-US', options);%>
+ <%} %>
 
        
 
@@ -19,6 +23,8 @@
                                         <tr>
                                             <th scope="col">index</th>
                                             <th scope="col">category list</th>
+                                            <th scope="col">special offer</th>
+                                            <th scope="col">offer validity</th>
                                             <th scope="col">Action</th>
                                         </tr>
                                     </thead>
@@ -27,6 +33,27 @@
                                             <tr>
                                                 <td scope="row"><%= index + 1 %></td>
                                                 <td><%= data.name %></td>
+                                                <%if(data.discountPercentage){%>
+                                                    <td><%=data.discountPercentage%>%</td>
+                                                    <%}else{%>
+                                                        <td>currently <br> no discount</td>
+                                                    <%}%>
+
+                                                    <%if(data.discountPercentage && data.startDate){%>
+
+                                                        
+
+                                                        <td><%= formatDate(data.startDate) %><br><%= formatDate(data.endDate) %></td>
+
+
+                                                        
+                                                        <%}else if(data.discountPercentage && !data.startDate){%>
+                                                            <td>permanent offer</td>
+                                                        <%}else{%>
+                                                            <td></td>
+                                                        <%}%>
+
+
                                                 <td>
                                                     <% if (data.isAvailable == true) { %>
                                                         <button class="btn btn-info block-btn" data-user-id="<%= data._id %>">to unlist </button>
@@ -56,43 +83,43 @@
 
                     <script>
                         // Function to handle block action
-                        document.querySelectorAll('.block-btn').forEach(btn => {
-                            btn.addEventListener('click', function() {
-                                const categoryId = this.getAttribute('data-user-id');
-                                swal({
-                                    title: 'Are you sure?',
-                                    text: 'Do you want  to unlist  this category?',
-                                    icon: 'warning',
-                                    buttons: ['Cancel', 'to unlist '],
-                                    dangerMode: true,
-                                }).then((willBlock) => {
-                                    if (willBlock) {
-                                        window.location.href = `/admin/hide/${categoryId}`;
-                                    }
-                                });
-                            });
-                        });
-                    
+                                    document.querySelectorAll('.block-btn').forEach(btn => {
+                                        btn.addEventListener('click', function() {
+                                            const categoryId = this.getAttribute('data-user-id');
+                                            swal({
+                                                title: 'Are you sure?',
+                                                text: 'Do you want  to unlist  this category?',
+                                                icon: 'warning',
+                                                buttons: ['Cancel', 'to unlist '],
+                                                dangerMode: true,
+                                            }).then((willBlock) => {
+                                                if (willBlock) {
+                                                    window.location.href = `/admin/hide/${categoryId}`;
+                                                }
+                                            });
+                                        });
+                                    });
+                                
 
 
 
-                        // Function to handle unblock action
-                        document.querySelectorAll('.unblock-btn').forEach(btn => {
-                            btn.addEventListener('click', function() {
-                                const categoryId = this.getAttribute('data-user-id');
-                                swal({
-                                    title: 'Are you sure?',
-                                    text: 'Do you want  to list this category?',
-                                    icon: 'warning',
-                                    buttons: ['Cancel', 'to list'],
-                                    dangerMode: true,
-                                }).then((willUnblock) => {
-                                    if (willUnblock) {
-                                        window.location.href = `/admin/show/${categoryId}`;
-                                    }
-                                });
-                            });
-                        });
+                                    // Function to handle unblock action
+                                    document.querySelectorAll('.unblock-btn').forEach(btn => {
+                                        btn.addEventListener('click', function() {
+                                            const categoryId = this.getAttribute('data-user-id');
+                                            swal({
+                                                title: 'Are you sure?',
+                                                text: 'Do you want  to list this category?',
+                                                icon: 'warning',
+                                                buttons: ['Cancel', 'to list'],
+                                                dangerMode: true,
+                                            }).then((willUnblock) => {
+                                                if (willUnblock) {
+                                                    window.location.href = `/admin/show/${categoryId}`;
+                                                }
+                                            });
+                                        });
+                                    });
 
                         // /categoryEdited/:id
 
@@ -107,7 +134,7 @@
                                     dangerMode: true,
                                 }).then((willBlock) => {
                                     if (willBlock) {
-                                        window.location.href = `/admin/edit/${categoryId}`;
+                                        window.location.href = `/admin/editCategory/${categoryId}`;
                                     }
                                 });
                             });

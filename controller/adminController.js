@@ -2,6 +2,11 @@ require('dotenv').config();
 const adminId=process.env.ADMIN_ID
 const adminPassword=process.env.PASSWORD
 
+const pdf = require('pdfkit');
+const OrderDB =require('../models/order')
+
+
+
 const adminLogin=(req,res)=>{
     res.render('admin/sign-in')
 }
@@ -17,8 +22,17 @@ const adminDashboardPost=(req,res)=>{
     }
 }
 
-const adminDashboardGet=(req,res)=>{
-    res.render('admin/admin-dashboard')
+const adminDashboardGet=async(req,res)=>{
+    try{
+const orderList =await OrderDB.find()
+        const deliveredOrders = orderList.filter(order => order.orderStatus.type === "delivered");
+
+        req.session.deliveredOrders=deliveredOrders
+        res.render('admin/admin-dashboard',{deliveredOrders})
+        
+    }catch(err){
+
+    }
 }
 
 const adminLogout=(req, res)=>{
@@ -26,9 +40,136 @@ const adminLogout=(req, res)=>{
     res.redirect('/admin');
 }
 
+
+
+
+const pdfDownloading = (req, res) => {
+    // Create a new PDF document
+    const doc = new PDFDocument();
+   const deliveredOrders=  req.session.deliveredOrders
+    // Set response headers for PDF download
+    res.setHeader('Content-Disposition', 'attachment; filename="report.pdf"');
+    res.setHeader('Content-Type', 'application/pdf');
+    
+    // Pipe the PDF document to the response
+    doc.pipe(res);
+
+    // Add content to the PDF document
+    doc.fontSize(14).text('Recent Sales Report', { align: 'center' }).moveDown();
+
+    deliveredOrders.forEach(order => {
+        doc.text(`Date: ${order.orderDate.toLocaleDateString()}`);
+        doc.text(`Invoice: ${order._id}`);
+        doc.text(`Customer: ${order.userEmailId}`);
+        doc.text(`Amount: $${order.grandTotal}`);
+        doc.text(`Status: ${order.orderStatus.type}`);
+        doc.moveDown();
+    });
+
+    // Finalize the PDF document
+    doc.end();
+};
+
+
+
+const salesReport=  async (req, res) => {
+    try {
+      const orders = await generateSalesReport();
+      console.log(orders.length);
+    //   res.json(orders);
+      res.render('admin/salesReport',{orders})
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+  };
+
+
+
+
+
+async function generateSalesReport() {
+    // const salesAggregate = await OrderDB.aggregate([
+    //     {
+    //         $unwind: "$orderItems" // Unwind the orderItems array
+    //     },
+    //     {
+    //         $project: {
+    //             _id:"$orderItems._id",
+    //             userName: 1,
+    //             "orderItems.productId": 1,
+    //             "orderItems.productName": 1,
+    //             "orderItems.unitPrice": 1,
+    //             "orderItems.quantity": 1,
+    //             "orderItems.price": 1,
+    //             "orderItems.description": 1,
+    //             "orderItems.categoryOffer": 1,
+    //             "orderItems.categoryDiscountPecentage": 1,
+    //             "orderItems.productOffer": 1,
+    //             "orderItems.productDiscountPercentage": 1,
+    //             "orderItems.totalPrice": 1,
+    //             tax: 1,
+    //             couponId: 1,
+    //             couponName: 1,
+    //             couponDiscount: 1,
+    //             couponDiscountPercentage: 1,
+    //             grandTotal: 1,
+    //             paymentMethod: 1,
+    //             paymentStatus: 1,
+    //             orderStatus: 1,
+    //             orderDate: 1
+    //         }
+    //     }
+    // ]);
+
+
+    const salesAggregate = await OrderDB.aggregate([
+        { $unwind: "$orderItems" }, // Unwind the orderItems array
+        {
+            $project: {
+                _id: "$orderItems._id",
+                userName: 1,
+                "orderItems.productId": 1,
+                "orderItems.productName": 1,
+                "orderItems.unitPrice": 1,
+                "orderItems.quantity": 1,
+                "orderItems.price": 1,
+                "orderItems.description": 1,
+                "orderItems.categoryOffer": 1,
+                "orderItems.categoryDiscountPecentage": 1,
+                "orderItems.productOffer": 1,
+                "orderItems.productDiscountPercentage": 1,
+                "orderItems.totalPrice": 1,
+                tax: 1,
+                couponId: 1,
+                couponName: 1,
+                couponDiscount: 1,
+                couponDiscountPercentage: 1,
+                grandTotal: 1,
+                paymentMethod: 1,
+                paymentStatus: 1,
+                orderStatus: 1,
+                orderDate: 1
+            }
+        },
+        {
+            $match: {
+                $or: [
+                    { "paymentStatus.type": "fulfilled" },
+                    { "orderStatus.type": "delivered" }
+                ]
+            }
+        }
+    ]);
+    
+    return salesAggregate;
+  }
+
 module.exports={
     adminLogin,
     adminDashboardPost,
     adminDashboardGet,
     adminLogout,
+    pdfDownloading,
+    salesReport,
 }

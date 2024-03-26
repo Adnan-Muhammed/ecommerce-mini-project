@@ -854,8 +854,8 @@
 		$(".zoompro").elevateZoom({
 			gallery: "gallery",
 			galleryActiveClass: "active",
-			zoomWindowWidth: 300,
-			zoomWindowHeight: 100,
+			zoomWindowWidth: 500,//300
+			zoomWindowHeight: 170,//100
 			scrollZoom: false,
 			zoomType: "inner",
 			cursor: "crosshair"

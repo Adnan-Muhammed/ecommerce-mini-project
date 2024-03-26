@@ -26,7 +26,8 @@
                             <th class="text-center">Billing Address</th>
                             <th class="text-center">Quantity</th>
                             <th style="background-color: blueviolet;" class="text-right">Price</th>
-                            <th style="background-color:darkgoldenrod;" class="text-center">Status</th>
+                            <th class="text-center">Payment Status</th>
+                            <th style="background-color:darkgoldenrod;" class="text-center">Order Status</th>
                             <th style="background-color: chocolate;" class="text-center">Action</th>
                         </tr>
                     </thead>
@@ -51,10 +52,18 @@
                             </td>
                             <td style="background-color: blueviolet;" class="text-right small--hide cart-price">
                                 <div id="productPrice" value="<%= order.grandTotal %>" data-product-id="<%= order._id %>">
-                                    <span class="money">$<%= order.grandTotal %></span>
+                                    <span class="money">₹<%= order.grandTotal %></span>
                                 </div>
                             </td>
                             <td class="text-center small--hide cart-price">
+                                <div style="text-align: center;" class="list-view-item__title">
+                                    <!-- <span> -->
+                                        <h4>
+                                            <%= order.paymentStatus.type %>
+                                        </h4>
+                                    <!-- </span> -->
+                                </div>
+                            </td><td class="text-center small--hide cart-price">
                                 <div style="text-align: center;" class="list-view-item__title">
                                     <!-- <span> -->
                                         <h4>
@@ -74,13 +83,15 @@
                                         <button class="btn btn-warning return-btn" data-order-id="<%= order.id %>" data-order-status="returned">Return</button>
                                     <% } else if (order.orderStatus.type !== "cancelled" && order.orderStatus.type !== "returned"  ) { %>
                                         <!-- Show Cancelled button -->
-                                        <button class="btn btn-info cancelled-btn" data-order-id="<%= order.id %>" data-order-status="cancelled">Cancelled</button>
+                                        <button class="btn btn-info cancelled-btn" data-order-id="<%= order.id %>" data-order-status="cancelled">Cancel</button>
                                     <% } %>
                                 </td>
                                 
                         </tr>
                         <!-- Button trigger modal -->
-
+                        <!-- <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal<%= order._id %>">
+                            Order Details
+                        </button> -->
 
 
 
@@ -109,7 +120,17 @@
                                                     <img class="img-fluid" src="<%= item.images[0] %>" width="90" height="70">
                                                 </div>
                                             </div>
+
                                             <% }); %>
+
+                                            <p class="fw-bold">Tax  ₹<%= order.tax %></p>
+
+                                            <%if(order.couponId){%>
+                                                <p class="fw-bold">discount Price<%=order.discountPrice%></p>
+                                            <%}%>
+                                            <p class="fw-bold">grandTotal<%= order.grandTotal %></p>
+
+
                                         </div>
                                     </div>
                                     <div class="modal-footer">

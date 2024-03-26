@@ -23,18 +23,20 @@
                   <div class="card-body text-center">
                     <img src="https://cdn1.iconfinder.com/data/icons/public-company-solid/32/employee_employe_workman_user_profiles_avatar_people_human_persons_icon_1-512.png" alt="avatar"
                       class="rounded-circle img-fluid" style="width: 150px;">
-                    <h5 class="my-3">= user.name </h5> 
+                    <h5 class="my-3"> <%=user.name%>   </h5> 
                   </div>
                 </div>
+
+
+
+
                 <div class="card mb-4 mb-lg-0">
                   <div class="card-body p-0">
                     <ul class="list-group list-group-flush rounded-3">
                       <li class="list-group-item d-flex justify-content-between align-items-center p-3">
                         <p class="mb-0"><a href="/userprofile">MY PROFILE</a></p>
                       </li>
-                      <li class="list-group-item d-flex justify-content-between align-items-center p-3">
-                        <p class="mb-0"> <a href="/editUser">EDIT PROFILE</a> </p>
-                      </li>
+                     
                       <li class="list-group-item d-flex justify-content-between align-items-center p-3">
                         <p class="mb-0"> <a href="/userAddAddress">ADDRESS</a> </p>
                       </li>
@@ -53,6 +55,10 @@
                     </ul>
                   </div>
                 </div>
+
+
+
+
               </div>
               <div class="col-lg-8">
                   <div class="row">
@@ -61,62 +67,89 @@
                           <div class="card mb-4 mb-xl-0">
                               <div class="card-header">WALLET</div>
                               <div class="card-body text-center">
-                                <div class="card text-bg-success mb-3" style="max-width: 20rem;">
+                                <div class="card text-bg-success mb-3" >
                                   <div class="card-body">
                                     <h5 class="card-title">Total Balance</h5>
-                                    <h3 class="card-text">&#x20B9;=user.walletBalance </h3>
+                                    <h3 class="card-text">&#x20B9; = <%= user.wallet%> </h3>
                                   </div>
                                 </div>
                                   <!-- Profile picture image-->
                               </div>
                           </div>
-                          
                       </div>
-                      <div class="col-xl-8">
-                        <div class="col-12">
-                          <div class="card h-100 mb-4">
-                            <div class="card-header pb-0 px-3">
-                              <div class="row">
-                                <div class="col-md-6">
-                                  <h6 class="mb-2">Your Transaction's</h6>
-                                </div>
-                              </div>
+
+
+                      <!-- user/wallet.ejs -->
+<div class="col-xl-8">
+  <div class="col-12">
+      <div class="card h-100 mb-4">
+          <div class="card-header pb-0 px-3">
+              <div class="row">
+                  <div class="col-md-6">
+                      <h6 class="mb-2">Your Transactions</h6>
+                  </div>
+              </div>
+          </div>
+          <div style="max-height: 450px; overflow-y: auto;">
+              <% if (user.transactions && user.transactions.length > 0) { %>
+                  <% user.transactions.forEach(transaction => { %>
+                      <li class="list-group-item border-0 d-flex justify-content-between ps-0 mb-2 border-radius-lg">
+                         
+
+                          <div class="d-flex align-items-center">
+                            <div class="d-flex flex-column">
+                                <!-- Display transaction details -->
+                                <h6 class="mb-1 text-dark text-sm"><%= transaction._id %></h6>
+                                <span class="text-xs">Date: <%= transaction.formattedTimestamp %></span>
+                                <% if (transaction.isReturned) { %>
+                                  <!-- <span class="text-xs">Returned: <%= transaction.isReturned %></span> -->
+                                  <span class="text-xs">by Returned</span>
+                                  <% } %>
+                                <% if (transaction.isReferral) { %>
+                                  <!-- <span class="text-xs">isReferral: <%= transaction.isReferral %></span> -->
+                                  <span class="text-xs">by Reffered </span>
+                                  <% } %>
+                                <!-- Add any other details you want to display -->
                             </div>
-                          <div style="max-height: 450px; overflow-y: auto;">
-                          
-                                <li class="list-group-item border-0 d-flex justify-content-between ps-0 mb-2 border-radius-lg">
-                                  <div class="d-flex align-items-center">
-                                    <button ><img src="/user/images/red-down-arrow-icon-56.png" width="20px" alt=""></button>
-                                    <div class="d-flex flex-column">
-                                      <h6 class="mb-1 text-dark text-sm"><row._id </h6>
-                                      <span class="text-xs">= row.date </span>
-                                      <span class="text-xs">= formatTimeWithoutStandardTime(row.time) </span>
-  
-                                    </div>
-                                  </div>
-                                  <div class="d-flex align-items-center text-danger text-gradient text-sm font-weight-bold">
-                                    - &#x20B9; = row.price 
-                                  </div>
-                                </li>
-                                <hr>
-                                <li class="list-group-item border-0 d-flex justify-content-between ps-0 mb-2 border-radius-lg">
-                                  <div class="d-flex align-items-center">
-                                    <button ><img src="/user/images/clipart2416467.png" width="20px" alt=""></button>
-                                    <div class="d-flex flex-column">
-                                      <h6 class="mb-1 text-dark text-sm"> row.orderId </h6>
-                                      <span class="text-xs">= row.date </span>
-                                    </div>
-                                  </div>
-                                  <div class="d-flex align-items-center text-success text-gradient text-sm font-weight-bold">
-                                    + &#x20B9; = row.price 
-                                  </div>                
-                                </li>
-                                <hr>
-                          
-                          </div>
-                          </div>
                         </div>
-                      </div>
+                        <div class="d-flex align-items-center text-sm font-weight-bold">
+                            <% if (transaction.isReferral || transaction.isReturned) { %>
+                                <!-- If both isReferral and isReturned are true, display amount in green -->
+                                <span style="color: green;">- &#x20B9; <%= transaction.amount %></span>
+                            <% } else { %>
+                                <!-- Otherwise, display amount in red -->
+                                - &#x20B9; <%= transaction.amount %>
+                            <% } %>
+                        </div>
+                        
+
+
+
+
+
+                      </li>
+                      <hr>
+                  <% }); %>
+              <% } else { %>
+                  <p>No transactions found.</p>
+              <% } %>
+          </div>
+      </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
                   </div>
               </div>
             </div>

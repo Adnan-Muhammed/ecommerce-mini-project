@@ -41,14 +41,30 @@
                                         <strong>Total Price:</strong> <%= order.grandTotal %><br>
                                     </div>
                                 </td>
-                                <td><%= order.paymentMethod.type %></td>
+
+                                <td>
+                                    <div ><%= order.paymentMethod.type %></div>
+                                    <br>
+                                    <div ><%= order.paymentStatus.type %></div>
+                                </td>
+
+
+                              
+
                                 <td>
                                     <form action="/admin/editOrder/<%= order._id %>" method="POST">
                                         <% const options = ['pending', 'shipped', 'delivered', 'cancelled']; %>
                                         <% if (order.orderStatus.type !== "returned" && order.orderStatus.type !== "cancelled" && order.orderStatus.type !== "delivered"  ) { %>
                                             <select name="status" class="form-control" style="width: 100px; background-color: rgb(0, 136, 255); color: white;" id="editStatus<%= order._id %>">
                                                 <% options.forEach(option => { %>
-                                                    <option value="<%= option %>" <%= option === order.orderStatus.type ? 'selected' : '' %>><%= option %></option>
+
+                                                    <%if(option!=="cancelled"){%>
+                                                        <option value="<%= option %>" <%= option === order.orderStatus.type ? 'selected' : '' %>><%= option %></option>
+                                                    <%}else{%>
+                                                        <option value="<%= option %>" <%= option === order.orderStatus.type ? 'selected' : '' %>>cancel</option>
+                                                    <%}%>
+
+
                                                 <% }); %>
                                             </select>
                                             <td>

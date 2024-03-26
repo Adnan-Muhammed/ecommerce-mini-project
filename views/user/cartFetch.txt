@@ -1,0 +1,68 @@
+
+        fetch('/updateQuantity', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                productId: productId,
+                newQuantity: newQty
+            }),
+        })
+        .then(response => {
+    if (!response.ok) {
+        // return response.json().then(data => {
+            throw new Error(data.message);
+        // });
+    }
+    // return response.json();
+})
+.then(data => {
+          console.log(response);
+          console.log('hello');
+
+            const divseted = '<p style="color: darkred;">Out of stock</p>';
+            const divseted2 = '<p style="color: darkred;">max InStock Price</p>';
+            // const totalPrice = `<span class="money">₹${data.finalPrice}</span>`;
+            const totalPrice = `<span class="money">₹${data.price.price}</span>`;
+console.log('kiki');
+
+            // console.log(data.priceSum   ,  ' subTotal from  backend');
+           const subTotal =data.totalPrice
+           subTotalElement.innerHTML = `
+                <span class="col-12 col-sm-6 cart__subtotal-title">Subtotal</span>
+                <span id="subTotal"  class="col-12 col-sm-6 text-right"><span class="money">₹${subTotal}</span></span>
+            `;
+
+            const grandTotal= data.grandTotal
+            grandTotalElement.innerHTML = `
+            <span class="col-12 col-sm-6 cart__subtotal-title"><strong>Grand Total</strong></span>
+            <span id="grandTotal" class="col-12 col-sm-6 cart__subtotal-title cart__subtotal text-right"><span class="money">₹${grandTotal.toFixed(2)}</span></span>
+            `;
+
+
+
+            if (data.outOfStock) {
+                // alertDiv.innerHTML = divseted;
+                qtyInput.value = data.product.stock
+                alertDiv2.innerHTML = divseted2;
+                // totalPriceElement.innerHTML = totalPrice;
+            } else {
+                alertDiv.innerHTML = "";
+                alertDiv2.innerHTML = "";
+                totalPriceElement.innerHTML = totalPrice;
+            }
+
+            console.log('Quantity updated successfully', data);
+        })
+        .catch(error => {
+    console.error('Error updating quantity:', error);
+    if (error.message === 'Product not found') {
+      alertDiv.innerHTML = `<p style="color: darkred;">${error.message}</p>`;
+        // alert('Product not found. Please try again.');
+    } else {
+        alert('An error occurred. Please try again later.');
+    }
+});
+    }
+</script>

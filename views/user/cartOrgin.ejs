@@ -1,0 +1,373 @@
+
+
+<%-include('header')-%>
+<!--Body Content-->
+    <div id="page-content">
+    	<!--Page Title-->
+    	<div class="page section-header text-center">
+			<div class="page-title">
+        		<div class="wrapper"><h1 class="page-width">Shopping Cart</h1></div>
+      		</div>
+		</div>
+        <!--End Page Title-->
+        <div class="container">
+        	<div class="row">
+                <div class="col-12 col-sm-12 col-md-12 col-lg-12 main-col">
+                	<div class="alert alert-success text-uppercase" role="alert">
+						<i class="icon anm anm-truck-l icon-large"></i> &nbsp;<strong>Congratulations!</strong> You've got free shipping!
+					</div>
+                    <% if(locals.cartItems){%>
+                	<form action="#" method="post" class="cart style2">
+                		<table>
+                            <thead class="cart__row cart__header">
+                                <tr>
+                                    <th colspan="2" class="text-center" >Product</th>
+                                    <th class="text-center">Price</th>
+                                    <th class="text-center">current stock</th>
+                                    <th style=" width: 180px;" class="text-center">Quantity</th>
+                                    <th  class="text-right">Total</th>
+                                    <th class="action">&nbsp;</th>
+                                </tr>
+                            </thead>
+                                   <tbody>
+                                    <% locals.cartItems.forEach(item => { %>
+                                        <tr class="cart__row border-bottom line1 cart-flex border-top">
+                                            <td class="cart__image-wrapper cart-flex-item">
+                                                <a href="#">
+                                                    <img data-product-id="<%= item.productId %>" data-images="<%= JSON.stringify(item.images) %>" class="cart__image"
+                                                    class="img-fluid  mx-auto mb-4" 
+                                                         src="<%= item.images[1] %>"
+                                                         style="width: 100px; height: 100px;"  
+                                                         alt="<%= item.productId %>">
+                                                </a>
+                                            </td>
+                                            <td class="cart__meta small--text-left cart-flex-item">
+                                                <div class="list-view-item__title">
+                                                    <a><%= item.name %> </a>
+                                                </div>
+                                            </td>
+                                            <td style=" text-align: center;" class="cart__price-wrapper cart-flex-item">
+                                                <span id="unitPrice" data-product-id="<%= item.productId %>" class="money">$<%= item.unitPrice %></span>
+
+                                            </td>
+                                            <td style=" text-align: center;" class="cart__price-wrapper cart-flex-item">
+                                                <span id="stockElement" data-product-id="<%= item.productId %>"  data-product-stock="<%= item.stock %>" class="money"><%= item.stock %></span>
+
+                                            </td>
+                                            <td class="cart__update-wrapper cart-flex-item text-right">
+                                                <div class="cart__qty text-center"   style=" width: 180px;" >
+                                                    <div class="qtyField"    >
+                                                        <% if (item.stock >= 1) { %>
+                                                            <a data-product-id="<%= item.productId %>" class="qtyBtn minus" onclick="qty('minus', '<%= item.productId %>')"><i class="icon icon-minus"></i></a>
+                                                            <input data-product-id="<%= item.productId %>" data-stock="<%= item.stock %>" class="cart__qty-input qty" type="text" name="updates[]" max="<%= item.stock %>" value="<%= item.quantity %>" pattern="[0-9]*">
+                                                            <a data-product-id="<%= item.productId %>" class="qtyBtn plus" onclick="qty('plus', '<%= item.productId %>')"><i class="icon icon-plus"></i></a>
+                                                        <% } else { %>
+                                                            <div style>
+                                                            <!-- <p style="color: red;">Product stock is less than 1. Please remove it from your cart before checkout.</p> -->
+                                                            </div>
+                                                        <% } %>
+                                                        <div id="alertDiv" data-product-id="<%= item.productId %>"><p style="color:darkred;"></p></div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            
+
+
+                                            <td  class="text-right small--hide cart-price">
+                                                <% if (item.stock >= 1) { %>
+
+                                                 <div id="productPrice" value="<%= item.price %>" data-product-id="<%= item.productId%>"  >
+                                                    <span  class="money">$<%= item.price %></span>
+                                                    
+                                                 </div>
+
+                                                 <% } %>
+
+                                                <div id="alertDiv2" data-product-id="<%= item.productId %>"><p style="color:darkred;"></p></div>
+                                            </td>
+                                            <td class="text-center small--hide">
+                                                <a href="" class="btn btn--secondary cart__remove" title="Remove tem" data-stock="<%= item.stock %>"   data-product-id="<%= item.productId %>"><i class="icon icon anm anm-times-l"></i></a>
+                                            </td>
+                                        </tr>
+                                    <% }); %>
+                                </tbody>
+                      </table> 
+                    </form>                   
+               	</div>
+                <%} %>
+                                                   
+                
+                <%if(locals.cartItems){%>
+                <div class="container mt-4">
+                    <div class="row">
+
+
+                      <div class="col-12 col-sm-12 col-md-4 col-lg-4 mb-4">
+                        <%if(locals.coupons){%>
+                          <h5>Available Coupons</h5>
+                          <%coupons.forEach((coupons)=>{%>
+                            <div id="availableCoupons">
+                                <div class="coupon" data-code="SAVE20"><%=coupons.name%>    -<%= coupons.discountValue%>% off</div>
+                            </div>
+                            <hr>
+                          <%})%>
+                        <%}%>
+                      </div>
+
+
+
+
+
+
+
+
+
+                        
+                        
+                        <div class="col-12 col-sm-12 col-md-4 col-lg-4 cart__footer">
+                            <div class="solid-border">	
+
+                              <div id="subTotalDiv" class="row border-bottom pb-2">
+                                <span class="col-12 col-sm-6 cart__subtotal-title">Subtotal</span>
+                                <span id="subTotal"  class="col-12 col-sm-6 text-right"><span class="money">$<%= totalprice %></span></span>
+                              </div>
+
+                              <div class="row border-bottom pb-2 pt-2">
+                                <span class="col-12 col-sm-6 cart__subtotal-title">Tax</span>
+                                <span class="col-12 col-sm-6 text-right">$<%= taxValue.toFixed(2) %></span>
+                              </div>
+                              <div class="row border-bottom pb-2 pt-2">
+                                <span class="col-12 col-sm-6 cart__subtotal-title">Shipping</span>
+                                <span class="col-12 col-sm-6 text-right">Free shipping</span>
+                              </div>
+                              <div  id="grandTotalDiv" class="row border-bottom pb-2 pt-2">
+                                <span class="col-12 col-sm-6 cart__subtotal-title"><strong>Grand Total</strong></span>
+                                <span id="grandTotal" class="col-12 col-sm-6 cart__subtotal-title cart__subtotal text-right"><span class="money">$<%= grandTotal.toFixed(2) %></span></span>
+                              </div>
+                              <div class="cart__shipping">Shipping &amp; taxes calculated at checkout</div>
+                              <p class="cart_tearm">
+                                <label>
+                                  <input type="checkbox" name="tearm" class="checkbox" value="tearm" required="">
+                                  I agree with the terms and conditions
+								                </label>
+                              </p>
+                              <input  style="background-color: cadetblue;"  name="checkot" id="cartCheckout" class="btn btn--small-wide checkout" value="Proceed To Checkout" disabled="disabled">
+                              </div>
+                        </div>
+
+
+
+
+
+                     
+
+
+
+                        
+                      </div>
+                </div>
+                <%}else{%>
+                <h1>CART IS EMPTY</h1>
+                <p><a href="/" class="btn btn--has-icon-after" style="background-color: black; color: aliceblue;" >Continue shopping <i class="fa fa-caret-right" aria-hidden="true"></i></a></p>
+
+                <%}%>
+            </div>
+        </div>
+        
+    </div>
+    
+    <%-include('footer')-%>
+  
+  
+
+
+  <script>
+    const checkoutButton = document.getElementById('cartCheckout');
+    function goToNextPage() {
+      checkoutButton.disabled = false;
+      checkoutButton.addEventListener('click', async function(event) {
+        event.preventDefault();
+        
+        const productStockInfo = await checkProductStock();
+        
+        const productsWithStockLessThanOne = productStockInfo.filter(product => product.stock < 1);
+
+        if (productsWithStockLessThanOne.length > 0) {
+          // Display messages for products with stock less than 1
+          productsWithStockLessThanOne.forEach(product => {
+            const alertDiv = document.querySelector(`#alertDiv[data-product-id="${product.productId}"]`);
+            alertDiv.innerHTML = '<p style="color: red;">Product stock is less than 1. Please remove it from your cart before checkout.</p>';
+          });
+        } else {
+          // If no product has stock less than 1, proceed to checkout
+          window.location.href = '/checkout';
+        }
+      });
+    }
+
+    async function checkProductStock() {
+      const productStocks = document.querySelectorAll('[data-product-stock]');
+      const productStockInfo = [];
+      productStocks.forEach(stockElement => {
+        const productId = stockElement.dataset.productId;
+        const stock = parseInt(stockElement.dataset.productStock);
+        productStockInfo.push({ productId, stock });
+      });
+      return productStockInfo;
+    }
+    
+    goToNextPage();
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- remove product from cart -->
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const removeButtons = document.querySelectorAll('.cart__remove');
+      removeButtons.forEach(button => {
+        button.addEventListener('click', function (event) {
+          event.preventDefault();
+          const productId = button.dataset.productId;
+          console.log(productId);
+          fetch(`/cart/remove/${productId}`, {
+            method: 'GET',
+          })
+          .then(response => {
+            if (!response.ok) {
+              throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            window.location.reload();
+          })
+          .catch(error => {
+            console.error('Error removing product:', error);
+          });
+        });
+      });
+    });
+  </script>
+
+
+
+
+
+<script>
+    const qty = (action, productId) => {
+      const qtyInput = document.querySelector(`.qty[data-product-id="${productId}"]`)
+
+
+        console.log(qtyInput)
+        const alertDiv = document.querySelector(`#alertDiv[data-product-id="${productId}"]`);
+        const alertDiv2= document.querySelector(`#alertDiv2[data-product-id="${productId}"]`);
+        
+        const totalPriceElement = document.querySelector(`#productPrice[data-product-id="${productId}"]`);
+        const valueAttributePrice = parseInt(totalPriceElement.getAttribute('value'));
+
+
+
+        const subTotalElement = document.querySelector('#subTotalDiv');
+        const grandTotalElement = document.querySelector('#grandTotalDiv');
+        
+        // const totalPrice = subTotalElement.getAttribute('value');
+        // console.log(totalPrice, 'hello');
+
+        const unitPriceElement = document.querySelector(`#unitPrice[data-product-id="${productId}"]`);
+        const productUnitPrice = unitPriceElement.textContent;
+        const unitPrice = parseInt(productUnitPrice.replace('$', ''));
+        console.log(unitPrice, 'yes');
+
+        const stockElement = document.querySelector(`#stockElement[data-product-id="${productId}"]`);
+        const stockAttributeValue = parseInt(stockElement.getAttribute('data-product-stock'));
+        console.log( stockAttributeValue,"ki");
+
+        // return
+
+        const qtyValue = parseInt(qtyInput.value)
+        let newQty;
+
+        if (action === 'plus') {
+
+          
+  newQty = qtyValue +1;
+
+  
+
+        } else {
+            newQty = Math.max(1, qtyValue - 1);
+        }
+
+
+        fetch('/updateQuantity', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                productId: productId,
+                newQuantity: newQty
+            }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            const divseted = '<p style="color: darkred;">Out of stock</p>';
+            const divseted2 = '<p style="color: darkred;">max InStock Price</p>';
+            const hello = `<span class="money">$${data.price.price}</span>`;
+
+
+            // console.log(data.priceSum   ,  ' subTotal from  backend');
+           const subTotal =data.priceSum
+           subTotalElement.innerHTML = `
+                <span class="col-12 col-sm-6 cart__subtotal-title">Subtotal</span>
+                <span id="subTotal"  class="col-12 col-sm-6 text-right"><span class="money">$${subTotal}</span></span>
+            `;
+
+            const grandTotal= data.grandTotal
+            grandTotalElement.innerHTML = `
+            <span class="col-12 col-sm-6 cart__subtotal-title"><strong>Grand Total</strong></span>
+            <span id="grandTotal" class="col-12 col-sm-6 cart__subtotal-title cart__subtotal text-right"><span class="money">$${grandTotal.toFixed(2)}</span></span>
+            `;
+
+
+
+            if (data.outOfStock) {
+                // alertDiv.innerHTML = divseted;
+                qtyInput.value = data.product.stock
+
+                qtyInput.value = data.product.stock
+                alertDiv2.innerHTML = divseted2;
+                // totalPriceElement.innerHTML = hello;
+            } else {
+                alertDiv.innerHTML = "";
+                alertDiv2.innerHTML = "";
+                totalPriceElement.innerHTML = hello;
+            }
+
+            console.log('Quantity updated successfully', data);
+        })
+        .catch(error => {
+            console.error('Error updating quantity', error);
+        });
+    }
+</script>
+
+
+
+
+
+
+  
+</body>
+</html>

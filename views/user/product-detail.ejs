@@ -9,24 +9,27 @@
                     
                     <div class="product-thumb">
                         <div id="gallery" class="product-dec-slider-2 product-tab-left">
+
                              <% productDetails.image.forEach(function(image, index) { %>
+
                               <a data-image="<%= image %>" data-zoom-image="<%= image %>" class="slick-slide slick-cloned" data-slick-index="<%= index - productDetails.image.length %>" aria-hidden="true" tabindex="-1">
-                                <img class="blur-up lazyload" data-src="<%= image %>" src="<%= image %>" alt="" />
+                                <img class="blur-up lazyload" id="image-link"   data-src="<%= image %>" src="<%= image %>" alt="" />
                               </a>
                             <% }); %> 
 
 
 
 
-                            <!-- <a data-image="https://www.copahost.com/blog/wp-content/uploads/2019/07/imgsize2.png" data-zoom-image="https://www.copahost.com/blog/wp-content/uploads/2019/07/imgsize2.png" class="slick-slide slick-cloned" data-slick-index="-3" aria-hidden="true" tabindex="-1">
-                                <img class="blur-up lazyload" src="https://www.copahost.com/blog/wp-content/uploads/2019/07/imgsize2.png" alt="" />
-                            </a> -->
+
+                            <a data-image="https://cdn.mos.cms.futurecdn.net/9WzP7ysCxfXWHJwTucpm2E-650-80.jpg" data-zoom-image="https://cdn.mos.cms.futurecdn.net/9WzP7ysCxfXWHJwTucpm2E-650-80.jpg.webp" class="slick-slide slick-cloned" data-slick-index="-3" aria-hidden="true" tabindex="-1">
+                                <img class="blur-up lazyload" src="<%= productDetails.image[0] %>" alt="" />
+                            </a>
+
+
+
+
+
                             
-
-
-
-
-
                           </div>
                     </div>
 
@@ -165,6 +168,13 @@
     })
 
  </script>
+
+
+
+
+
+
+
 <%-include('footer')-%>   
     
 </body>

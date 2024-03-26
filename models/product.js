@@ -15,10 +15,7 @@ const  productSchema=new  mongoose.Schema(
             type:Number,
             required:true
         },
-        // categoryName:{
-        //     type:String,
-        //     required:true
-        // },
+        
         categoryId: {  // Change to categoryId
             type: mongoose.Schema.Types.ObjectId,  // Store ObjectId reference
             ref: 'categoryCollections',  // Reference to category model
@@ -32,6 +29,13 @@ const  productSchema=new  mongoose.Schema(
         isAvailable:{
             type:Boolean,
             default:true
+        },
+        discountPercentage: {
+            type: Number,
+            default: 0  // Default discount percentage to 0
+        },
+        expiryDate:{
+            type:Date,
         }
     }
 )

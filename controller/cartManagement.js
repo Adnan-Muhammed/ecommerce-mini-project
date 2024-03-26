@@ -2,6 +2,7 @@ const session = require('express-session');
 const ProductDB = require('../models/product');
 const UserDB = require('../models/user.js');
 const CartDB = require('../models/cart.js');
+const CouponDB = require('../models/coupon.js')
 
 const fetchCategoryMiddleware =require('../middleware/fetchCategoryData');
 const productDB = require('../models/product');
@@ -18,286 +19,173 @@ const determineIsLogged = (session) => {
 
 
 
+  
+  
 
-
-
+//correct code
 const cartPage = async (req, res) => {
-    const isLogged = determineIsLogged(req.session);
-    const { primaryCategories, otherCategories } = await fetchCategoryMiddleware.fetchCategories();
-    const emailId = (req.session.user) ? req.session.user.email : req.session.userNew.email;
-    try {
-      const user = await UserDB.findOne({ email: emailId });
-      if (!user) {
-        return res.status(404).send('User not found');
-      }
-      console.log('hj');
-   console.log(56789);
-      const cartItems = await CartDB.find({ userId: user._id });
-      console.log('hj');
-      
-      if(cartItems.length>0){
-        console.log(1);
-        
-        const productIds = cartItems.map(cartItem => cartItem.productId);
-        console.log(2,'www');
-
-
-       
-
-      //   const products = await ProductDB.find({ 
-      //     _id: { $in: productIds },
-      //     isAvailable: false 
-      // })
-      // .populate('categoryId',null, { name: "KIDS" });
-
-      // Find products where categoryId's isAvailable is true
-
-
-// const products = await ProductDB.find({ 
-//   _id: { $in: productIds },
-//   isAvailable: true 
-// }).populate({
-//   path: 'categoryId',
-//   match: { isAvailable: false } // Match condition for categoryId's isAvailable field
-// });
-
-const products = await ProductDB.find({
-  _id: { $in: productIds  },
-  isAvailable:true
-  })
-  .populate('categoryId')
-
-     
-
-      
-        console.log(3,'eeeg cartItem look at productId');
-        console.log(1,cartItems); //no need
-        console.log('next');
-        console.log(productIds);
-        console.log('next products look at productId populated');
-        console.log(products);
-       // till  working well    no more
-
-      console.log(1,'ikiki');
-
-      const detailedCartItems = cartItems.map(cartItem => {
-        const product = products.find(p => p._id.equals(cartItem.productId));
-        // if (product && product.stock >= 1) { // Check if product exists and stock is greater than or equal to 1
-            return {
-                productId: cartItem._id,
-                quantity: cartItem.quantity,
-                name: product.name,
-                images: product.image,
-                stock: product.stock,
-                unitPrice: product.price,
-                price: cartItem.price,
-                description: product.description,
-                isAvailable: product.isAvailable,
-            };
-        // } else {
-        //     return null; // Exclude the product from detailedCartItems if stock is less than 1
-        // }
-    }) // Filter out null values
-    
-    // Calculate total price only for products with stock greater than or equal to 1
-    let totalPrice = 0;
-    for (const cartItem of detailedCartItems) {
-     if (cartItem && cartItem.stock >= 1) { // Check if cartItem exists and stock is greater than or equal to 1
-       totalPrice += cartItem.price;
-   }
-  }
-    const taxValue = 10.00; // You can change this to your actual tax value
-    const grandTotal = totalPrice + taxValue;
-    
-    res.render('user/cart', { cartItems: detailedCartItems, isLogged, primaryCategories, otherCategories, totalprice: totalPrice, taxValue, grandTotal });
-    
-
-        
-      //   const detailedCartItems = cartItems.map(cartItem => {
-      //     const product = products.find(p => p._id.equals(cartItem.productId ));
-      //     return {
-      //       productId: cartItem._id,
-      //       quantity: cartItem.quantity,
-      //       name: product.name,
-      //       images: product.image,
-      //       stock: product.stock,
-      //       unitPrice: product.price,
-      //       price: cartItem.price,
-      //       description: product.description,
-      //       isAvailable: product.isAvailable,
-      //     };
-      // });
-      // console.log(detailedCartItems);
-      // console.log(2, 'ikiki');
-  
-//       let totalPrice = 0;
-// for (const cartItem of detailedCartItems) {
-//   totalPrice += cartItem.price;
-// }
-
-
-// let totalPrice = 0;
-// for (const cartItem of detailedCartItems) {
-//     if (cartItem && cartItem.stock >= 1) { // Check if cartItem exists and stock is greater than or equal to 1
-//         totalPrice += cartItem.price;
-//     }
-// }
-// const taxValue = 10.00; // You can change this to your actual tax value
-// const grandTotal = totalPrice + taxValue;
-// console.log('hello welcome    cart page');
-// console.log(detailedCartItems[0].images[0]);
-
-
-
-
-
-// res.render('user/cart', { cartItems: detailedCartItems, isLogged, primaryCategories, otherCategories ,totalprice:totalPrice,taxValue, grandTotal });
-
-      }else{
-     // console.log(404);
-        res.render('user/cart', {isLogged, primaryCategories, otherCategories  });
-      }
-   // console.log(878787);
-    } catch (err) {
-      // console.error('Error fetching cart items:', err);
-      res.status(500).send('Internal Server Error right now');
-    }
-  };
-
-
-
-
-
-
-  
-  
-const cartPage2 = async (req, res) => {
   const isLogged = determineIsLogged(req.session);
   const { primaryCategories, otherCategories } = await fetchCategoryMiddleware.fetchCategories();
-  const emailId = (req.session.user) ? req.session.user.email : req.session.userNew.email;
+  const emailId = req.session.user ? req.session.user.email : req.session.userNew.email;
   try {
-    const user = await UserDB.findOne({ email: emailId });
-    if (!user) {
-      return res.status(404).send('User not found');
-    }
+      const user = await UserDB.findOne({ email: emailId });
+      if (!user) {
+          return res.status(404).send('User not found');
+      }
+      const currentDate = new Date(); // Get the current date
+      // Fetch available coupons for the user
+      const coupons = await CouponDB.find({
+          isAvailable: true,
+          userIds: { $not: { $in: [user._id] } },
+          expiryDate: { $gt: currentDate } // Filter by expiry date greater than current date
+      });
 
-    const cartItems = await CartDB.find({ userId: user._id });
-    
-    if(cartItems.length>0){
+      const cartItems = await CartDB.find({ userId: user._id });
+      if (cartItems.length > 0) {
+          const productIds = cartItems.map((cartItem) => cartItem.productId);
+          const productsData = await ProductDB.find({
+            _id: { $in: productIds },
+            isAvailable: true,
+        }).populate({
+            path: 'categoryId',
+            match: { isAvailable: true } // Add condition for category's isAvailable field
+        });
+
+      // Now products only contain items where the associated category is available
       
-      const productIds = cartItems.map(cartItem => cartItem.productId);
+        const products = productsData.filter(data => data.categoryId !== null)
+          // Fetch category offers and calculate product offers
+          const categoryOffers = {}; // Store category offers
+          const productOffers = {}; // Store product offers
+
+          for (const product of products) {
+              const categoryId = product.categoryId._id.toString();
+              const categoryDiscount = product.categoryId.discountPercentage;
+
+              // Calculate product offer
+              if (product.discountPercentage > 0) {
+                  // Check if expiry date is available and not expired
+                  if (!product.expiryDate || product.expiryDate >= currentDate) {
+                      productOffers[product._id.toString()] = product.discountPercentage;
+                  }
+              }
+
+              
+              if (product.categoryId.startDate && product.categoryId.endDate) {
+                const startDate = new Date(product.categoryId.startDate);
+                const endDate = new Date(product.categoryId.endDate);
+
+                  // Check if the current date is within the discount offer period
+                  if (currentDate >= startDate && currentDate <= endDate) {
+                      if (!categoryOffers[categoryId]) {
+                          categoryOffers[categoryId] = {
+                              discountPercentage: categoryDiscount,
+                              categoryName: product.categoryId.name,
+                              products: [],
+                          };
+                      }
+                      categoryOffers[categoryId].products.push(product);
+                  }
+              } else {
+                  // If start and end dates are not available, consider the offer as permanent
+                  if (!categoryOffers[categoryId]) {
+                      categoryOffers[categoryId] = {
+                          discountPercentage: categoryDiscount,
+                          categoryName: product.categoryId.name,
+                          products: [],
+                      };
+                  }
+                  categoryOffers[categoryId].products.push(product);
+              }
 
 
-     
-const products = await ProductDB.find({
-_id: { $in: productIds  },
-isAvailable:true
-})
-.populate('categoryId')
 
-   
 
-    
-      console.log('cartItems length',cartItems.length);
-      console.log(cartItems); //no need
-      console.log('productId collected from cartList' ,productIds.length);
-      console.log(productIds);       
-      console.log('productList by fetch in cartList productId',products.length);
-      console.log(products);
-     // till  working well    no more
 
-    // console.log(1,'ikiki');
+          }
 
-      
+          // Generate detailed cart items with offers applied
+          const detailedCartItems = cartItems.map((cartItem) => {
+              const product = products.find((p) => p._id.equals(cartItem.productId));
 
-    const detailedCartItems = cartItems.map(cartItem => {
-      const product = products.find(p => p._id.equals(cartItem.productId));
-      return {
-        // asdfg: product,
+              if(!product){
+                return null
+              }
 
-          productId: cartItem._id,
-          quantity: cartItem.quantity,
-          name: product.name,
-          images: product.image,
-          stock: product.stock,
-          unitPrice: product.price,
-          price: cartItem.price,
-          description: product.description,
-          isAvailable: product.isAvailable,
-      };
-  });
-  console.log(detailedCartItems);
-  
-    console.log(2, 'ikikjgvhcgcgi');
-    
-   
+              
 
-    let totalPrice = 0;
-for (const cartItem of products) {
-totalPrice += cartItem.price;
-}
-console.log(totalPrice);
-const taxValue = 10.00; // You can change this to your actual tax value
-const grandTotal = totalPrice + taxValue;
-console.log('hello welcome    cart page');
-console.log(detailedCartItems[0].price);
-res.render('user/cart', { cartItems: products, isLogged, primaryCategories, otherCategories ,totalprice:totalPrice,taxValue, grandTotal });
+              const categoryId = product.categoryId._id.toString();
 
-    }else{
-   // console.log(404);
-      res.render('user/cart', {isLogged, primaryCategories, otherCategories  });
-    }
- // console.log(878787);
+              // Calculate total price after applying product discount and category discount
+
+              let price = product.price *  cartItem.quantity;
+              let categoryDiscount = 0;
+              let productDiscount = 0;
+
+              // Apply product discount if available
+              if (productOffers[product._id.toString()]) {
+                  productDiscount = productOffers[product._id.toString()];
+                  price -= (price * productDiscount) / 100;
+              }
+
+              // Apply category discount if available
+              if (categoryOffers[categoryId] && categoryOffers[categoryId].discountPercentage > 0) {
+                  categoryDiscount = categoryOffers[categoryId].discountPercentage;
+                  price -= (price * categoryDiscount) / 100;
+              }
+
+              return {
+                  productId: cartItem._id,
+                  quantity: cartItem.quantity,
+                  name: product.name,
+                  images: product.image,
+                  stock: product.stock,
+                  unitPrice: product.price,
+                  price: price,
+                  description: product.description,
+                  isAvailable: product.isAvailable,
+                  // Include category offer and product offer details if available
+                  categoryOffer: categoryDiscount > 0 ? { discountPercentage: categoryDiscount, categoryName: categoryOffers[categoryId].categoryName } : null,
+                  productOffer: productDiscount > 0 ? { discountPercentage: productDiscount } : null,
+              };
+
+
+            })
+            .filter(item => item !== null);
+
+          // Calculate total price
+          let totalPrice = detailedCartItems.reduce((total, item) => total + item.price, 0);
+
+          // Apply tax
+          const taxValue = 10.00; // You can change this to your actual tax value
+          const grandTotal = totalPrice + taxValue;
+
+          res.render('user/cart', {
+              cartItems: detailedCartItems,
+              isLogged,
+              primaryCategories,
+              otherCategories,
+              totalPrice,
+              taxValue,
+              grandTotal,
+              coupons,
+              categoryOffers,
+              productOffers,
+          });
+      } else {
+          res.render('user/cart', { isLogged, primaryCategories, otherCategories, coupons });
+      }
   } catch (err) {
-    // console.error('Error fetching cart items:', err);
-    res.status(500).send('Internal Server Error right now');
+      res.status(500).send('Internal Server Error right now');
   }
 };
 
+
+
   
 
 
 
-
-
-// const addtoCart2=async (req,res)=>{
-//     const isLogged = determineIsLogged(req.session);
-//     const { primaryCategories, otherCategories } = await fetchCategoryMiddleware.fetchCategories();
-
-//     const email=(req.session.user)?req.session.user.email:req.session.userNew.email
-//     const productId= req.params.id
-
-//     try{
-//       const user = await UserDB.findOne({email:email});
-//       const product = await ProductDB.findById(productId);
-//       const newQuantity = 1
-
-//     if (!user || !product.stock>0) {
-//         // Handle user or product not found
-//         console.log(66666);
-//         req.session.cartProduct=true
-//         return res.redirect(`/productdetails/${req.params.id}`)
-//       }
-//       if (product.stock >= newQuantity) {
-
-//         const cartItem = new CartDB({
-//             userId: user._id,
-//             productId: product._id,
-//             quantity: newQuantity,
-//             price: product.price * newQuantity,
-//         });
-//         await cartItem.save();
-//     }
-   
-//     // Redirect to the cart page after a successful addition
-//     res.redirect('/cartpage');
-
-// } catch (err) {
-//     // console.error(err);
-//     // Handle errors appropriately
-//     res.status(500).send('Internal Server Error');
-// }
-// }
 
 
 
@@ -375,138 +263,6 @@ const addtoCart = async (req, res) => {
 
 
 
-// const addtoCart = async (req, res) => {
-//   const isLogged = determineIsLogged(req.session);
-//   const { primaryCategories, otherCategories } = await fetchCategoryMiddleware.fetchCategories();
-
-//   const email = (req.session.user) ? req.session.user.email : req.session.userNew.email;
-//   const productId = req.params.id;
-
-//   try {
-//       const user = await UserDB.findOne({ email: email });
-//       const product = await ProductDB.findById(productId);
-//       const newQuantity = 1;
-
-//       if (!user || !product || product.stock <= 0) {
-//           // Handle user not found or product not available
-//           req.session.cartProduct = true;
-//           return res.redirect(`/productdetails/${req.params.id}`);
-//       }
-
-//       let cartItem = await CartDB.findOne({ userId: user._id, productId: product._id });
-
-//       if (cartItem) {
-//           // If the product already exists in the cart, update its quantity and price
-//           await CartDB.findOneAndUpdate(
-//               { userId: user._id, productId: product._id },
-//               {
-//                   $inc: { quantity: newQuantity }, // Increment quantity
-//                   $set: { price: cartItem.price + (product.price * newQuantity) } // Update price
-//               }
-//           );
-//       } else {
-//           // If the product doesn't exist, create a new cart item
-//           cartItem = new CartDB({
-//               userId: user._id,
-//               productId: product._id,
-//               quantity: newQuantity,
-//               price: product.price * newQuantity,
-//           });
-//           await cartItem.save();
-//       }
-
-//       // Redirect to the cart page after a successful addition
-//       res.redirect('/cartpage');
-//   } catch (err) {
-//       // Handle errors appropriately
-//       console.error(err);
-//       res.status(500).send('Internal Server Error');
-//   }
-// };
-
-
-// const addtoCart = async (req, res) => {
-//   console.log('klklklk',8989);
-//   const isLogged = determineIsLogged(req.session);
-//   const { primaryCategories, otherCategories } = await fetchCategoryMiddleware.fetchCategories();
-
-//   const email = (req.session.user) ? req.session.user.email : req.session.userNew.email;
-//   const productId = req.params.id;
-
-//   try {
-//     console.log(7777,'klklkmhjgvjglk',8989);
-
-//     const user = await UserDB.findOne({ email: email });
-//   console.log(7777,'klklkmhjgvjglk',8989,'dfvgvdg');
-
-//   // const product = await ProductDB.findById(productId);
-  
-//   const product = await ProductDB.find({_id:productId});
-  
-//   console.log(7777,'klklkmhjgvjglk',8989);
-
-//     const newQuantity = 1;
-//     console.log('----_--___-_fdgfxgf',6876);
-//     // console.log(product);
-
-
-//     if (!user || !product || product.stock <= 0) {
-//       console.log('__-----___-_____-__');
-//       console.log(user.name);
-//       console.log(product.name);
-//       // Handle user not found or product not available
-//       req.session.cartProduct = true;
-//       return res.redirect(`/productdetails/${req.params.id}`);
-//     }
-
-//     let cartItem = await CartDB.findOne({ userId: user._id, productId: product._id });
-
-//     if (cartItem) {
-//       // If the product already exists in the cart, update its quantity
-//       const updatedQuantity = cartItem.quantity + newQuantity;
-//       if (updatedQuantity > product.stock) {
-//         // If the updated quantity exceeds the available stock, set it to the stock quantity
-//         // updatedQuantity = product.stock;
-//         return res.redirect('/cartpage');
-//       }
-//       //   await CartDB.findOneAndUpdate(
-//       //   { userId: user._id, productId: product._id },
-//       //   {
-//       //     $set: { quantity: updatedQuantity }, // Update quantity
-//       //     $set: { price: product.price * updatedQuantity } // Update price
-//       //   }
-//       // );
-//       await CartDB.findOneAndUpdate(
-//                       { userId: user._id, productId: product._id },
-//                       {
-//                      $inc: { quantity: newQuantity }, // Increment quantity
-//                      $set: { price: cartItem.price + (product.price * newQuantity) } // Update price
-//                     }
-//              );
-//     } else {
-//       // If the product doesn't exist, create a new cart item
-//       cartItem = new CartDB({
-//         userId: user._id,
-//         productId: product._id,
-//         quantity: newQuantity,
-//         stock:product.stock,
-//         price: product.price * newQuantity,
-//       });
-//       await cartItem.save();
-//     }
-
-//     // Redirect to the cart page after a successful addition
-//     res.redirect('/cartpage');
-//   } catch (err) {
-//     // Handle errors appropriately
-//     console.error(err);
-//     res.status(500).send('Internal Server Error');
-//   }
-// };
-
-
-
-
 
 
 
@@ -532,12 +288,7 @@ const removeFromCart = async (req, res) => {
     }
 
     const idstr=user._id.toString()
-    // console.log(22);
-    // console.log(user._id);
-    // console.log(idstr);
-
-    // console.log(productIdToRemove);
-    // console.log(55);
+   
 
     // Find and remove the item from the cart
     // await CartDB.findOneAndDelete({ userId: idstr, productId: productIdToRemove });
@@ -557,51 +308,228 @@ const removeFromCart = async (req, res) => {
 
 
 
-// const updateCartQuantities = async (req, res) => {
+
+
+// duplicate for editing
+// const cartPage = async (req, res) => {
+//   const isLogged = determineIsLogged(req.session);
+//   const { primaryCategories, otherCategories } = await fetchCategoryMiddleware.fetchCategories();
+//   const emailId = req.session.user ? req.session.user.email : req.session.userNew.email;
+
+
+
 //   try {
-//     const updates = req.body.updates;
-//     const emailId = (req.session.user) ? req.session.user.email : req.session.userNew.email;
-
-//     // Find the user
-
-//     if (!user) {
-//       // console.log('User not found');
-//       return res.status(404).send('User not found');
-//     }
-
-//     // Iterate through the updates and update quantities in the CartDB collection
-//     for (const update of updates) {
-//       const productId = update.productId;
-
-//       // Find the cart item for the user and product
-//       const cartItem = await CartDB.findOne({ userId: user._id, productId: productId });
-//       const product = await productDB.findOne({ _id: productId })
-//       const quantity = (parseInt(update.quantity)  <= product.stock)?update.quantity:product.stock
-
-//       // console.log(product.price);
-//       // console.log(6666666);
-//       if (cartItem) {
-//         // Update the quantity and price in the cart item
-//         cartItem.quantity = quantity;
-//         // cartItem.price = quantity * cartItem.price / cartItem.quantity; // Recalculate the price based on the new quantity
-//         cartItem.price = quantity * product.price
-//         await cartItem.save();
+//       const user = await UserDB.findOne({ email: emailId });
+//       if (!user) {
+//           return res.status(404).send('User not found');
 //       }
-//     }
-// res.redirect('/cartpage')
-//     // Redirect to the cart page or send a success message
-//     // res.json({ success: true, message: 'Cart updated successfully' });
+//       const currentDate = new Date(); // Get the current date
+//       // Fetch available coupons for the user
+//       const coupons = await CouponDB.find({
+//           isAvailable: true,
+//           userIds: { $not: { $in: [user._id] } },
+//           expiryDate: { $gt: currentDate } // Filter by expiry date greater than current date
+
+//       });
+//       console.log(coupons);
+//       // return
+
+//       const cartItems = await CartDB.find({ userId: user._id });
+//       if (cartItems.length > 0) {
+//           const productIds = cartItems.map((cartItem) => cartItem.productId);
+//           const productsData = await ProductDB.find({
+//             _id: { $in: productIds },
+//             isAvailable: true,
+//         }).populate({
+//             path: 'categoryId',
+//             match: { isAvailable: true } // Add condition for category's isAvailable field
+//         });
+
+//       // Now products only contain items where the associated category is available
+      
+//         const products = productsData.filter(data => data.categoryId !== null)
+//           // Fetch category offers and calculate product offers
+//           const categoryOffers = {}; // Store category offers
+//           const productOffers = {}; // Store product offers
+
+//           for (const product of products) {
+//               const categoryId = product.categoryId._id.toString();
+//               const categoryDiscount = product.categoryId.discountPercentage;
+
+//               // Calculate product offer
+//               if (product.discountPercentage > 0) {
+//                   // Check if expiry date is available and not expired
+//                   if (!product.expiryDate || product.expiryDate >= currentDate) {
+//                       productOffers[product._id.toString()] = product.discountPercentage;
+//                   }
+//               }
+
+              
+//               if (product.categoryId.startDate && product.categoryId.endDate) {
+//                 const startDate = new Date(product.categoryId.startDate);
+//                 const endDate = new Date(product.categoryId.endDate);
+
+//                   // Check if the current date is within the discount offer period
+//                   if (currentDate >= startDate && currentDate <= endDate) {
+//                       if (!categoryOffers[categoryId]) {
+//                           categoryOffers[categoryId] = {
+//                               discountPercentage: categoryDiscount,
+//                               categoryName: product.categoryId.name,
+//                               products: [],
+//                           };
+//                       }
+//                       categoryOffers[categoryId].products.push(product);
+//                   }
+//               } else {
+//                   // If start and end dates are not available, consider the offer as permanent
+//                   if (!categoryOffers[categoryId]) {
+//                       categoryOffers[categoryId] = {
+//                           discountPercentage: categoryDiscount,
+//                           categoryName: product.categoryId.name,
+//                           products: [],
+//                       };
+//                   }
+//                   categoryOffers[categoryId].products.push(product);
+//               }
+
+
+
+
+
+//           }
+
+//           // Generate detailed cart items with offers applied
+//           const detailedCartItems = cartItems.map((cartItem) => {
+//               const product = products.find((p) => p._id.equals(cartItem.productId));
+
+//               if(!product){
+//                 return null
+//               }
+
+              
+
+//               const categoryId = product.categoryId._id.toString();
+
+//               // Calculate total price after applying product discount and category discount
+//               let price = cartItem.price;
+//               let categoryDiscount = 0;
+//               let productDiscount = 0;
+
+//               // Apply product discount if available
+//               if (productOffers[product._id.toString()]) {
+//                   productDiscount = productOffers[product._id.toString()];
+//                   price -= (price * productDiscount) / 100;
+//               }
+
+//               // Apply category discount if available
+//               if (categoryOffers[categoryId] && categoryOffers[categoryId].discountPercentage > 0) {
+//                   categoryDiscount = categoryOffers[categoryId].discountPercentage;
+//                   price -= (price * categoryDiscount) / 100;
+//               }
+
+
+//               const categoryOffer = categoryDiscount > 0 ? (categoryDiscount * price) / 100 : null;
+
+// const productOffer = productDiscount > 0 
+//     ? (categoryOffer !== null ? (productDiscount * categoryOffer) / 100 : (productDiscount * price) / 100) 
+//     : null;
+
+
+//               return {
+//                   productId: cartItem._id,
+//                   name: product.name,
+//                   images: product.image,
+//                   stock: product.stock,
+//                   quantity: cartItem.quantity,
+//                   unitPrice: product.price,
+//                   price:cartItem.price,
+//                   description: product.description,
+//                   isAvailable: product.isAvailable,
+//                   categoryOffer ,
+//                   productOffer ,
+//                   categoryDiscountPecentage: categoryDiscount > 0 ? categoryDiscount : null,
+//                   productDiscountPercentage:productDiscount > 0 ?  productDiscount : null,
+//                   totalPrice:price,
+//               };
+
+
+              
+
+
+//             })
+//             .filter(item => item !== null);
+
+
+            
+
+
+
+//             console.log('-=-=-detailedCartItems=-=-=-');
+
+//             console.log(detailedCartItems);
+
+//             console.log('-=-=-detailedCartItems=-=-=-');
+
+
+//           // Calculate total price
+//           let totalPrice = detailedCartItems.reduce((total, item) => total + item.totalPrice, 0)
+
+//           // Apply tax
+//           const taxValue = 10.00; // You can change this to your actual tax value
+//           const grandTotal =Math.round( totalPrice + taxValue)
+//           console.log(grandTotal);
+
+//           res.render('user/cart', {
+//               cartItems: detailedCartItems,
+//               isLogged,
+//               primaryCategories,
+//               otherCategories,
+//               totalPrice,
+//               taxValue,
+//               grandTotal,
+//               coupons,
+//               categoryOffers,
+//               productOffers,
+//           });
+//         } else {
+//           res.render('user/cart', { isLogged, primaryCategories, otherCategories, coupons });
+//         }
 //   } catch (err) {
-//     // console.error('Error updating cart quantities:', err);
-//     res.status(500).send('Internal Server Error');
+//       res.status(500).send('Internal Server Error right now');
 //   }
 // };
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 const updateQuantity = async (req, res) => {
+  console.log("--=-=====-===----====-----=====---=======");
   const { productId, newQuantity } = req.body;
+  // productId means cart id  ==  _id
   // console.log(productId ,newQuantity);
+  
   try {
 
     if (!productId || !newQuantity || isNaN(newQuantity) || newQuantity < 0) {
@@ -610,82 +538,247 @@ const updateQuantity = async (req, res) => {
     const emailId = (req.session.user) ? req.session.user.email : req.session.userNew.email;
 
     const user = await UserDB.findOne({ email: emailId });
-    // const cartItem = await CartDB.findOne({ userId: user._id, productId: productId });
     const cartItem = await CartDB.findOne({_id:productId });
     
-    const product = await productDB.findOne({ _id: cartItem.productId })
-
-    const taxValue = 10.00; // You can change this to your actual tax value
-
-
-    if(newQuantity<=product.stock){
-      // console.log(product.stock);
-      // console.log(newQuantity);
-      cartItem.quantity = newQuantity;
-      cartItem.price = (newQuantity) * product.price
-      await cartItem.save();
-      // console.log('out of stock false');
-    
-      console.log(cartItem );
-      
-      const cartRecords = await CartDB.find({userId: user._id})
-
-      // const priceSum = cartRecords.reduce((sum, record) => {
-      //   if(record.stock>=1){
-      //     return sum + record.price
-      //   }
-      // }, 0);
-      const priceSum = cartRecords.reduce((sum, record) => {
-        if (record.stock >= 1) {
-          return sum + record.price;
-        } else {
-          return sum;
-        }
-      }, 0);
-      
-      console.log(priceSum);
+    const productData = await productDB.findOne({ _id: cartItem.productId }).populate({
+      path: 'categoryId',
+      match: { isAvailable: true } // Add condition for category's isAvailable field
+  });
+console.log('hoooi');
   
-        // Calculate the sum of prices
-        
-        const grandTotal =priceSum+taxValue
-      
-    
+if(productData.categoryId == null || productData.isAvailable ==false ){
+  console.log(90);
+  return res.status(404).json({ message: 'Product not found' });
+}
 
-      return res.json({ outOfStock:false, product: { stock: product.stock },newQuantity: newQuantity, price:cartItem,taxValue, priceSum: priceSum ,grandTotal });
+if( productData.stock< newQuantity){
+  return res.status(404).json({message:'out of stock'})
+}
+
+
+
+
+
+// Initialize the final price with the original price of the product
+let finalPrice =   productData.price;
+
+
+if(newQuantity<=productData.stock){
+  cartItem.quantity = newQuantity;
+  cartItem.price = (newQuantity) * productData.price
+  await cartItem.save();
+}
+
+
+
+
+// Apply category discount percentage if available
+if (productData.categoryId.discountPercentage > 0) {
+  const currentDate = new Date();
+  let startDate = null;
+  let endDate = null;
+  // Check if startDate and endDate exist before creating Date objects
+  if (productData.categoryId.startDate) {
+      startDate = new Date(productData.categoryId.startDate);
+  }
+  if (productData.categoryId.endDate) {
+      endDate = new Date(productData.categoryId.endDate);
+  }
+  // Check if the current date falls within the offer period
+  if (!startDate || (currentDate >= startDate && currentDate <= endDate)) {
+      finalPrice -= (finalPrice * productData.categoryId.discountPercentage) / 100;
+  }
+}
+
+
+
+if (productData.discountPercentage && productData.discountPercentage > 0) {
+  const currentDate = new Date();
+  const expiryDate = productData.expiryDate ? new Date(productData.expiryDate) : null;
+
+  if (!expiryDate || currentDate <= expiryDate) {
+      finalPrice -= (finalPrice * productData.discountPercentage) / 100;
+  }
+}
+
+// Ensure the final price is not negative
+// finalPrice = Math.max(0, finalPrice)*newQuantity
+// Ensure the final price is not negative and round to the nearest integer
+finalPrice = Math.round(Math.max(0, finalPrice) * newQuantity);
+
+
+// Now 'finalPrice' contains the calculated price after applying all discounts
+console.log('Final Price:', finalPrice);
+
+//========== here the code correct rest of the code is more correction needs
+
+console.log('-=-=-=-cart items -=-=-=-');
+// const cartItems = await CartDB.find({ userId: user._id });
+const cartItems = await CartDB.find({ userId: user._id, productId: { $ne: productData._id } });
+
+const productIds = cartItems.map((cartItem) => cartItem.productId);
+const productsData = await ProductDB.find({
+  _id: { $in: productIds },
+  isAvailable: true,
+}).populate({
+  path: 'categoryId',
+  match: { isAvailable: true } // Add condition for category's isAvailable field
+});
+
+console.log(2, 'find product in productDb');
+// console.log(productsData);
+
+// Now products only contain items where the associated category is available
+const products = productsData.filter(data => data.categoryId !== null);
+
+// Fetch category offers and calculate product offers
+console.log(3, 'find product in productDb');
+
+const categoryOffers = {}; // Store category offers
+const productOffers = {}; // Store product offers
+
+
+
+
+for (const product of products) {
+  const categoryId = product.categoryId._id.toString();
+  const categoryDiscount = product.categoryId.discountPercentage;
+
+  console.log('product offer :',product.discountPercentage);
+
+  // Calculate product offer
+  if (product.discountPercentage > 0) {
+    // Check if expiry date is available and not expired
+
+    console.log('koko');
+    const currentDate = new Date()
+    if (!product.expiryDate || product.expiryDate >= currentDate) {
+    console.log('koko',1);
+
+      productOffers[product._id.toString()] = product.discountPercentage;
+    // console.log('koko',2,  currentDate );
+    console.log('koko',2,   );
+    
 
     }
-    else{
-      // console.log('out of stock true');
+  }
 
-      const cartRecords = await CartDB.find({userId: user._id})
-  
-        // Calculate the sum of prices
-        const priceSum = cartRecords.reduce((sum, record) => {
-          return  sum + record.price
-        }, 0);
+  console.log('9090', 989);
 
-        const grandTotal =priceSum+taxValue
+  if (product.categoryId.startDate && product.categoryId.endDate) {
+    const currentDate = new Date()
 
+    console.log('ioioi');
+    const startDate = new Date(product.categoryId.startDate);
+    const endDate = new Date(product.categoryId.endDate);
 
-      return res.json({ outOfStock: true, product: { stock: product.stock},newQuantity: newQuantity, price:cartItem ,priceSum: priceSum ,grandTotal});
-
+    // Check if the current date is within the discount offer period
+    if (currentDate >= startDate && currentDate <= endDate) {
+      if (!categoryOffers[categoryId]) {
+        categoryOffers[categoryId] = {
+          discountPercentage: categoryDiscount,
+          categoryName: product.categoryId.name,
+          products: [],
+        };
+      }
+      categoryOffers[categoryId].products.push(product);
     }
+  } else {
+    // If start and end dates are not available, consider the offer as permanent
+    if (!categoryOffers[categoryId]) {
+      categoryOffers[categoryId] = {
+        discountPercentage: categoryDiscount,
+        categoryName: product.categoryId.name,
+        products: [],
+      };
+    }
+    categoryOffers[categoryId].products.push(product);
+  }
+}
+
+console.log('hai-=-=-=-',505);
+console.log(productOffers);
+
+// Generate detailed cart items with offers applied
+const detailedCartItems = cartItems.map((cartItem) => {
+  const product = products.find((p) => p._id.equals(cartItem.productId));
+
+  if (!product) {
+    return null;
+  }
+
+  const categoryId = product.categoryId._id.toString();
+
+  // Calculate total price after applying product discount and category discount
+  let price = cartItem.price;
+  let categoryDiscount = 0;
+  let productDiscount = 0;
+
+  // Apply product discount if available
+  if (productOffers[product._id.toString()]) {
+    productDiscount = productOffers[product._id.toString()];
+    price -= (price * productDiscount) / 100;
+  }
+
+  // Apply category discount if available
+  if (categoryOffers[categoryId] && categoryOffers[categoryId].discountPercentage > 0) {
+    categoryDiscount = categoryOffers[categoryId].discountPercentage;
+    price -= (price * categoryDiscount) / 100;
+  }
+
+  return {
+    productId: cartItem._id,
+    quantity: cartItem.quantity,
+    name: product.name,
+    images: product.image,
+    stock: product.stock,
+    unitPrice: product.price,
+    price: price,
+    description: product.description,
+    isAvailable: product.isAvailable,
+    // Include category offer and product offer details if available
+    categoryOffer: categoryDiscount > 0 ? { discountPercentage: categoryDiscount, categoryName: categoryOffers[categoryId].categoryName } : null,
+    productOffer: productDiscount > 0 ? { discountPercentage: productDiscount } : null,
+  };
+}).filter(item => item !== null);
+
+// Calculate total price from detailedCartItems
+const totalPrice = detailedCartItems.reduce((total, item) => total + item.price, 0);
+// const totalPrice = Math.floor(totalPriceFind);
+
+// Now totalPrice contains the sum of prices from detailedCartItems
+
+// Calculate total price
+
+// Apply tax
+const taxValue = 10.00; // You can change this to your actual tax value
 
 
+console.log('Total Price:', totalPrice);
+ const subTotal = Math.round( totalPrice + finalPrice)
+console.log(subTotal);
+console.log('updated product price :',finalPrice);
+const grandTotal =Math.round(  totalPrice + taxValue + finalPrice)
+console.log("grandTotal :", grandTotal);
 
-    
+return res.json({
+  cartItems: detailedCartItems,
+  totalPrice,
+  taxValue,
+  subTotal,
+  grandTotal,
+  outOfStock:false,
+  newQuantity: newQuantity,
+  finalPrice: finalPrice,
+});
 
     // Optionally, you may send a success message
   } catch (err) {
-    // Properly handle errors, log them, and return an appropriate response
-    // console.error(err);
+
+   
     return res.status(500).json({ error: 'Internal server error' });
   }
 };
-
-
-
-
 
 
 

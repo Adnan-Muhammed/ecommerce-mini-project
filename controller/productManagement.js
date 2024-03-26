@@ -56,6 +56,8 @@ const productListAdmin = async (req, res) => {
     const totalProductsCount = await productDB.countDocuments();
     // console.log(totalProductsCount);
 
+
+    console.log(productList);
     const totalPages = Math.ceil(totalProductsCount / productsPerPage);
 
     // const productList=await productDB.find()
@@ -95,9 +97,17 @@ const addProduct = async (req, res) => {
 
 
 
+
+
+
+
+
+
+
 const productadded = async (req, res) => {
-  console.log(req.body.productCategory);
-  console.log('yy',78);
+
+console.log(1);
+  
   let imageCount = 4;
   const existingProductId = req.params.id ?? null;
 
@@ -105,16 +115,15 @@ const productadded = async (req, res) => {
     const existingProductId = req.params.id;
     const existingProduct = await productDB.findById(existingProductId);
     const ExistingImgCount = existingProduct.image.length;
-    console.log(ExistingImgCount);
     imageCount = 4 - ExistingImgCount;
   }
 
   upload.array("images", imageCount)(req, res, async function (err) {
-    console.log(imageCount);
-    console.log(78534567);
 
-    // console.log(req.body.productCategory);
-    // console.log('-1-1',909);
+
+
+
+ 
 
     if (err instanceof multer.MulterError) {
       console.log(`err is length : ${req.files.length}`);
@@ -131,62 +140,93 @@ const productadded = async (req, res) => {
     }
 
     try {
-      // if (!req.files || req.files.length === 0) {
-      //     return res.status(400).send({ message: 'No files were uploaded.' });
-      //     }
-      const newImages = req.files.map((file) => file.path.substring(6));
-      console.log(req.body.productCategory);
-      console.log('zz',99);
 
-      if (req.body.productCategory) {
+      console.log(req.body);
+
+      const newImages = req.files.map((file) => file.path.substring(6));
+
+
+      if (!req.params.id) {
         const newProduct = {
           name: req.body.productName,
           price: req.body.productPrice,
           stock: req.body.productStock,
-          // categoryName: req.body.productCategory,
           categoryId: req.body.productCategory,
-          // categoryId: category._id,  // Assign categoryId
-
           description: req.body.productDescription,
           image: newImages,
-        };
-        // console.log(101,req.body.productDescription.trim(),999);
+          discountPercentage:req.body.offerInput,
+          
 
-        console.log('products');
+        };
+
+        if (req.body.offerExpiryDate && req.body.offerExpiryDate !== "") {
+          const parts = req.body.offerExpiryDate.split('/');
+          const day = parseInt(parts[0]);
+          const month = parseInt(parts[1]) - 1; // Months are zero-based in JavaScript
+          const year = parseInt(parts[2]);
+          newProduct.expiryDate = new Date(year, month, day);
+      }
+
+
+
+
+
         console.log(newProduct);
+        
         await productDB.insertMany([newProduct]);
         req.session.productAdded = newProduct;
-      } else {
+      } 
+      
+      
+      else {
         const productId = req.params.id;
         const existingProduct = await productDB.findById(productId);
-
         const updateProduct = {
           name: req.body.productName,
           price: req.body.productPrice,
           stock: req.body.productStock,
+          categoryId: req.body.productCategory,
+          
           description:
-            req.body.productDescription.trim() !== ""
-              ? req.body.productDescription
-              : existingProduct.description,
-          image:
-            // (newImages.length > 0 && existingProduct.image) ? [...newImages, ...existingProduct.image]:(newImages.length>0)?newImages:(existingProduct.image.length>0)?existingProduct.image:null
+          req.body.productDescription.trim() !== ""
+          ? req.body.productDescription
+          : existingProduct.description,
 
-            (newImages.length > 0 && existingProduct&& existingProduct.image.length > 0)
-      ? [...newImages, ...existingProduct.image]
-      : (newImages.length > 0)
-      ? newImages
-      : (existingProduct.image.length > 0)
-      ? existingProduct.image
-      : null,
+          image:
+          (newImages.length > 0 && existingProduct&& existingProduct.image.length > 0)
+          ? [...newImages, ...existingProduct.image]
+          : (newImages.length > 0)
+          ? newImages
+          : (existingProduct.image.length > 0)
+          ? existingProduct.image
+          : null,
+          discountPercentage:req.body.offerInput,
+        }
+
         
-          };
-        // console.log(existingProduct.description);
+
+        if (req.body.offerExpiryDate !== "") {
+          const parts = req.body.offerExpiryDate.split('/');
+          const day = parseInt(parts[0]);
+          const month = parseInt(parts[1]) - 1; // Months are zero-based in JavaScript
+          const year = parseInt(parts[2]);
+          updateProduct.expiryDate = new Date(year, month, day);
+      } 
+      else if(existingProduct.expiryDate && req.body.offerExpiryDate =="" ){
+        updateProduct.expiryDate  = null
+      }
+    
+    
+        
+
+
+
         const editing = await productDB.findByIdAndUpdate(
           productId,
           updateProduct
-        );
-      }
-
+          );
+        }
+        
       return res.redirect("/admin/productlist");
     } catch (error) {
       console.error(error);
@@ -194,6 +234,13 @@ const productadded = async (req, res) => {
     }
   });
 };
+
+
+
+
+
+
+
 
 //-=-=-=-=-
 
@@ -258,9 +305,16 @@ const productUpdate = async (req, res) => {
     // console.log('updating this product');
     const editProduct = await productDB.findById(productId);
     // console.log(editProduct.name);
-    res.render("admin/editProduct", { editProduct, multerError });
+
+    const categoryList = await CategoryDB.find(
+      { isAvailable: true },
+      { name: 1, _id: 1 }
+    );    res.render("admin/editProduct", { editProduct, multerError ,categoryList });
   } catch (err) {}
 };
+
+
+
 
 const productUpdatePost = async (req, res) => {
   try {
@@ -323,7 +377,7 @@ const productDetail = async (req, res) => {
     console.log(111,'productId is ',productId);
 
     // Extract the valid ObjectId from the provided string
-    const validObjectId = new mongoose.Types.ObjectId(productId);
+    // const validObjectId = new mongoose.Types.ObjectId(productId);
 
     // Use the valid ObjectId to query the database
     // const productDetails = await productDB.findById(validObjectId);
@@ -757,6 +811,10 @@ const searchProduct = async (req, res) => {
   }
 };
 
+
+
+
+
 module.exports = {
   addProduct,
   productadded,
@@ -777,4 +835,10 @@ module.exports = {
   priceSortDescending,
   searchProduct,
   fetchData,
+
+
+
+
+
 };
+

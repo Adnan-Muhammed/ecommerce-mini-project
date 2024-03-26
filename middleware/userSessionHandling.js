@@ -11,11 +11,14 @@ const requireUser = (req, res, next) => {
 };
 
 const requireNotUser = (req, res, next) => {
-    if (req.session.user) {
+    if (req.session.user && !req.session.changePassword) {
+      console.log(333,'its verified post')
        return  res.redirect('/');
         }else if(req.session.userNew?.otp){
+        console.log(444,'its verified post')
         return res.redirect('/')
         }else {
+        console.log(555,'its verified post')
         console.log('User session not found');
         next();
         }
@@ -44,6 +47,9 @@ const  isBlockedNow=async (req,res,next)=>{
                 return res.redirect('/loginpage')
             }
             console.log(1111111);
+            if(req.session.changePassword){
+               return res.redirect('/userProfile')
+            }
         }if(req.session.userNew){
             const {name,email,isBlocked}=req.session.userNew
             const user=await userDB.findOne({email:email},{name:1,email:1,isBlocked:1})

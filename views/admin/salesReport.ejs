@@ -1,0 +1,79 @@
+<%-include('header')-%>
+
+
+            <!-- Table Start -->
+            <div class="container-fluid pt-4 px-4">
+                <div class="row g-4">
+
+                    
+                    <div class="bg-light rounded h-100 p-4">
+                        <h6 class="mb-4">Users List</h6>
+                        <div class="table-responsive">
+                            <table class="table">
+
+        <thead>
+            <tr>
+                <th scope="col">User Name</th>
+                <th scope="col">Order Date</th>
+                <th scope="col">Grand Total</th>
+                <th scope="col">Status</th>
+                <th scope="col">Product <br>Name</th>
+                <th scope="col">Unit <br> Price</th>
+                <th scope="col">Quantity</th>
+                <th scope="col">Price</th>
+                <th scope="col">Category <br> Offer</th>
+                <th scope="col">Product <br> Offer</th>
+                <th scope="col">Coupon </th>
+                <th scope="col">Total <br>Price</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% orders.forEach(order => { %>
+                <% const orderItem = order.orderItems; %>
+                <tr>
+                    <td><%= order.userName %></td>
+                    <td><%= order.orderDate.toLocaleString() %></td>
+                    
+                    
+                    <td><%= order.grandTotal %></td>
+                    <td>
+                        <%= order.paymentStatus.type %>
+                        <br>
+                    <%= order.orderStatus.type %>
+                    </td>
+                    <td><%= orderItem.productName %></td>
+                    <td><%= orderItem.unitPrice %></td>
+                    <td><%= orderItem.quantity %></td>
+                    <td><%= orderItem.price %></td>
+                    <td>
+                        <%if(orderItem.categoryDiscountPecentage){%>
+                            <%= orderItem.categoryDiscountPecentage%>% <br>
+                        <%}%>
+                        <%= orderItem.categoryOffer %><br>
+                    </td>
+                    <td>
+                        <%= orderItem.productDiscountPercentage %>%
+                        <br>
+                        <%= orderItem.productOffer %>
+                    </td>
+
+                    <td>
+                        <% if (order.couponName) { %>
+                             <%= order.couponName %><br>
+                            <%= order.couponDiscountPercentage  %>%<br>
+                            <%= order.couponDiscount || 'N/A' %>
+                        <% } else { %>
+                            N/A
+                        <% } %>
+                    </td>
+                    <td><%= orderItem.totalPrice %></td>
+                </tr>
+            <% }); %>
+        </tbody>
+    </table>
+
+</div>
+</div>
+</div>
+</div>
+<%-include('footer')-%>

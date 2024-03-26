@@ -14,6 +14,9 @@ router.post('/admindashboard',   adminController.adminDashboardPost)
 router.get('/admindashboard',adminSessionMiddleware.requireAdmin,adminController.adminDashboardGet)
 router.get('/logout', adminController.adminLogout);
 
+router.post('/admin/download-pdf',adminSessionMiddleware.requireAdmin,   adminController.pdfDownloading)
+
+router.get('/salesReport',adminSessionMiddleware.requireAdmin,   adminController.salesReport)
 
 
 const userManagement=require('../controller/userManagement.js')
@@ -27,28 +30,63 @@ const categoryManagement = require('../controller/categoryManagement.js');
 router.get('/categoryList', adminSessionMiddleware.requireAdmin, categoryManagement.categorylist);
 router.get('/addCategory', adminSessionMiddleware.requireAdmin, categoryManagement.addCategory);
 
-router.post('/categoryAdded', adminSessionMiddleware.requireAdmin, categoryManagement.checkCategory);
+
+
+
+router.post('/categoryAdded', adminSessionMiddleware.requireAdmin, categoryManagement.categoryAdding);
+
+
+
+
+
+
+
 router.post('/categoryAdded2', adminSessionMiddleware.requireAdmin, categoryManagement.checkCategory2);
+
 router.post('/newCategoryAdded',adminSessionMiddleware.requireAdmin, categoryManagement.categoryAddedPost)  
 router.get('/show/:id',adminSessionMiddleware.requireAdmin,categoryManagement.show);
 router.get('/hide/:id',adminSessionMiddleware.requireAdmin,categoryManagement.hide);
-router.get('/edit/:id', adminSessionMiddleware.requireAdmin, categoryManagement.editCategory);
-router.post('/categoryEdited/:id',()=>console.log('eeee'), adminSessionMiddleware.requireAdmin, categoryManagement.editCategoryPost);
+router.get('/editCategory/:id', adminSessionMiddleware.requireAdmin, categoryManagement.editCategory);
+router.post('/categoryEdited/:id',   adminSessionMiddleware.requireAdmin, categoryManagement.editCategoryPost);
+
+
+
+const couponManagement = require('../controller/couponController.js')
+router.get('/couponList', adminSessionMiddleware.requireAdmin, couponManagement.couponlist);
+router.get('/addCoupon', adminSessionMiddleware.requireAdmin, couponManagement.addCoupon);
+router.post('/newCoupon', adminSessionMiddleware.requireAdmin, couponManagement.couponAdding);
+
+router.get('/editCoupon/:id',  adminSessionMiddleware.requireAdmin, couponManagement.editCoupon);
+router.post('/editCouponPost/:id',  adminSessionMiddleware.requireAdmin, couponManagement.editCouponPost);
+
+router.delete('/deleteCoupon', adminSessionMiddleware.requireAdmin, couponManagement.deleteCoupon);
+router.get('/unlist/coupon/:couponId',adminSessionMiddleware.requireAdmin,couponManagement.hide);
+router.get('/list/coupon/:couponId',adminSessionMiddleware.requireAdmin,couponManagement.show);
+
+
+
+
 
 
 
 const productManagement = require('../controller/productManagement.js');
-router.get('/addproduct',adminSessionMiddleware.requireAdmin, productManagement.addProduct);
+router.get('/unlist/product/:id',adminSessionMiddleware.requireAdmin,  productManagement.productUnlist)
+router.get('/list/product/:id',adminSessionMiddleware.requireAdmin,productManagement.productList)
+router.get('/delete/product/:id',adminSessionMiddleware.requireAdmin,  productManagement.productDelete)
 
-router.post('/productadded',adminSessionMiddleware.requireAdmin,productManagement.productadded);//post
+router.get('/addproduct',adminSessionMiddleware.requireAdmin, productManagement.addProduct);
+router.post('/productadded', adminSessionMiddleware.requireAdmin,productManagement.productadded);//post
 router.post('/productUpdated/:id',adminSessionMiddleware.requireAdmin,productManagement.productadded)
 
 router.get('/productlist',adminSessionMiddleware.requireAdmin,productManagement.productListAdmin);
-router.get('/unlist/:id',adminSessionMiddleware.requireAdmin,  productManagement.productUnlist)
-router.get('/delete/:id',adminSessionMiddleware.requireAdmin,  productManagement.productDelete)
-router.get('/list/:id',adminSessionMiddleware.requireAdmin,productManagement.productList)
 router.get('/productUpdate/:id',adminSessionMiddleware.requireAdmin,productManagement.productUpdate)
 router.get('/delete/:id/uploads/:imgUrl',  adminSessionMiddleware.requireAdmin,productManagement.productImgDelete)
+
+
+
+
+
+
 //  (req,res)=>console.log(` \\uploads\\${req.params.imgUrl}`),
 
 
@@ -59,8 +97,6 @@ router.get('/delete/:id/uploads/:imgUrl',  adminSessionMiddleware.requireAdmin,p
 const orderManagement = require('../controller/orderManagement.js')
 router.get('/orderlist',adminSessionMiddleware.requireAdmin,orderManagement.orderUpdates)
 
-
-  
 
 
 module.exports = router;

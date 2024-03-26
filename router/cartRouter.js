@@ -29,9 +29,8 @@ const cartManagement = require('../controller/cartManagement')
  router.get('/cartpage',userSessionHandling.userlogged,cartManagement.cartPage)
  router.get('/cart/:id', cartSession,userSessionHandling.userlogged,cartManagement.addtoCart)//
  router.get('/cart/remove/:productId',userSessionHandling.userlogged, cartManagement.removeFromCart);
- // router.post('/update-cart', userSessionHandling.userlogged, cartManagement.updateCartQuantities);
-router.post('/updateQuantity',userSessionHandling.userlogged, cartManagement.updateQuantity);
-
+ router.post('/updateQuantity',userSessionHandling.userlogged, cartManagement.updateQuantity);
+// '/checkout/handling'
 
 
 
