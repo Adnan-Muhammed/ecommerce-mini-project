@@ -579,10 +579,21 @@
         if (isOnlinePaymentSelected) {
             // Execute Razorpay payment integration
             executeRazorpayPayment(orderData);
+
+
         } else if (isCashOnDeliverySelected) {
             console.log('COD',selectedPaymentMethod);
 
-            // return
+            if( grandTotal>1000){
+                console.log("Order above Rs 1000 should not be allowed for COD");
+
+               return  $("#BalanceMessage").text("Order above Rs 1000 should not be allowed for COD").show();
+                
+            }
+
+
+
+
             // Execute fetch method for cash on delivery
             executeCashOnDelivery(orderData);
         } else if(isWalletPaymentSelected){
@@ -689,6 +700,10 @@ function executePlaceOrder(orderData) {
         } 
     });
 }
+
+
+
+
 </script>
 
 

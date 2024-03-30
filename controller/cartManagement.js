@@ -40,6 +40,9 @@ const cartPage = async (req, res) => {
           expiryDate: { $gt: currentDate } // Filter by expiry date greater than current date
       });
 
+
+      
+
       const cartItems = await CartDB.find({ userId: user._id });
       if (cartItems.length > 0) {
           const productIds = cartItems.map((cartItem) => cartItem.productId);

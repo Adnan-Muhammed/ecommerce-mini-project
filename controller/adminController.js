@@ -3,7 +3,8 @@ const adminId=process.env.ADMIN_ID
 const adminPassword=process.env.PASSWORD
 
 const pdf = require('pdfkit');
-const OrderDB =require('../models/order')
+const OrderDB =require('../models/order');
+const { orderStatus } = require('./orderManagement');
 
 
 
@@ -19,19 +20,6 @@ const adminDashboardPost=(req,res)=>{
     }
     else{
         res.redirect('/admin')
-    }
-}
-
-const adminDashboardGet=async(req,res)=>{
-    try{
-const orderList =await OrderDB.find()
-        const deliveredOrders = orderList.filter(order => order.orderStatus.type === "delivered");
-
-        req.session.deliveredOrders=deliveredOrders
-        res.render('admin/admin-dashboard',{deliveredOrders})
-        
-    }catch(err){
-
     }
 }
 
@@ -68,143 +56,118 @@ const pdfDownloading = (req, res) => {
 
 
 
-const salesReport=  async (req, res) => {
+
+const adminDashboardGet = async (req, res) => {
     try {
-      const orders = await generateSalesReport();
-      console.log(orders.length);
-    //   obj={name:"Adnan",payment:"fulfilled",products:[{productName:"A",price:30},{productName:"B",price:20}]} 
-    //   res.render('admin/salesReport',{obj})
-    //   res.json(orders);
-    res.render('admin/salesReport',{orders})
-    // res.render('admin/salesReport2',{orders})
-} catch (err) {
-      console.error(err);
-      res.status(500).json({ error: 'Internal Server Error' });
+        // Fetching only 5 orders for admin dashboard
+        const orders = await generateSalesReport(3); // Limiting to 5 orders for admin dashboard
+        console.log(orders.length);
+        console.log(orders);
+        // res.json(orders)
+
+        const overallOrder = await OrderDB.aggregate([
+            {
+              $match: {
+                "paymentStatus.type": "fulfilled"
+              }
+            },
+            {
+              $group: {
+                _id: null,
+                totalOrders: { $sum: 1 },
+                totalAmount: { $sum: "$grandTotal" }
+              }
+            }
+          ])
+
+
+          const couponDeduction = await OrderDB.aggregate([
+            {
+              $match: {
+                "paymentStatus.type": "fulfilled"
+              }
+            },
+            {
+              $group: {
+                _id: null,
+                couponDiscount: { $sum: "$couponDiscount" }
+              }
+            }
+          ])
+
+
+
+        const overallDiscount = await OrderDB.aggregate([
+            {
+              $match: {
+                "paymentStatus.type": "fulfilled"
+              }
+            },
+            {
+              $unwind: "$orderItems"
+            },
+            {
+              $group: {
+                _id: null,
+                totalDiscount: {
+                  $sum: {
+                    $add: ["$orderItems.productOffer", "$orderItems.categoryOffer"]
+                  }
+                }
+              }
+            }
+          ])
+
+
+        
+          
+
+       
+       
+
+        // Assuming `result` contains the aggregation result
+        const totalDiscount = overallDiscount[0].totalDiscount;
+        console.log("Total Discount:", totalDiscount);
+        const totalOrder = overallOrder[0].totalOrders;
+        const totalAmount = overallOrder[0].totalAmount
+        const couponDiscount = couponDeduction[0].couponDiscount
+
+
+          
+        // return
+
+
+        // const overallSalesCount = find()
+        res.render('admin/admin-dashboard', { orders,totalDiscount,totalOrder,totalAmount,couponDiscount });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Internal Server Error' });
     }
-  };
+};
+
+
+const salesReport = async (req, res) => {
+    try {
+        const orders = await generateSalesReport(); // Fetching all orders for sales report
+        res.render('admin/salesReport', { orders });
+
+
+        // res.json(orders)
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
 
 
 
-
-
-async function generateSalesReport() {
-    // const salesAggregate = await OrderDB.aggregate([
-    //     { $unwind: "$orderItems" }, // Unwind the orderItems array
-    //     {
-    //         $project: {
-    //             _id: "$orderItems._id",
-    //             userName: 1,
-    //             "orderItems.productId": 1,
-    //             "orderItems.productName": 1,
-    //             "orderItems.unitPrice": 1,
-    //             "orderItems.quantity": 1,
-    //             "orderItems.price": 1,
-    //             "orderItems.description": 1,
-    //             "orderItems.categoryOffer": 1,
-    //             "orderItems.categoryDiscountPecentage": 1,
-    //             "orderItems.productOffer": 1,
-    //             "orderItems.productDiscountPercentage": 1,
-    //             "orderItems.totalPrice": 1,
-    //             tax: 1,
-    //             couponId: 1,
-    //             couponName: 1,
-    //             couponDiscount: 1,
-    //             couponDiscountPercentage: 1,
-    //             grandTotal: 1,
-    //             paymentMethod: 1,
-    //             paymentStatus: 1,
-    //             orderStatus: 1,
-    //             orderDate: 1
-    //         }
-    //     },
-    //     {
-    //         $match: {
-    //             $or: [
-    //                 { "paymentStatus.type": "fulfilled" },
-    //                 { "orderStatus.type": "delivered" }
-    //             ]
-    //         }
-    //     }
-    // ]);
-    
-    
-    // const salesAggregate = await OrderDB.aggregate([
-    //     {
-    //       $project: {
-    //         userId: 1,
-    //         userName: 1,
-    //         orderItems: 1,
-    //         paymentMethod: 1,
-    //         paymentStatus: 1,
-    //         orderStatus: 1,
-    //         orderDate: 1,
-    //         grandTotal: 1,
-    //         tax: 1,
-    //         couponName: 1,
-    //         couponDiscount: 1,
-    //         couponDiscountPercentage: 1
-    //       }
-    //     }
-    //   ])
-
-    // const salesAggregate = await OrderDB.aggregate([
-    //     {
-    //       $project: {
-    //         userName: 1,
-    //         orderItems: {
-    //           $map: {
-    //             input: "$orderItems",
-    //             as: "item",
-    //             in: {
-    //               productName: "$$item.productName",
-    //               unitPrice: "$$item.unitPrice",
-    //               quantity: "$$item.quantity",
-    //               price: "$$item.price",
-    //               categoryOffer: "$$item.categoryOffer",
-    //               categoryDiscountPecentage: "$$item.categoryDiscountPecentage",
-    //               productOffer: "$$item.productOffer",
-    //               productDiscountPercentage: "$$item.productDiscountPercentage",
-    //               totalPrice: "$$item.totalPrice"
-    //             }
-    //           }
-    //         },
-    //         tax: 1,
-    //         couponDiscount: 1,
-    //         couponDiscountPercentage: 1,
-    //         grandTotal: 1,
-    //         paymentMethod: 1,
-    //         paymentStatus: 1,
-    //         orderStatus: 1,
-    //         orderDate: 1
-    //       }
-    //     }
-    //   ])
-      
-    // const salesAggregate = await OrderDB.find({},{billingAddress:0,_id:0,createdAt,updatedAt,couponId,shipping,tax,images,productId,userId})
-
-    // const salesAggregate = await OrderDB.find()
-    // const salesAggregate = await OrderDB.aggregate([
-    //     {
-    //         $project: {
-    //             "_id": 1,
-    //             "userName": 1,
-    //             "billingAddress": 1,
-    //             "paymentMethod": 1,
-    //             "paymentStatus": 1,
-    //             "orderStatus": 1,
-    //             "orderDate": 1,
-    //             "grandTotal": 1,
-    //             "orderItems": 1,
-    //             "tax": 1,
-    //             "couponName": 1,
-    //             "couponDiscount": 1,
-    //             "couponDiscountPercentage": 1,
-    //             "shipping": 1
-    //         }
-    //     }
-    // ]);
-
-    const salesAggregate = await OrderDB.aggregate([
+const generateSalesReport = async (limit) => {
+    let pipeline = [
+        {
+            $match: {
+                "paymentStatus.type": "fulfilled"
+            }
+        },
         {
             $project: {
                 "_id": 1,
@@ -231,16 +194,52 @@ async function generateSalesReport() {
                 "couponDiscountPercentage": 1,
                 "shipping": 1
             }
+        },
+        {
+            $sort: { "orderDate": -1 } // Sort by orderDate in descending order
         }
-    ]);
-    
-    
+    ];
+
+    // Applying limit only if provided and if it's not equal to 0
+    if (limit && limit !== 0) {
+        pipeline.push({ $limit: limit });
+    }
+
+    const salesAggregate = await OrderDB.aggregate(pipeline);
 
     return salesAggregate;
-  }
+};
 
 
 
+// const jsPDF = require('jspdf');
+// const htmlToPDF = require('html-pdf');
+
+downloadPDF = async (req, res, next) => {
+  // Code to fetch data for the table (if needed)
+
+  // HTML content of the table
+  const salesHTML = `
+      <table id="salesTable" class="table table-bordered">
+          <!-- Table content goes here -->
+      </table>
+  `;
+
+  // Create a new jsPDF instance
+  const pdf = new jsPDF();
+
+  // Add the HTML content to the PDF document
+  pdf.html(salesHTML, {
+      callback: function (pdf) {
+          // Send the PDF as a response
+          res.set({
+              'Content-Type': 'application/pdf',
+              'Content-Disposition': 'attachment; filename="sales_report.pdf"'
+          });
+          res.send(pdf.output());
+      }
+  });
+};
 
 
 module.exports={

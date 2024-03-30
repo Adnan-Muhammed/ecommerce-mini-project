@@ -2,7 +2,6 @@ const express = require('express');
 const router = express.Router();
 const adminSessionMiddleware=require('../middleware/adminSessionHandling.js')
 
-// const session = require('express-session');
 
 
 
@@ -85,13 +84,6 @@ router.get('/delete/:id/uploads/:imgUrl',  adminSessionMiddleware.requireAdmin,p
 
 
 
-
-
-//  (req,res)=>console.log(` \\uploads\\${req.params.imgUrl}`),
-
-
-
-// router.post('/productUpdated/:id',adminSessionMiddleware.requireAdmin,productManagement.productUpdatePost)
 
 
 const orderManagement = require('../controller/orderManagement.js')

@@ -9,7 +9,11 @@ const userSessionHandling=require('../middleware/userSessionHandling')
 
 
 const userManagement=require('../controller/userManagement')  
-router.get('/' ,userSessionHandling.isBlockedNow,userManagement.home)
+router.get('/' ,  userSessionHandling.isBlockedNow,userManagement.home)
+
+
+
+
 router.get('/loginpage',userSessionHandling.requireNotUser,userManagement.userLogin)  // first
 router.post('/login',userManagement.userLoginPost)
 router.get('/signuppage',userSessionHandling.requireNotUser,userManagement.userSignupGet)
@@ -18,13 +22,11 @@ router.get('/otpPage',  userSessionHandling.otpSession , userManagement.otpPage)
 router.post('/otpverified',  userSessionHandling.requireNotUser  ,  userManagement.otpVerificationPost)
 router.get('/resendOtp', userSessionHandling.otpSession,userManagement.otpPage)
 router.get('/logout',userManagement.logout)
-
-
-router.get('/userProfile',userSessionHandling.userlogged, userManagement.userProfile)
-router.get('/userAddAddress',   userSessionHandling.userlogged,userManagement.userAddAddress )
-router.post('/editAddress',   userSessionHandling.userlogged,userManagement.editAddress )
-
-router.get('/orderStatus',    userSessionHandling.userlogged,userManagement.userOrderStatus)
+// router.get('/userProfile',userSessionHandling.userlogged, userManagement.userProfile)
+router.get('/userProfile',userSessionHandling.isBlockedNow2, userManagement.userProfile)
+router.get('/userAddAddress',   userSessionHandling.isBlockedNow2,userManagement.userAddAddress )
+router.post('/editAddress',   userSessionHandling.isBlockedNow2,userManagement.editAddress )
+router.get('/orderStatus',    userSessionHandling.isBlockedNow2,userManagement.userOrderStatus)
 
 
 
@@ -33,8 +35,8 @@ router.get('/changePassword',(req,res,next)=>{
     req.session.changePassword =true
     next()
 },
-userSessionHandling.userlogged,userManagement.updatePassword)
-router.get('/forgotPassword',    userSessionHandling.passwordUpdation,userManagement.updatePassword)
+userSessionHandling.isBlockedNow2,userManagement.updatePassword)
+router.get('/forgotPassword',    userSessionHandling.isBlockedNow2,userManagement.updatePassword)
 router.post('/update-password',    userManagement.updatePasswordPost)
 
 router.post('/updateUserName',    userManagement.changeName)
@@ -57,41 +59,21 @@ router.get('/productdetails/:id',  userSessionHandling.isBlockedNow,  productMan
 
 
 
-router.get('/wallet', userSessionHandling.isBlockedNow,userManagement.wallet)
+router.get('/wallet', userSessionHandling.isBlockedNow2,userManagement.wallet)
 
 const couponManagement = require('../controller/couponController.js')
-router.get('/availableCoupons', userSessionHandling.isBlockedNow,couponManagement.availableCoupon)
-
-
-// router.get('/editUserName', userSessionHandling.isBlockedNow,userManagement.changeName)
+router.get('/availableCoupons', userSessionHandling.isBlockedNow2,couponManagement.availableCoupon)
 
 
 
 
+const invoiceController = require('../controller/invoiceController.js')
 
 
 
+router.get('/download-invoice/:orderId',userSessionHandling.isBlockedNow2,invoiceController.downloadInvoice)
 
 
-
-
-
-
-router.get('/aaa',(req,res)=>{
-    res.render('user/zooming')
-})
-router.get('/myprofile',(req,res)=>{
-    res.render('user/profile')
-})
-
-router.get('/myprofile/wallet',(req,res)=>{
-    res.render('user/wallet')
-})
-
-
-router.get('/place-order',(req,res)=>{
-    res.render('user/orderPlaced')
-})
 
 
 

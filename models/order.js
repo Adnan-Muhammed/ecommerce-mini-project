@@ -146,7 +146,7 @@ const orderSchema = new mongoose.Schema({
   orderStatus: {
     type: {
       type: String,
-      enum: ['processing', 'shipped', 'delivered', 'other'],
+      enum: ['processing', 'shipped', 'delivered', 'returned'],
       default:'processing',
       required: true,
     },

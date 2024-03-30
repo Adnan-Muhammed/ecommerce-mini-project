@@ -177,6 +177,9 @@ const coupons = await CouponDB.find({
     discountValue: 1,
     expiryDate: 1 // Include expiryDate field in the projection
 });
+
+
+
         res.render('user/coupons', { coupons, user });
     } catch (err) {
         console.error(err);

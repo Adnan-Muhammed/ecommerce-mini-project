@@ -1,5 +1,4 @@
 <%- include('header') -%>
-<link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 
 <!--Body Content-->
 <div id="page-content">
@@ -26,10 +25,10 @@
                         <tr>
                             <th class="text-center">Billing Address</th>
                             <th class="text-center">Quantity</th>
-                            <th  class="text-right">Price</th>
+                            <th style="background-color: blueviolet;" class="text-right">Price</th>
                             <th class="text-center">Payment Status</th>
-                            <th  class="text-center">Order Status</th>
-                            <th  class="text-center">Action</th>
+                            <th style="background-color:darkgoldenrod;" class="text-center">Order Status</th>
+                            <th style="background-color: chocolate;" class="text-center">Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -45,27 +44,17 @@
                                     <strong>Postcode:</strong> <%= order.billingAddress.postCode %><br>
                                 </div>
                             </td>
-                            <td style="text-align: center; "  class="cart__price-wrapper cart-flex-item" >
+                            <td style="text-align: center;" class="cart__price-wrapper cart-flex-item">
 
-                                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal<%= order._id %>" style="display: block;">
+                                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal<%= order._id %>">
                                     Order Details
                                 </button>
-                                <%if(order.paymentStatus.type === 'fulfilled'){%>
-                                    <button type="button"  onclick="invoice('<%= order._id %>')" class="mt-1 btn btn-primary"  data-target="#exampleModal<%= order._id %>" style="display: block;">
-                                        Download Invoice
-                                    </button>
-                                <%}%>
 
-                                 
-
-                                
-                                
-
-
+                             
                             </td>
-                            <td  class="text-right small--hide cart-price">
+                            <td style="background-color: blueviolet;" class="text-right small--hide cart-price">
                                 <div id="productPrice" value="<%= order.grandTotal %>" data-product-id="<%= order._id %>">
-                                    <span class="money"><strong>₹<%= Math.round(order.grandTotal) %></strong> </span>
+                                    <span class="money">₹<%= order.grandTotal %></span>
                                 </div>
                             </td>
                             <td class="text-center small--hide cart-price">
@@ -108,12 +97,6 @@
                         
 
                         <!-- Modal -->
-
-
-
-
-
-
                         <div class="modal fade" id="exampleModal<%= order._id %>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                             <div class="modal-dialog" role="document">
                                 <div class="modal-content">
@@ -156,39 +139,7 @@
                                     </div>
                                 </div>
                             </div>
-                        </div> 
-
-
-
-                        <!-- Invoice Modal -->
-
-                        <!-- Invoice Modal -->
-
-                        <!-- Invoice Modal -->
-<!-- Invoice Modal -->
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                       
-                        
+                        </div>
 
 
 
@@ -207,70 +158,17 @@
         </div>
     </div>
 </div>
-
-
-
-
-
-  <!-- Bootstrap JS -->
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
 <!--End Body Content-->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 
+<!-- jQuery (required for SweetAlert) -->
+<!-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> -->
+
+<!-- SweetAlert JS -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 
 <%- include('footer') -%>
-
-
-
-
-
-
-
-
-
-
-
-
-<script>
-    async function invoice(orderId) {
-        try {
-            const response = await fetch(`/download-invoice/${orderId}`);
-            if (response.ok) {
-                const blob = await response.blob();
-                const url = window.URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = 'invoice.pdf';
-                a.click();
-
-                console.log('Downloaded PDF');
-
-                window.URL.revokeObjectURL(url);
-            } else {
-                console.error('Error generating PDF');
-            }
-        } catch (error) {
-            console.error(error);
-        }
-    }
-  </script>
-
-
-
-
-
-
-
-
-
-
-
-
 
 <!-- <script>
     $(document).ready(function() {
@@ -330,10 +228,6 @@
         });
     });
 </script> -->
-
-
-
-
 
 <script>
 $(document).ready(function() {
@@ -453,34 +347,6 @@ $(document).ready(function() {
 
 
 
-
-<script>
-    async function invoice(orderId) {
-        try {
-            const response = await fetch(`/download-invoice/${orderId}`);
-            if (response.ok) {
-                const blob = await response.blob();
-                const url = window.URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = 'invoice.pdf';
-                a.click();
-                window.URL.revokeObjectURL(url);
-            } else {
-                console.error('Error generating PDF');
-            }
-        } catch (error) {
-            console.error(error);
-        }
-    }
-  </script>
-
-
-
-
-
 </body>
-
-
 
 </html>

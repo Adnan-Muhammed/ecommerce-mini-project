@@ -77,7 +77,7 @@ const mongoose = require('../database/mongodbConnect');
 const transactionSchema = new mongoose.Schema({
     type: {
         type: String,
-        enum: ['credit', 'debit'],
+        enum: ['credit', 'debit','returned'],
         required: true
     },
     amount: {

@@ -67,6 +67,7 @@ const userLogin=(req, res) => {
 
 const userLoginPost = async (req, res) => {
  // console.log(6666);
+ console.log('login post here');
 
     try {
         const { email_Id, password } = req.body;
@@ -449,8 +450,6 @@ const otpVerificationPost = async (req, res) => {
 
 
 
-
-
 const updatePasswordPost = async (req, res) => {
     try {
         const { email, password } = req.body;
@@ -460,6 +459,9 @@ const updatePasswordPost = async (req, res) => {
         const user = await userDB.findOne({ email });
         if (!user) {
             return res.status(404).json({ message: 'User not found.' });
+        }
+        if (req.session.user && req.session.user.email !== user.email) {
+            return res.status(404).json({ message: 'your email is not correct' });
         }
         // Hash the new password
         console.log('22222',2222);
@@ -611,7 +613,11 @@ const blocking=  async (req,res)=>{
             // console.log(req.params.id);
             const userIdToUpdate=req.params.id
             await userDB.find({_id:userIdToUpdate},{name:1,_id:0})
+
+            
             await userDB.updateOne({ _id: userIdToUpdate }, { $set: { isBlocked: true } });
+
+
             res.redirect('/admin/userList')
         } catch (err){
             console.error(err);

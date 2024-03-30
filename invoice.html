@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dummy Invoice</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal2">
+        View Invoice
+    </button>
+
+    <div class="modal fade" id="exampleModal2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document" style="max-width: 800px;">
+            <div class="modal-content" style="border: 1px solid #ccc;">
+                <div class="modal-header" style="text-align: center; margin-bottom: 20px;">
+                    <h5 class="modal-title" id="exampleModalLabel">Invoice</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" style="margin-bottom: 20px;">
+                    <!-- Invoice content here -->
+                    <div class="invoice">
+                        <!-- Your existing invoice content goes here -->
+                        <!-- Add the provided invoice content within the modal body -->
+                        <div class="invoice-header" style="text-align: center;">
+                            <h2>Invoice</h2>
+                            <p>Invoice ID: <span id="invoiceId">123456</span></p>
+                            <p>Invoice Date: <span id="invoiceDate">March 28, 2024</span></p>
+                            <p>Status: <span id="status">Order</span></p>
+                            <p>Due Date: <span id="dueDate">April 28, 2024</span></p>
+                        </div>
+                        <div class="invoice-details" style="display: flex; justify-content: space-between;">
+                            <div class="bill-to" style="flex: 1;">
+                                <h3>Bill To:</h3>
+                                <p id="billToAddress">123 Main Street, City, Country</p>
+                            </div>
+                            <div class="ship-to" style="flex: 1;">
+                                <h3>Ship To:</h3>
+                                <p id="shipToAddress">456 Elm Street, City, Country</p>
+                            </div>
+                        </div>
+                        <div class="table-responsive" style="margin-bottom: 20px;">
+                            <table class="table" style="border-collapse: collapse; width: 100%;">
+                                <thead>
+                                    <tr>
+                                        <th>Index</th>
+                                        <th>Description</th>
+                                        <th>Per Price</th>
+                                        <th>Qty</th>
+                                        <th>Price</th>
+                                        <th>Discounts</th>
+                                        <th>Amount</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Dummy items will be added dynamically -->
+                                    <tr>
+                                        <td>1</td>
+                                        <td>Dummy Product</td>
+                                        <td>₹100</td>
+                                        <td>2</td>
+                                        <td>₹200</td>
+                                        <td>₹20</td>
+                                        <td>₹180</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="invoice-footer" style="text-align: right;">
+                            <p>Thanks for your business</p>
+                            <p>Subtotal: ₹<span id="subTotal">180</span></p>
+                            <p>Tax Rate: 5%</p>
+                            <p>Grand Total: ₹<span id="grandTotal">189</span></p>
+                        </div>
+                    </div>
+                    <!-- End of invoice content -->
+                </div>
+                <div class="modal-footer" style="text-align: center;">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+</body>
+</html>

@@ -65,6 +65,13 @@ const placeOrder = async (req, res) => {
 
     // Check if payment method is wallet and if user has sufficient balance
     if (paymentMethod === "wallet-payment" && user.wallet < totalValue) {
+
+      console.log('---------===========--------=');
+
+
+
+
+      
       return res.status(400).json({ message: "Insufficient wallet balance" });
     }
 
@@ -345,6 +352,59 @@ const orderStatus = async (req, res) => {
   try {
     const orderId = req.params.orderId;
     const newStatus = req.body.status;
+
+    // const orderPaymentStatus = await OrderDB.findById(orderId)
+    console.log('helllo,www',123);
+    console.log(newStatus);
+
+    if(newStatus=== "cancelled"){
+    const paymentReturn =  await OrderDB.findById(orderId)
+
+
+    console.log(paymentReturn.paymentStatus.type);
+    // return
+
+    if(paymentReturn.paymentStatus.type=="fulfilled"){
+
+
+    const userId =   paymentReturn.userId
+    const returnPayment = paymentReturn.grandTotal
+
+    const user = await UserDB.findById(userId);
+        if (!user) {
+          return res.status(404).json({ message: "User not found" });
+        }
+        user.wallet += returnPayment; // Return total amount to user wallet
+        await user.save();
+        // Log the transaction
+        const transaction = {
+          type: 'returned',
+          amount: returnPayment,
+          timestamp: Date.now(),
+          isReturned:true
+        };
+        user.transactions.push(transaction);
+        await user.save();
+
+
+
+      paymentReturn.paymentStatus.type="returned"
+      await paymentReturn.save()
+
+
+    }
+    }
+
+
+
+    if(newStatus=== "delivered"){
+      const orderPaymentStatus = await OrderDB.findByIdAndUpdate(
+        orderId,
+        { $set: { "paymentStatus.type": "fulfilled" } },
+        { new: true } // To return the updated order document
+      );
+    }
+    // return
     console.log(orderId, "admin side");
     console.log(newStatus, "admin side");
     const updatedOrder = await OrderDB.findByIdAndUpdate(
@@ -373,11 +433,24 @@ const orderStatus = async (req, res) => {
 };
 
 
+
+
+
+
+
+
+
+
+
+
 const handleOrderStatusUpdate = async (req, res) => {
   try {
+
     const orderId = req.params.orderId;
     const status = req.body.orderStatus;
-
+    // console.log(status);
+    // return
+    
     const orderDocument = await OrderDB.findById(orderId);
     const userId = orderDocument.userId.toString();
     const productIds = orderDocument.orderItems.map(item => item.productId.toString());
@@ -415,7 +488,7 @@ const handleOrderStatusUpdate = async (req, res) => {
         await user.save();
         // Log the transaction
         const transaction = {
-          type: 'credit',
+          type: 'returned',
           amount: orderDocument.grandTotal,
           timestamp: Date.now(),
           isReturned:true
@@ -435,6 +508,9 @@ const handleOrderStatusUpdate = async (req, res) => {
 
       message = "Order cancelled successfully";
     } else if (status === "returned") {
+
+      console.log(status === "returned");
+      // return
       orderUpdate = await OrderDB.findByIdAndUpdate(
         orderId,
         { $set: { "orderStatus.type": status } },
@@ -463,14 +539,21 @@ const handleOrderStatusUpdate = async (req, res) => {
 
         // Log the transaction
         const transaction = {
-          type: 'credit',
+          type: 'returned',
           amount: orderDocument.grandTotal,
           timestamp: Date.now(),
           isReturned:true
         };
         user.transactions.push(transaction);
         await user.save();
+
+        orderDocument.paymentStatus.type='returned'
+        await orderDocument.save()
       }
+
+
+
+
 
 
 

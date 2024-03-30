@@ -7,6 +7,7 @@ const path = require("path");
 const upload = multer({ dest: "public/uploads/" });
 const fetchCategoryMiddleware = require("../middleware/fetchCategoryData");
 const mongoose = require("mongoose");
+const { error } = require("console");
 
 const determineIsLogged = (session) => {
   return session.user
@@ -366,6 +367,63 @@ const productImgDelete = async (req, res) => {
 };
 
 //
+// const productDetail = async (req, res) => {
+//   // console.log(1818);
+//   const isLogged = determineIsLogged(req.session);
+//   const { primaryCategories, otherCategories } =
+//     await fetchCategoryMiddleware.fetchCategories();
+//   try {
+//     // console.log(isLogged);
+//     const productId = req.params.id;
+//     console.log(111,'productId is ',productId);
+
+//     // Extract the valid ObjectId from the provided string
+//     // const validObjectId = new mongoose.Types.ObjectId(productId);
+
+//     // Use the valid ObjectId to query the database
+//     // const productDetails = await productDB.findById(validObjectId);
+
+//     const productDetails=await productDB.findById(productId)
+//     // console.log(productDetails,444);
+//     // console.log(222);
+//     // const session = req.session.cartProduct
+
+
+//     if(!productDetails){
+//       throw new Error('product not found'); // Handle case where product doesn't exist
+
+//     }
+
+
+//     const session = (req.session.cartProduct)??null
+//     delete req.session.cartProduct
+    
+
+//     let wishlistsession =  (req.session.wishlist)??null
+//     delete req.session.wishlist
+
+
+// console.log(wishlistsession);
+// console.log('rtyuio');
+// console.log(productDetails);
+
+//     res.render("user/product-detail", {
+//       session,
+//       wishlistsession,
+//       productDetails,
+//       isLogged,
+//       primaryCategories,
+//       otherCategories,
+//     });
+//   } catch (err) {
+//     res.redirect('/error')
+//   }
+// };
+
+
+
+
+
 const productDetail = async (req, res) => {
   // console.log(1818);
   const isLogged = determineIsLogged(req.session);
@@ -382,10 +440,55 @@ const productDetail = async (req, res) => {
     // Use the valid ObjectId to query the database
     // const productDetails = await productDB.findById(validObjectId);
 
-    const productDetails=await productDB.findById(productId)
-    // console.log(productDetails,444);
-    // console.log(222);
-    // const session = req.session.cartProduct
+console.log('its find');
+    const product = await productDB.findOne({_id:productId, isAvailable: true})
+    .populate('categoryId');
+
+console.log(product);
+
+
+    if(!product){
+      console.log('find');
+      throw new Error('product not found'); // Handle case where product doesn't exist
+
+    }
+
+    // Assuming you have the product details available in a variable named product
+
+const currentDate = new Date();
+const categoryId = product.categoryId._id.toString();
+console.log(categoryId);
+
+const categoryDiscount = product.categoryId.discountPercentage;
+let offerPrice = product.price;
+
+// Check if product falls within category discount offer period
+if (product.categoryId.startDate && product.categoryId.endDate) {
+  const startDate = new Date(product.categoryId.startDate);
+  const endDate = new Date(product.categoryId.endDate);
+  if (currentDate >= startDate && currentDate <= endDate) {
+    offerPrice -= (offerPrice * categoryDiscount) / 100; // Apply category discount
+  }
+} else {
+  offerPrice -= (offerPrice * categoryDiscount) / 100; // Apply category discount if offer is permanent
+}
+
+// Check if product has a discount and it hasn't expired
+if (product.discountPercentage && (!product.expiryDate || currentDate <= product.expiryDate)) {
+  offerPrice -= (offerPrice * product.discountPercentage) / 100; // Apply product discount
+}
+
+// Now, offerPrice contains the calculated offer price for the single product
+
+
+
+
+
+
+
+
+
+
     const session = (req.session.cartProduct)??null
     delete req.session.cartProduct
     
@@ -396,48 +499,116 @@ const productDetail = async (req, res) => {
 
 console.log(wishlistsession);
 console.log('rtyuio');
-console.log(productDetails);
+// console.log(product);
+console.log(offerPrice);
 
     res.render("user/product-detail", {
       session,
       wishlistsession,
-      productDetails,
+      productDetails:product,
+      offerPrice,
       isLogged,
       primaryCategories,
       otherCategories,
     });
   } catch (err) {
-    console.error(err);
-    res.status(400).send("Invalid product ID");
+
+    res.redirect('/error')
   }
 };
+
+
 
 const userSideproductDetails = (req, res) => {
   res.render("user/product-details-zoom");
 };
 
 //orginal
+
+
+
+// const productListUser = async (req, res) => {
+//   // console.log("asdfghjklertyui wertyu sdfghj xcvbn");
+//   const isLogged = determineIsLogged(req.session);
+//   const { primaryCategories, otherCategories } =
+//     await fetchCategoryMiddleware.fetchCategories();
+//   const categoryName = req.params.id;
+//   const categoryData = req.params.id.toUpperCase();
+
+//   // const page = parseInt(req.query.page) || 1; // Get the page number from the query parameter, default to page 1
+//   // const limit = 4; // Number of items per page
+
+
+//   try {
+
+
+
+//     const page = parseInt(req.query.page) || 1; // Get the page number from the query parameter, default to page 1
+//     const limit = 4; // Number of items per page
+
+//     // Find the category by name to get its ID
+//     const category = await CategoryDB.findOne({ name: categoryData,isAvailable:true });
+//     if (!category) {
+//       throw new Error('Category not found'); // Handle case where category doesn't exist
+//     }
+//     const categoryId = category._id;
+
+//     const totalProductsCount = await productDB.countDocuments({
+//       isAvailable: true,
+//       categoryId: categoryId, // Match products by categoryId
+//     });
+//     const totalPages = Math.ceil(totalProductsCount / limit);
+//     const offset = (page - 1) * limit;
+
+
+
+//     const currentDate = new Date(); // Get the current date
+
+//     const products = await productDB
+//       .find({ isAvailable: true, categoryId: categoryId }) // Match products by categoryId
+//       .skip(offset)
+//       .limit(limit)
+//       .populate('categoryId'); // Populate category information
+
+
+
+
+
+// console.log(products);
+
+
+
+
+
+//     res.render("user/productlist", {
+//       isLogged,
+//       product: products,
+//       primaryCategories,
+//       otherCategories,
+//       totalPages,
+//       currentPage: page,
+//       categoryName,
+//     });
+//   } catch (err) {
+//     console.error(err);
+//     res.redirect('/error')
+//   }
+// };
+
+
+
 const productListUser = async (req, res) => {
-  console.log("asdfghjklertyui wertyu sdfghj xcvbn");
-  const isLogged = determineIsLogged(req.session);
-  const { primaryCategories, otherCategories } =
-    await fetchCategoryMiddleware.fetchCategories();
-  const categoryName = req.params.id;
-  const categoryData = req.params.id.toUpperCase();
-
-  // const page = parseInt(req.query.page) || 1; // Get the page number from the query parameter, default to page 1
-  // const limit = 4; // Number of items per page
-
-
   try {
-
-
+    const isLogged = determineIsLogged(req.session);
+    const { primaryCategories, otherCategories } = await fetchCategoryMiddleware.fetchCategories();
+    const categoryName = req.params.id;
+    const categoryData = req.params.id.toUpperCase();
 
     const page = parseInt(req.query.page) || 1; // Get the page number from the query parameter, default to page 1
     const limit = 4; // Number of items per page
 
     // Find the category by name to get its ID
-    const category = await CategoryDB.findOne({ name: categoryData,isAvailable:true });
+    const category = await CategoryDB.findOne({ name: categoryData, isAvailable: true });
     if (!category) {
       throw new Error('Category not found'); // Handle case where category doesn't exist
     }
@@ -450,34 +621,60 @@ const productListUser = async (req, res) => {
     const totalPages = Math.ceil(totalProductsCount / limit);
     const offset = (page - 1) * limit;
 
+    const currentDate = new Date(); // Get the current date
+
     const products = await productDB
       .find({ isAvailable: true, categoryId: categoryId }) // Match products by categoryId
       .skip(offset)
       .limit(limit)
       .populate('categoryId'); // Populate category information
 
+    // Loop through each product in the products array
+    const productsWithOfferPrice = await Promise.all(products.map(async (product) => {
+      const categoryId = product.categoryId._id.toString();
+      const categoryDiscount = product.categoryId.discountPercentage;
+      let offerPrice = product.price;
+
+      // Check if the current date is within the discount offer period
+      if (product.categoryId.startDate && product.categoryId.endDate) {
+        const startDate = new Date(product.categoryId.startDate);
+        const endDate = new Date(product.categoryId.endDate);
+        if (currentDate >= startDate && currentDate <= endDate) {
+          // Apply category discount if available
+          offerPrice -= (offerPrice * categoryDiscount) / 100;
+        }
+      } else {
+        // If start and end dates are not available, consider the offer as permanent
+        // Apply category discount if available
+        offerPrice -= (offerPrice * categoryDiscount) / 100;
+      }
+
+      // Check if the product has a discount (offer) and it hasn't expired
+      if (product.discountPercentage && (!product.expiryDate || currentDate <= product.expiryDate)) {
+        // Apply product discount if available
+        offerPrice -= (offerPrice * product.discountPercentage) / 100;
+      }
+
+      return {
+        ...product.toObject(), // Convert Mongoose document to plain object
+        offerPrice: offerPrice,
+        normalPrice: product.price // Include the normal price
+      };
+    }));
 
 
-    // const totalProductsCount = await productDB.countDocuments({
-    //   isAvailable: true,
-    //   categoryName: categoryData,
-    // });
-    // // console.log(`total products count is ${totalProductsCount}`);
-    // const totalPages = Math.ceil(totalProductsCount / limit);
-    // const offset = (page - 1) * limit;
+    
 
-    // const products = await productDB
-    //   .find({ isAvailable: true, categoryName: categoryData })
-    //   .skip(offset)
-    //   .limit(limit);
-
-    // console.log(products);
+    console.log(productsWithOfferPrice);
 
 
+    console.log('-=-=-=-=-----=====');
 
+
+    // return
     res.render("user/productlist", {
       isLogged,
-      product: products,
+      product: productsWithOfferPrice, // Corrected "product" to "products"
       primaryCategories,
       otherCategories,
       totalPages,
@@ -486,9 +683,22 @@ const productListUser = async (req, res) => {
     });
   } catch (err) {
     console.error(err);
-    res.redirect('/error')
+    res.redirect('/error');
   }
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 const fetchData = async (req, res) => {
   console.log('fetchData');
@@ -792,6 +1002,18 @@ const searchProduct = async (req, res) => {
     ];
 
     const [{ metadata, data }] = await productDB.aggregate(pipeline);
+
+    console.log(data);
+console.log('-=-===--=-=-');
+
+
+
+
+
+
+
+
+
 
     const totalDocs = metadata.length > 0 ? metadata[0].total : 0;
     const totalPages = Math.ceil(totalDocs / limit);

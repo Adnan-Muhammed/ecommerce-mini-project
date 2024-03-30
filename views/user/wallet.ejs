@@ -30,33 +30,8 @@
 
 
 
-                <div class="card mb-4 mb-lg-0">
-                  <div class="card-body p-0">
-                    <ul class="list-group list-group-flush rounded-3">
-                      <li class="list-group-item d-flex justify-content-between align-items-center p-3">
-                        <p class="mb-0"><a href="/userprofile">MY PROFILE</a></p>
-                      </li>
-                     
-                      <li class="list-group-item d-flex justify-content-between align-items-center p-3">
-                        <p class="mb-0"> <a href="/userAddAddress">ADDRESS</a> </p>
-                      </li>
-                      <li class="list-group-item d-flex justify-content-between align-items-center p-3">
-                        <p class="mb-0"> <a href="/orderDetails">ORDER STATUS</a> </p>
-                      </li>
-                      <li class="list-group-item d-flex justify-content-between align-items-center p-3">
-                        <p class="mb-0"> <a href="/changePassword">CHANGE PASSWORD</a> </p>
-                      </li>
-                      <li class="list-group-item d-flex justify-content-between align-items-center p-3">
-                        <p class="mb-0"> <a href="/wallet">WALLET</a> </p>
-                      </li>
-                      <li class="list-group-item d-flex justify-content-between align-items-center p-3">
-                        <p class="mb-0"> <a href="/referralCode">REFER AND EARN</a> </p>
-                      </li> 
-                    </ul>
-                  </div>
-                </div>
-
-
+              <%-include('sidebar')-%>
+                
 
 
               </div>
@@ -70,7 +45,7 @@
                                 <div class="card text-bg-success mb-3" >
                                   <div class="card-body">
                                     <h5 class="card-title">Total Balance</h5>
-                                    <h3 class="card-text">&#x20B9; = <%= user.wallet%> </h3>
+                                    <h3 class="card-text">&#x20B9; = <%= Math.round(user.wallet)%> </h3>
                                   </div>
                                 </div>
                                   <!-- Profile picture image-->
@@ -115,10 +90,10 @@
                         <div class="d-flex align-items-center text-sm font-weight-bold">
                             <% if (transaction.isReferral || transaction.isReturned) { %>
                                 <!-- If both isReferral and isReturned are true, display amount in green -->
-                                <span style="color: green;">- &#x20B9; <%= transaction.amount %></span>
+                                <span style="color: green;">- &#x20B9; <%= Math.round(transaction.amount) %></span>
                             <% } else { %>
                                 <!-- Otherwise, display amount in red -->
-                                - &#x20B9; <%= transaction.amount %>
+                                - &#x20B9; <%= Math.round(transaction.amount) %>
                             <% } %>
                         </div>
                         

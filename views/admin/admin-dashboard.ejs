@@ -10,8 +10,12 @@
                         <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
                             <i class="fa fa-chart-line fa-3x text-primary"></i>
                             <div class="ms-3">
-                                <p class="mb-2">Today Sale</p>
-                                <h6 class="mb-0">$1234</h6>
+                                <p class="mb-2">Total Sales Count </p>
+                                <%if(locals.totalOrder){%>
+                                    <h6 class="mb-0"><%=totalOrder%></h6>
+                                <%}else{%>
+                                    <h6 class="mb-0">No Sales</h6>
+                                <%}%>
                             </div>
                         </div>
                     </div>
@@ -19,8 +23,12 @@
                         <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
                             <i class="fa fa-chart-bar fa-3x text-primary"></i>
                             <div class="ms-3">
-                                <p class="mb-2">Total Sale</p>
-                                <h6 class="mb-0">$1234</h6>
+                                <p class="mb-2">Total Sales Amount</p>
+                                <%if(locals.totalAmount){%>
+                                    <h6 class="mb-0">₹<%=totalAmount%></h6>
+                                <%}else{%>
+                                    <h6 class="mb-0">No Sales</h6>
+                                <%}%>                            
                             </div>
                         </div>
                     </div>
@@ -28,8 +36,12 @@
                         <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
                             <i class="fa fa-chart-area fa-3x text-primary"></i>
                             <div class="ms-3">
-                                <p class="mb-2">Today Revenue</p>
-                                <h6 class="mb-0">$1234</h6>
+                                <p class="mb-2">Overall discount</p>
+                                <%if(locals.totalDiscount){%>
+                                    <h6 class="mb-0">₹<%=totalDiscount%></h6>
+                                <%}else{%>
+                                    <h6 class="mb-0">No Discounts</h6>
+                                <%}%>
                             </div>
                         </div>
                     </div>
@@ -37,11 +49,16 @@
                         <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
                             <i class="fa fa-chart-pie fa-3x text-primary"></i>
                             <div class="ms-3">
-                                <p class="mb-2">Total Revenue</p>
-                                <h6 class="mb-0">$1234</h6>
+                                <p class="mb-2">Coupon deduction</p>
+                                <%if(locals.couponDiscount){%>
+                                    <h6 class="mb-0">₹<%=couponDiscount%></h6>
+                                <%}else{%>
+                                    <h6 class="mb-0">No CouponDeduction</h6>
+                                <%}%>
                             </div>
                         </div>
                     </div>
+                    
                 </div>
             </div>
             <!-- Sale & Revenue End -->
@@ -71,7 +88,7 @@
                 </div>
             </div>
             <!-- Sales Chart End -->
-
+            <br>
 
 
 
@@ -80,77 +97,91 @@
 
 
 
-            <div class="container-fluid pt-4 px-4">
-                <div class="bg-light text-center rounded p-4">
-                    <div class="d-flex align-items-center justify-content-between mb-4">
-                        <h6 class="mb-0">Recent Salse</h6>
-                        <h6>hbg</h6>
-                        <a href="">Show All</a>
-                    </div>
-                    <div class="table-responsive">
-                        <table class="table text-start align-middle table-bordered table-hover mb-0">
-                            <thead>
-                                <tr class="text-dark">
-                                    <th scope="col"><input class="form-check-input" type="checkbox"></th>
-                                    <th scope="col">Date</th>
-                                    <th scope="col">Invoice</th>
-                                    <th scope="col">Customer</th>
-                                    <th scope="col">Amount</th>
-                                    <th scope="col">Status</th>
-                                    <th scope="col">Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td><input class="form-check-input" type="checkbox"></td>
-                                    <td>01 Jan 2045</td>
-                                    <td>INV-0123</td>
-                                    <td>Jhon Doe</td>
-                                    <td>$123</td>
-                                    <td>Paid</td>
-                                    <td><a class="btn btn-sm btn-primary" href="">Detail</a></td>
-                                </tr>
-                                <tr>
-                                    <td><input class="form-check-input" type="checkbox"></td>
-                                    <td>01 Jan 2045</td>
-                                    <td>INV-0123</td>
-                                    <td>Jhon Doe</td>
-                                    <td>$123</td>
-                                    <td>Paid</td>
-                                    <td><a class="btn btn-sm btn-primary" href="">Detail</a></td>
-                                </tr>
-                                <tr>
-                                    <td><input class="form-check-input" type="checkbox"></td>
-                                    <td>01 Jan 2045</td>
-                                    <td>INV-0123</td>
-                                    <td>Jhon Doe</td>
-                                    <td>$123</td>
-                                    <td>Paid</td>
-                                    <td><a class="btn btn-sm btn-primary" href="">Detail</a></td>
-                                </tr>
-                                <tr>
-                                    <td><input class="form-check-input" type="checkbox"></td>
-                                    <td>01 Jan 2045</td>
-                                    <td>INV-0123</td>
-                                    <td>Jhon Doe</td>
-                                    <td>$123</td>
-                                    <td>Paid</td>
-                                    <td><a class="btn btn-sm btn-primary" href="">Detail</a></td>
-                                </tr>
-                                <tr>
-                                    <td><input class="form-check-input" type="checkbox"></td>
-                                    <td>01 Jan 2045</td>
-                                    <td>INV-0123</td>
-                                    <td>Jhon Doe</td>
-                                    <td>$123</td>
-                                    <td>Paid</td>
-                                    <td><a class="btn btn-sm btn-primary" href="">Detail</a></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
+            <!-- <div class="bg-light rounded h-100 p-4"> -->
+                <h6 class="mb-4">Sales Report</h6>
+                
+                <div class="table-responsive">
+                    <table id="salesTable" class="table table-bordered">
+                        <thead>
+                            <tr class="text-dark">
+                                <th rowspan="2"></th> <!-- Add a column for checkbox input -->
+                                <th rowspan="2">User Name</th>
+                                <th rowspan="2">Order Date</th>
+                                <th rowspan="2">Grand Total</th>
+                                <th rowspan="2">Payment Status &<br>Order Status</th>
+                                <th rowspan="2">Coupon</th>
+                                <th rowspan="2">Tax</th>
+                                <th style="text-align: center;" colspan="7">Order Items</th>
+                                <th rowspan="2">Action</th>
+                            </tr>
+                            <tr class="text-dark">
+                                <!-- Other headers -->
+                                <th>Product Name</th>
+                                <th>Unit Price</th>
+                                <th>Quantity</th>
+                                <th>Product Price</th>
+                                <th>Category Offer</th>
+                                <th>Product Offer</th>
+                                <th>Total Price</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Iterate over orders and order items -->
+                            <% orders.forEach(order => { %>
+                                <% order.orderItems.forEach((item, index) => { %>
+                                    <tr class="text-dark">
+                                        <!-- Checkbox input for each row -->
+                                        <!-- Render order details -->
+                                        <% if (index === 0) { %>
+                                            <td rowspan="<%= order.orderItems.length %>"><input type="checkbox"></td>
+                                            <td rowspan="<%= order.orderItems.length %>"><%= order.userName %></td>
+                                            <td rowspan="<%= order.orderItems.length %>"><%= new Date(order.orderDate).toLocaleString('en-US', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: true }) %></td>
+                                            <td rowspan="<%= order.orderItems.length %>"><%= order.grandTotal %></td>
+                                            <td rowspan="<%= order.orderItems.length %>">
+                                                <%= order.paymentStatus.type %>
+                                                <br>
+                                                <%= order.orderStatus.type %>
+                                            </td>
+                                            <td rowspan="<%= order.orderItems.length %>">
+                                                <% if(order.couponName){ %>
+                                                    <%= order.couponName %>
+                                                    <br>
+                                                    <%= order.couponDiscountPercentage %> %
+                                                    <br>
+                                                    <%= order.couponDiscount %>
+                                                <% }else{ %>
+                                                    N/A
+                                                <% } %>
+                                            </td>
+                                            <td rowspan="<%= order.orderItems.length %>"><%= order.tax %></td>
+                                        <% } %>
+                                        <!-- Render order item details -->
+                                        <td><%= item.productName %></td>
+                                        <td><%= item.unitPrice %></td>
+                                        <td><%= item.quantity %></td>
+                                        <td><%= item.price %></td>
+                                        <td>
+                                            <%= item.categoryDiscountPecentage %>%
+                                            <br>
+                                            <%= item.categoryOffer %>
+                                        </td>
+                                        <td>
+                                            <%= item.productDiscountPercentage %>%
+                                            <br>
+                                            <%= item.productOffer %>
+                                        </td>
+                                        <td><%= item.totalPrice %></td>
+                                        <!-- Render action -->
+                                        <% if (index === 0) { %>
+                                            <td rowspan="<%= order.orderItems.length %>"><a class="btn btn-sm btn-primary" href="">Download</a></td>
+                                        <% } %>
+                                    </tr>
+                                <% }); %>
+                            <% }); %>
+                        </tbody>
+                    </table>
                 </div>
-            </div>
+            <!-- </div> -->
 
 
 
@@ -169,14 +200,7 @@
 
 
 
-            <!-- Recent Sales End -->
 
-
-            <!-- Widgets Start -->
-           
-            <!-- Footer Start -->
-           
-            <!-- Footer End -->
         </div>
         <!-- Content End -->
 

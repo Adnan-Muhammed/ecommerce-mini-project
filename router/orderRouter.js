@@ -8,7 +8,7 @@ const userSessionHandling=require('../middleware/userSessionHandling')
 
 
 router.post('/placeOrder', userSessionHandling.isBlockedNow, orderManagement.placeOrder  )
-router.get('/orderplaced/success', userSessionHandling.isBlockedNow, orderManagement.orderPlacedSuccess)
+router.get('/orderplaced/success', userSessionHandling.isBlockedNow2, orderManagement.orderPlacedSuccess)
 
 
 

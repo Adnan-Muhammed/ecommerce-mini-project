@@ -28,47 +28,9 @@ Date(timeString).toLocaleTimeString('en-US', options); return formattedTime; }
             <h5 class="my-3"></h5>
           </div>
         </div>
-        <div class="card mb-4 mb-lg-0">
-          <div class="card-body p-0">
-            <ul class="list-group list-group-flush rounded-3">
-              <li
-                class="list-group-item d-flex justify-content-between align-items-center p-3"
-              >
-                <p class="mb-0"><a href="/userprofile">MY PROFILE</a></p>
-              </li>
-              <li
-                class="list-group-item d-flex justify-content-between align-items-center p-3"
-              >
-                <p class="mb-0"><a href="/editUserName">EDIT PROFILE</a></p>
-              </li>
-              <!-- <li class="list-group-item d-flex justify-content-between align-items-center p-3">
-                        <p class="mb-0"> <a href="/userAddAddress">ADDRESS</a> </p>
-                      </li> -->
-              <li
-                class="list-group-item d-flex justify-content-between align-items-center p-3"
-              >
-                <p class="mb-0"><a href="/orderDetails">ORDER STATUS</a></p>
-              </li>
-              <li
-                class="list-group-item d-flex justify-content-between align-items-center p-3"
-              >
-                <p class="mb-0">
-                  <a href="/changePassword">CHANGE PASSWORD</a>
-                </p>
-              </li>
-              <li
-                class="list-group-item d-flex justify-content-between align-items-center p-3"
-              >
-                <p class="mb-0"><a href="/wallet">WALLET</a></p>
-              </li>
-              <li
-                class="list-group-item d-flex justify-content-between align-items-center p-3"
-              >
-                <p class="mb-0"><a href="/referralCode">REFER AND EARN</a></p>
-              </li>
-            </ul>
-          </div>
-        </div>
+       
+        <%-include('sidebar')-%>
+
       </div>
       <div class="col-lg-8">
         <div class="row" style="background-color: white">
@@ -497,7 +459,8 @@ Date(timeString).toLocaleTimeString('en-US', options); return formattedTime; }
         }).then((result) => {
           if (result.isConfirmed) {
             // Proceed with removal
-            fetch(`/${userId}/remove/${addressId}`, {
+            // fetch(`/${userId}/remove/${addressId}`, {
+              fetch(`/user/remove/${addressId}`, {
               method: "GET",
               headers: {
                 "Content-Type": "application/json",
@@ -522,7 +485,7 @@ Date(timeString).toLocaleTimeString('en-US', options); return formattedTime; }
                 // Display error message using SweetAlert
                 Swal.fire({
                   title: "Error!",
-                  text: "Failed to remove billing address. Please try again later.",
+                  text: "Failed to remove billing address. Please try again   later.",
                   icon: "error",
                 });
               });

@@ -77,11 +77,15 @@
                             <% if (productDetails.offer) { %>
                                 <span class="product-price__price product-price__price-product-template product-price__sale product-price__sale--single">
                                     <span class="money original-price">Offer Price: <%= Math.round((productDetails.price * productDetails.offer) / 100) %></span>
+                                    <span class="money original-price">Offer Price: <%= Math.round((productDetails.price * productDetails.offer) / 100) %></span>
 
                                 </span>
                                 <span id="SaveAmount-product-template" class="product-single__save-amount">
-                                    Price:<%= productDetails.price %>
+                                 <!-- <del>   Price:<%= productDetails.price %> </del> --><%= offerPrice %>
                                </span>
+                               <span id="SaveAmount-product-template" class="product-single__save-amount">
+                                offer Price:<%=offerPrice %>
+                           </span>
                                 <div>
                                 <span id="ProductPrice-product-template" class="product-price__price product-price__price-product-template product-price__sale product-price__sale--single">
                                     <span class="money offer-price">Product Offer:<%= productDetails.offer %>%</span>
@@ -94,13 +98,16 @@
                             </div>
                             <% } else { %>
                                 <span class="product-price__price product-price__price-product-template product-price__sale product-price__sale--single">
-                                    <span id="ProductPrice-product-template"><span class="money"><%= productDetails.price %></span></span>
+                                    <span id="ProductPrice-product-template"><span class="money"><del><%= productDetails.price %></del></span></span>
+                                    <br>
+                                    <span id="ProductPrice-product-template"><span class="money"><%=offerPrice %></span></span>
                                 </span>
                             <% } %>
                         </p>
                         
                     <div class="product-single__description rte">
                         <ul>
+                            <!-- <li><%= productDetails.description %></li> -->
                             <li><%= productDetails.description %></li>
                             
                         </ul>
