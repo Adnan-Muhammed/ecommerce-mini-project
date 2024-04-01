@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dummy Data Table</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css">
+    <!-- jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body>
+
+<!-- Add DataTables CSS -->
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" />
+<!-- Select2 CSS -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+
+<!-- DataTables CSS -->
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css" />
+
+<!-- <style>
+    /* Your existing styles here */
+
+    /* Optional: Customize styles if needed */
+    .buttons {
+        margin-top: 10px;
+    }
+</style> -->
+<!-- <style>
+    .dataTables_length {
+        margin-bottom: 10px; /* Add margin to the bottom of the length menu */
+    }
+    .dataTables_length label {
+        font-weight: normal; /* Make the label text normal weight */
+        margin-right: 10px; /* Add margin to the right of the label */
+    }
+    .dataTables_length select {
+        margin-right: 10px; /* Add margin to the right of the select */
+    }
+</style> -->
+<div class="container-xxl position-relative bg-white d-flex p-0">
+    <!-- Spinner Start -->
+    
+    <!-- Spinner End -->
+
+
+    <!-- Sidebar Start -->
+    <div class="sidebar pe-4 pb-3">
+        <nav class="navbar bg-light navbar-light">
+            <a href="index.html" class="navbar-brand mx-4 mb-3">
+                <h3 class="text-primary"><i class="fa fa-hashtag me-2"></i>DASHMIN</h3>
+            </a>
+            <div class="navbar-nav w-100">
+                <a href="/admin/admindashboard" class="nav-item nav-link active"><i class="fa fa-tachometer-alt me-2"></i>Dashboard</a>
+
+                <div class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i class="fa fa-laptop me-2"></i>Products</a>
+                    <div class="dropdown-menu bg-transparent border-0">
+                        <a href="/admin/addProduct" class="dropdown-item">Add Products</a>
+                        <a href="/admin/productlist" class="dropdown-item">Product List</a>
+                    </div>
+                </div>
+
+
+
+
+                <div class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i class="fa fa-laptop me-2"></i>Category</a>
+                    <div class="dropdown-menu bg-transparent border-0">
+                        <a href="/admin/addCategory" class="dropdown-item">Add Category</a>
+                        <a href="/admin/categoryList" class="dropdown-item">Category List</a>
+                    </div>
+                </div>
+
+                <a href="/admin/userList" class="nav-item nav-link"><i class="fa fa-table me-2"></i>User List</a>
+                <div class="nav-item dropdown">
+                    <a href="/admin/orderlist" class="nav-item nav-link"><i class="fa fa-table me-2"></i>Order List</a>
+                    <div class="nav-item dropdown">
+                </div>
+
+
+
+                <div class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i class="fa fa-laptop me-2"></i>Coupon</a>
+                    <div class="dropdown-menu bg-transparent border-0">
+                        <a href="/admin/addCoupon" class="dropdown-item">Add Coupon</a>
+                        <a href="/admin/couponList" class="dropdown-item">Coupon List</a>
+                    </div>
+                </div>
+
+
+                <a href="/admin/salesReport" class="nav-item nav-link active"><i class="fa fa-tachometer-alt me-2"></i>Sales Report</a>
+
+            </div>
+        </nav>
+    </div>
+    <!-- Sidebar End -->
+    <div class="content">
+        <!-- Navbar Start -->
+        <nav class="navbar navbar-expand bg-light navbar-light sticky-top px-4 py-0">
+            <a href="index.html" class="navbar-brand d-flex d-lg-none me-4">
+                <h2 class="text-primary mb-0"><i class="fa fa-hashtag"></i></h2>
+            </a>
+            <a href="#" class="sidebar-toggler flex-shrink-0">
+                <i class="fa fa-bars"></i>
+            </a>
+            
+            <div class="navbar-nav align-items-center ms-auto">
+              
+               
+                <div class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
+                        <i class="bi bi-person"></i>
+                        <span class="d-none d-lg-inline-flex">Admin</span>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-end bg-light border-0 rounded-0 rounded-bottom m-0">
+                        <a href="#" class="dropdown-item">My Profile</a>
+                        <a href="#" class="dropdown-item">Settings</a>
+                        <a href="/admin/logout" class="dropdown-item">Log Out</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+        <!-- Navbar End -->
+
+
+
+
+<!-- Table Start -->
+<div class="container-fluid pt-4 px-4">
+    <div class="row g-4">
+        <form action="/admin/salesreportfilter" method="post">
+            <!-- Your form inputs -->
+        </form>
+
+        <div class="bg-light rounded h-100 p-4">
+            <h6 class="mb-4">Sales Report</h6>
+
+            <div class="table-responsive">
+                <table id="my-table" class="table table-bordered">
+                    <!-- Your table headers and body -->
+                    <thead>
+                        <tr class="text-dark">
+                            <th rowspan="2">User Name</th>
+                            <th rowspan="2">Order Date</th>
+                            <th rowspan="2">Grand Total</th>
+                            <th rowspan="2">Payment Status &<br />Order Status</th>
+                            <th rowspan="2">Coupon</th>
+                            <th rowspan="2">Tax</th>
+                            <th style="text-align: center" colspan="7">Order Items</th>
+                            <!-- <th class="actionBtn" rowspan="2"> </th> -->
+                        </tr>
+                        <tr class="text-dark">
+                            <th>Product Name</th>
+                            <th>Unit Price</th>
+                            <th>Quantity</th>
+                            <th>Product Price</th>
+                            <th>Category Offer</th>
+                            <th>Product Offer</th>
+                            <th>Total Price</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                            <!-- Your table body content goes here -->
+                            <!-- Existing rows -->
+                            <!-- New rows -->
+                            <tr class="text-dark">
+                                <td>Alice Johnson</td>
+                                <td>January 4, 2024</td>
+                                <td>$200</td>
+                                <td>Paid & Shipped</td>
+                                <td>N/A</td>
+                                <td>$10</td>
+                                <td>Headphones</td>
+                                <td>$80</td>
+                                <td>1</td>
+                                <td>$80</td>
+                                <td>15%</td>
+                                <td>8%</td>
+                                <td>$68</td>
+                                <!-- <td><a class="actionBtn" href="#">Action</a></td> -->
+                            </tr>
+                            <tr class="text-dark">
+                                <td>Michael Smith</td>
+                                <td>January 5, 2024</td>
+                                <td>$120</td>
+                                <td>Paid & Shipped</td>
+                                <td>N/A</td>
+                                <td>$5</td>
+                                <td>Book</td>
+                                <td>$20</td>
+                                <td>3</td>
+                                <td>$60</td>
+                                <td>10%</td>
+                                <td>5%</td>
+                                <td>$57</td>
+                                <!-- <td><a class="actionBtn" href="#">Action</a></td> -->
+                            </tr>
+                            <tr class="text-dark">
+                                <td>Michael Smith</td>
+                                <td>January 5, 2024</td>
+                                <td>$120</td>
+                                <td>Paid & Shipped</td>
+                                <td>N/A</td>
+                                <td>$5</td>
+                                <td>Book</td>
+                                <td>$20</td>
+                                <td>3</td>
+                                <td>$60</td>
+                                <td>10%</td>
+                                <td>5%</td>
+                                <td>$57</td>
+                                <!-- <td><a class="actionBtn" href="#">Action</a></td> -->
+                            </tr>
+                            <tr class="text-dark">
+                                <td>Michael Smith</td>
+                                <td>January 5, 2024</td>
+                                <td>$120</td>
+                                <td>Paid & Shipped</td>
+                                <td>N/A</td>
+                                <td>$5</td>
+                                <td>Book</td>
+                                <td>$20</td>
+                                <td>3</td>
+                                <td>$60</td>
+                                <td>10%</td>
+                                <td>5%</td>
+                                <td>$57</td>
+                                <!-- <td><a class="actionBtn" href="#">Action</a></td> -->
+                            </tr>
+                            <tr class="text-dark">
+                                <td>Michael Smith</td>
+                                <td>January 5, 2024</td>
+                                <td>$120</td>
+                                <td>Paid & Shipped</td>
+                                <td>N/A</td>
+                                <td>$5</td>
+                                <td>Book</td>
+                                <td>$20</td>
+                                <td>3</td>
+                                <td>$60</td>
+                                <td>10%</td>
+                                <td>5%</td>
+                                <td>$57</td>
+                                <!-- <td><a class="actionBtn" href="#">Action</a></td> -->
+                            </tr>
+                            <tr class="text-dark">
+                                <td>Michael Smith</td>
+                                <td>January 5, 2024</td>
+                                <td>$120</td>
+                                <td>Paid & Shipped</td>
+                                <td>N/A</td>
+                                <td>$5</td>
+                                <td>Book</td>
+                                <td>$20</td>
+                                <td>3</td>
+                                <td>$60</td>
+                                <td>10%</td>
+                                <td>5%</td>
+                                <td>$57</td>
+                                <!-- <td><a class="actionBtn" href="#">Action</a></td> -->
+                            </tr>
+                            <tr class="text-dark">
+                                <td>Michael Smith</td>
+                                <td>January 5, 2024</td>
+                                <td>$120</td>
+                                <td>Paid & Shipped</td>
+                                <td>N/A</td>
+                                <td>$5</td>
+                                <td>Book</td>
+                                <td>$20</td>
+                                <td>3</td>
+                                <td>$60</td>
+                                <td>10%</td>
+                                <td>5%</td>
+                                <td>$57</td>
+                                <!-- <td><a class="actionBtn" href="#">Action</a></td> -->
+                            </tr>
+                            <tr class="text-dark">
+                                <td>Michael Smith</td>
+                                <td>January 5, 2024</td>
+                                <td>$120</td>
+                                <td>Paid & Shipped</td>
+                                <td>N/A</td>
+                                <td>$5</td>
+                                <td>Book</td>
+                                <td>$20</td>
+                                <td>3</td>
+                                <td>$60</td>
+                                <td>10%</td>
+                                <td>5%</td>
+                                <td>$57</td>
+                                <!-- <td><a class="actionBtn" href="#">Action</a></td> -->
+                            </tr>
+                            <tr class="text-dark">
+                                <td>Emily Johnson</td>
+                                <td>January 6, 2024</td>
+                                <td>$300</td>
+                                <td>Paid & Processing</td>
+                                <td>N/A</td>
+                                <td>$20</td>
+                                <td>Camera</td>
+                                <td>$200</td>
+                                <td>1</td>
+                                <td>$200</td>
+                                <td>10%</td>
+                                <td>5%</td>
+                                <td>$190</td>
+                                <!-- <td><a class="actionBtn" href="#">Action</a></td> -->
+                            </tr>
+                            <!-- Add more rows for additional orders -->
+                        
+                </table>
+                <div class="buttons">
+                    <button onclick="downloadPDF()" class="btn btn-sm btn-primary">
+                        Download PDF
+                    </button>
+                    <button onclick="downloadExcel()" class="btn btn-sm btn-primary">
+                        Download Excel
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript code to generate and download PDF and Excel -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.1/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
+
+<script>
+    function downloadExcel(fileType = 'xlsx') {
+        // Clone the table
+        const tableClone = document.querySelector('table').cloneNode(true);
+
+        // Remove the action button cells
+        const actionCells = tableClone.querySelectorAll('td[rowspan], th[rowspan]');
+
+        actionCells.forEach(cell => {
+            if (cell.innerText.trim() === "download pdf") {
+                cell.parentNode.removeChild(cell);
+            }
+        });
+
+        const actionHeader = tableClone.querySelector('.actionBtn');
+        actionHeader.parentNode.removeChild(actionHeader);
+
+        // Convert the modified table to a worksheet
+        const ws = XLSX.utils.table_to_sheet(tableClone);
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, 'Sales Report');
+        XLSX.writeFile(wb, `sales_report.${fileType}`);
+    }
+
+    function downloadPDF() {
+        // Remove the content of the "action" cell in each row
+        const tableClone = document.querySelector('table').cloneNode(true);
+        const actionCells = tableClone.querySelectorAll('td[rowspan], th[rowspan]');
+        actionCells.forEach(cell => {
+            if (cell.innerText.trim() === "download pdf") {
+                cell.innerText = "";
+            }
+        });
+
+        const actionHeader = tableClone.querySelector('.actionBtn');
+        actionHeader.innerText = "";
+
+        const options = {
+            filename: 'document.pdf',
+            image: { type: 'pdf', quality: 0.98 },
+            html2canvas: { scale: 2 },
+            jsPDF: { format: 'letter', orientation: 'landscape', unit: 'in' },
+            width: 100,
+            margin: [0.5, 0.2],
+            pagebreak: { mode: 'avoid-all' }
+        };
+        html2pdf()
+            .from(tableClone)
+            .set(options)
+            .save();
+    }
+</script>
+
+<!-- DataTables JavaScript -->
+<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
+<script>
+    // $(document).ready(function() {
+    //     $('#my-table').DataTable({
+    //         paging: true, // Enable pagination
+    //         searching: true, // Enable searching
+    //         ordering: true, // Enable sorting
+    //         info: true, // Show information about the table
+    //         dom: 'Bfrtip', // Add buttons for export and column visibility
+    //         buttons: [
+    //             'colvis', // Column visibility
+    //             'csv', // Export as CSV
+    //             'excel', // Export as Excel
+    //             'pdf' // Export as PDF
+    //         ], // Enable exporting data to various formats
+    //         lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]], // Customize the display length options
+    //         responsive: true, // Make the table responsive
+    //         language: {
+    //             url: '//cdn.datatables.net/plug-ins/1.10.21/i18n/English.json' // Set language to English
+    //         },
+          
+    //     });
+    // });
+
+
+    // $(document).ready(function() {
+    //     $('#my-table').DataTable({
+    //         paging: true, // Enable pagination
+    //         searching: true, // Enable searching
+    //         ordering: true, // Enable sorting
+    //         info: true, // Show information about the table
+    //         dom: 'Bfrtip', // Add buttons for export and column visibility
+    //         buttons: [
+    //             'colvis', // Column visibility
+    //             'csv', // Export as CSV
+    //             'excel', // Export as Excel
+    //             'pdf' // Export as PDF
+    //         ], // Enable exporting data to various formats
+    //         lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]], // Customize the display length options
+    //         responsive: true, // Make the table responsive
+    //         language: {
+    //             url: '//cdn.datatables.net/plug-ins/1.10.21/i18n/English.json' // Set language to English
+    //         },
+    //         scrollX: true, // Enable horizontal scrolling
+    //         scrollY: '50vh', // Set vertical scrolling height
+    //         scrollCollapse: true // Collapse table when vertical space is limited
+    //     });
+    // });
+
+    // $(document).ready(function() {
+    //     $('#my-table').DataTable({
+    //         paging: true, // Enable pagination
+    //         pageLength: 5, // Set the default page length to 5
+    //        lengthMenu: [[5, 25, 50, -1], [5, 25, 50, "All"]], // Customize the display length options
+
+    //       //  lengthMenu: [[5,  25, 50, -1], [5, 10, 25, 50, "All"]], // Customize the display length options
+    //         searching: true, // Enable searching
+    //         ordering: true, // Enable sorting
+    //         info: true, // Show information about the table
+    //         dom: 'Bfrtip', // Add buttons for export and column visibility
+    //         buttons: [
+    //             'colvis', // Column visibility
+    //             'csv', // Export as CSV
+    //             'excel', // Export as Excel
+    //             'pdf' // Export as PDF
+    //         ], // Enable exporting data to various formats
+    //         responsive: true, // Make the table responsive
+    //         language: {
+    //             url: '//cdn.datatables.net/plug-ins/1.10.21/i18n/English.json' // Set language to English
+    //         }
+    //     });
+    // });
+
+
+
+
+    $(document).ready(function() {
+        // Initialize DataTable
+        $('#my-table').DataTable({
+            paging: true, // Enable pagination
+            pageLength: 5, // Set the default page length to 5
+
+            lengthMenu: [[5, 25, 50, -1], [5, 25, 50, "All"]], // Customize the display length options
+            searching: true, // Enable searching
+            ordering: true, // Enable sorting
+            info: true, // Show information about the table
+            dom: 'Blfrtip', // Add buttons for export and column visibility
+            buttons: [
+                'colvis', // Column visibility
+                'csv', // Export as CSV
+                'excel', // Export as Excel
+                'pdf' // Export as PDF
+            ], // Enable exporting data to various formats
+            responsive: true, // Make the table responsive
+            language: {
+                url: '//cdn.datatables.net/plug-ins/1.10.21/i18n/English.json' // Set language to English
+            }
+        });
+    });
+
+
+
+
+
+
+
+
+
+</script>
+
+</body>
+</html>

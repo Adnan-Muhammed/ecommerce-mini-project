@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nested Rows with DataTables</title>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
+    <style>
+        .child-row {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+<table id="example" class="display" style="width:100%">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Value</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr data-parent="">
+            <td>Parent 1</td>
+            <td>Parent 1 Value</td>
+        </tr>
+        <tr class="child-row" data-parent="0">
+            <td>Child 1 Name</td>
+            <td>Child 1 Value</td>
+        </tr>
+        <tr class="child-row" data-parent="0">
+            <td>Child 2 Name</td>
+            <td>Child 2 Value</td>
+        </tr>
+        <tr data-parent="">
+            <td>Parent 2</td>
+            <td>Parent 2 Value</td>
+        </tr>
+        <tr class="child-row" data-parent="3">
+            <td>Child 3 Name</td>
+            <td>Child 3 Value</td>
+        </tr>
+        <tr data-parent="">
+            <td>Parent 3</td>
+            <td>Parent 3 Value</td>
+        </tr>
+        <tr class="child-row" data-parent="5">
+            <td>Child 4 Name</td>
+            <td>Child 4 Value</td>
+        </tr>
+    </tbody>
+</table>
+
+<script>
+    $(document).ready(function() {
+        var table = $('#example').DataTable({
+            "order": [],
+            "rowGroup": {
+                "dataSrc": "data-parent"
+            }
+        });
+
+        $('#example tbody').on('click', 'tr', function() {
+            var parentRow = $(this);
+            var parentData = table.row(parentRow).data();
+
+            // Check if the clicked row is a parent row
+            if (parentData && parentData[0] && parentData[0].startsWith('Parent')) {
+                var childRows = parentRow.nextUntil('tr[data-parent]');
+                childRows.toggle();
+            }
+        });
+    });
+</script>
+
+</body>
+</html>

@@ -90,5 +90,17 @@ const orderManagement = require('../controller/orderManagement.js')
 router.get('/orderlist',adminSessionMiddleware.requireAdmin,orderManagement.orderUpdates)
 
 
+router.get('/datatable',(req,res)=>{
+    res.render('admin/datatable')
+})
 
+
+router.get('/datatable2',(req,res)=>{
+    res.render('admin/datatable2')
+})
+
+
+router.get('/salesreport4',(req,res)=>{
+    res.render('admin/salesReport4')
+})
 module.exports = router;

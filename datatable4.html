@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order List with DataTables</title>
+    <!-- Include jQuery and DataTables CSS/JS files -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
+</head>
+<body>
+
+<table id="orderTable" class="display">
+    <thead>
+        <tr>
+            <th>User</th>
+            <th>Products</th>
+            <th>Quantity</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>User 1</td>
+            <td>
+                <ul>
+                    <li>Product B</li>
+                    <li>Product D</li>
+                    <li>Product C</li>
+                </ul>
+            </td>
+            <td>
+                <ul>
+                    <li>2</li>
+                    <li>1</li>
+                    <li>3</li>
+                </ul>
+            </td>
+        </tr>
+        <tr>
+            <td>User 2</td>
+            <td>
+                <ul>
+                    <li>Product A</li>
+                </ul>
+            </td>
+            <td>
+                <ul>
+                    <li>1</li>
+                </ul>
+            </td>
+        </tr>
+        <tr>
+            <td>User 3</td>
+            <td>
+                <ul>
+                    <li>Product A</li>
+                    <li>Product E</li>
+                </ul>
+            </td>
+            <td>
+                <ul>
+                    <li>2</li>
+                    <li>3</li>
+                </ul>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<script>
+    $(document).ready(function() {
+        $('#orderTable').DataTable();
+    });
+</script>
+
+</body>
+</html>

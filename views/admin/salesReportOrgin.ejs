@@ -1,3 +1,4 @@
+
 <%- include('header') -%>
 
 <!-- Add DataTables CSS -->
@@ -31,95 +32,15 @@
   rel="stylesheet"
   href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css"
 />
-<!-- <link
+<link
   rel="stylesheet"
   href="https://cdn.jsdelivr.net/npm/sweetalert2@11.1.6/dist/sweetalert2.min.css"
-/> -->
+/>
 
 <!-- Table Start -->
 <div class="container-fluid pt-4 px-4">
-  <div class="row g-4" >
-    <div action="/admin/salesreportfilter" method="post">
-
-
-        <div class="m-0"style="display: inline-block;">
-            <label for="startDate">Start Date:</label>
-            <input class="startDatePicker" type="text" id="startDate" name="startDate" />
-
-
-            <label for="endDate">End Date:</label>
-            <input class="endDatePicker" type="text" id="endDate" name="endDate"/>
-
-
-            <button id="filterByDate" type="submit" style=" background-color: #007bff; color: white; border-radius: 12px; margin-left: 2px; border: 1px solid black; ">
-                Submit
-            </button>
-
-
-            <div style="display: flex; justify-content: space-around;">
-                <span class="startDateError" style="text-align: center;  color:red"></span>
-                <span class="endDateError" style="text-align: center;color: red;"></span>
-            </div>
-      </div >
-
-
-      <div class="m-0" style="padding: 10px ;"   >
-        <!-- Dropdown for Monthly Filtering -->
-        <!-- <label for="month">Select Month:</label> -->
-        <select id="month" name="month">
-          <option value="1">January</option>
-          <option value="2">February</option>
-          <option value="3">March</option>
-          <option value="4">April</option>
-          <option value="5">May</option>
-          <option value="6">June</option>
-          <option value="7">July</option>
-          <option value="8">August</option>
-          <option value="9">September</option>
-          <option value="10">October</option>
-          <option value="11">November</option>
-          <option value="12">December</option>
-        </select>
-        <button
-          type="submit"
-          id="filterByMonth"
-          style="
-            background-color: #007bff;
-            color: white;
-            border-radius: 12px;
-            margin-left: 2px;
-            border: 1px solid black;
-          "
-        >
-          Submit
-        </button>
-
-        <!-- Dropdown for Year Filtering -->
-        <!-- <label for="yearFilter">Select Year:</label> -->
-        <select id="yearFilter" name="year">
-          <option value="2024">2024</option>
-          <option value="2023">2023</option>
-          <option value="2022">2022</option>
-          <option value="2021">2021</option>
-          <!-- Assuming you want years from 2020 to 2030 -->
-        </select>
-        <button
-          type="submit"
-          id="filterByYear"
-          style="
-            background-color: #007bff;
-            color: white;
-            border-radius: 12px;
-            margin-left: 2px;
-            border: 1px solid black;
-          "
-        >
-          Submit
-        </button>
-      </div>
-
-      <!-- Add any additional form elements here -->
-    </form>
+  <div class="row g-4">
+   
 
     <div class="bg-light rounded h-100 p-4">
       <h6 class="mb-4">Sales Report</h6>
@@ -217,129 +138,6 @@
 
 <!-- table -->
 
-
-
-<script>
-
-    // -----------------------filter by date------------------ --
-    document.getElementById("filterByDate").addEventListener("click", (event) => {
-        event.preventDefault();
-        
-        const startDate = document.getElementById("startDate").value;
-        const endDate = document.getElementById("endDate").value;
-        console.log(startDate,endDate);
-
-    });
-
-
-
-
-
-
-
-    // -----------------------filter by month------------------ --
-    document.getElementById("filterByMonth").addEventListener("click", (event) => {
-        event.preventDefault();
-
-        const selectedMonth = document.getElementById("month").value;
-
-        console.log(selectedMonth);
-
-    });
-
-      // -----------------------filter by year------------------ --
-      document.getElementById("filterByYear").addEventListener("click", (event) => {
-        event.preventDefault();
-
-        const yearFilter = document.getElementById("yearFilter").value;
-
-        console.log(yearFilter);
-
-    });
-
-</script>
-
-
-
-
-<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-<script>
-    // Initialize Flatpickr for start date picker
-    var startDatePicker = flatpickr(".startDatePicker", {
-        dateFormat: "Y-m-d", // Date format
-        maxDate:'today',
-        onChange: function(selectedDates, dateStr, instance) {
-            // When the start date changes, update the minimum date of the end date picker
-            endDatePicker.set("minDate", dateStr);
-        }
-    });
-
-    // Initialize Flatpickr for end date picker
-    var endDatePicker = flatpickr(".endDatePicker", {
-        dateFormat: "Y-m-d", // Date format
-        maxDate:'today'
-    });
-
-    // Add event listener to the submit button
-    document.getElementById("submitButton").addEventListener("click", function(event) {
-        event.preventDefault(); // Prevent default form submission
-
-        // Reset previous error messages
-        document.querySelector('.startDateError').textContent = "";
-        document.querySelector('.endDateError').textContent = "";
-
-        // Get the selected start date
-        var startDate = startDatePicker.selectedDates[0];
-
-        // Check if start date is empty
-        if (!startDate) {
-            document.querySelector('.startDateError').textContent = "Please select a start date.";
-            return; // Exit function
-        }
-
-        // Get the selected end date if available
-        var endDate = endDatePicker.selectedDates[0];
-
-        // Check if end date is selected and is less than start date
-        if (endDate && endDate < startDate) {
-            document.querySelector('.endDateError').textContent = "End date must be greater than or equal to the start date.";
-            return; // Exit function
-        }
-
-        // Perform fetch request with the selected dates
-        fetch('your_api_endpoint_here', {
-            method: 'POST', // Change method as needed
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                startDate: startDate.toISOString(),
-                endDate: endDate ? endDate.toISOString() : null
-            })
-        })
-        .then(response => response.json())
-        .then(data => {
-            // Handle response data
-            console.log(data);
-        })
-        .catch(error => {
-            // Handle errors
-            console.error('Error:', error);
-        });
-    });
-</script>
-
-
-
-
-
-
-
-
-
-
-
-
 <!-- JavaScript code to generate and download PDF     and EXcel-->
 
 
@@ -351,16 +149,24 @@
 function downloadExcel(fileType = 'xlsx') {
     // Clone the table
     const tableClone = document.querySelector('table').cloneNode(true);
+
     // Remove the action button cells
     const actionCells = tableClone.querySelectorAll('td[rowspan], th[rowspan]');
+    
+
     actionCells.forEach(cell => {
         if (cell.innerText.trim() === "download pdf"     ) {
+
           console.log(cell);
           cell.parentNode.removeChild(cell);
         }
     });
+
     const actionHeader = tableClone.querySelector('.actionBtn');
-    actionHeader.parentNode.removeChild(actionHeader);
+
+          actionHeader.parentNode.removeChild(actionHeader);
+      
+    
     // Convert the modified table to a worksheet
     const ws = XLSX.utils.table_to_sheet(tableClone);
     const wb = XLSX.utils.book_new();
@@ -368,6 +174,7 @@ function downloadExcel(fileType = 'xlsx') {
     XLSX.writeFile(wb, `sales_report.${fileType}`);
 }
 </script> 
+
 
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
@@ -380,13 +187,14 @@ function downloadExcel(fileType = 'xlsx') {
     const actionCells = tableClone.querySelectorAll('td[rowspan], th[rowspan]');
     actionCells.forEach(cell => {
         if (cell.innerText.trim() === "download pdf"     ) {
+
           console.log(cell);
           cell.innerText="";
         }
     });
 
     const actionHeader = tableClone.querySelector('.actionBtn');
-    actionHeader.innerText =""
+          actionHeader.innerText =""
       
   const options = {
     filename: 'document.pdf',
@@ -410,17 +218,51 @@ function downloadExcel(fileType = 'xlsx') {
 
 
 <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
 <script
   src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
   integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
   crossorigin="anonymous"
   referrerpolicy="no-referrer"
 ></script>
+<!-- Add DataTables JavaScript -->
+<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+<script src="https://cdn.datatables.net/v/bs5/dt-1.13.8/datatables.min.js"></script>
 
 
+
+<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
 <script>
-  // JavaScript Code for Date Pickers, DataTables, and Dropdowns
+     $(document).ready(function() {
+        // Initialize DataTable
+        $('#my-table').DataTable({
+            paging: true, // Enable pagination
+            pageLength: 5, // Set the default page length to 5
+
+            lengthMenu: [[5, 25, 50, -1], [5, 25, 50, "All"]], // Customize the display length options
+            searching: true, // Enable searching
+            ordering: true, // Enable sorting
+            info: true, // Show information about the table
+            dom: 'Blfrtip', // Add buttons for export and column visibility
+            buttons: [
+                'colvis', // Column visibility
+                'csv', // Export as CSV
+                'excel', // Export as Excel
+                'pdf' // Export as PDF
+            ], // Enable exporting data to various formats
+            responsive: true, // Make the table responsive
+            language: {
+                url: '//cdn.datatables.net/plug-ins/1.10.21/i18n/English.json' // Set language to English
+            }
+        });
+    });
 </script>
+
+
 
 <!-- JavaScript Code for PDF Download -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
