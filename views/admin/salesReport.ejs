@@ -39,7 +39,7 @@
 <!-- Table Start -->
 <div class="container-fluid pt-4 px-4">
   <div class="row g-4" >
-    <div action="/admin/salesreportfilter" method="post">
+    <div >
 
 
         <div class="m-0"style="display: inline-block;">
@@ -103,6 +103,7 @@
           <option value="2021">2021</option>
           <!-- Assuming you want years from 2020 to 2030 -->
         </select>
+
         <button
           type="submit"
           id="filterByYear"
@@ -119,7 +120,7 @@
       </div>
 
       <!-- Add any additional form elements here -->
-    </form>
+    </div>
 
     <div class="bg-light rounded h-100 p-4">
       <h6 class="mb-4">Sales Report</h6>
@@ -219,45 +220,46 @@
 
 
 
-<script>
 
+
+
+
+<!-- <script>
     // -----------------------filter by date------------------ --
     document.getElementById("filterByDate").addEventListener("click", (event) => {
         event.preventDefault();
-        
         const startDate = document.getElementById("startDate").value;
         const endDate = document.getElementById("endDate").value;
         console.log(startDate,endDate);
-
     });
+</script>  -->
 
 
 
 
 
 
-
+<script>
     // -----------------------filter by month------------------ --
     document.getElementById("filterByMonth").addEventListener("click", (event) => {
         event.preventDefault();
-
         const selectedMonth = document.getElementById("month").value;
-
         console.log(selectedMonth);
-
     });
-
       // -----------------------filter by year------------------ --
       document.getElementById("filterByYear").addEventListener("click", (event) => {
         event.preventDefault();
-
         const yearFilter = document.getElementById("yearFilter").value;
-
         console.log(yearFilter);
-
     });
-
 </script>
+
+
+
+
+
+
+
 
 
 
@@ -266,6 +268,7 @@
 <script>
     // Initialize Flatpickr for start date picker
     var startDatePicker = flatpickr(".startDatePicker", {
+
         dateFormat: "Y-m-d", // Date format
         maxDate:'today',
         onChange: function(selectedDates, dateStr, instance) {
@@ -280,8 +283,12 @@
         maxDate:'today'
     });
 
+    console.log(78);
+
+    
+
     // Add event listener to the submit button
-    document.getElementById("submitButton").addEventListener("click", function(event) {
+    document.getElementById("filterByDate").addEventListener("click", function(event) {
         event.preventDefault(); // Prevent default form submission
 
         // Reset previous error messages
@@ -299,12 +306,15 @@
 
         // Get the selected end date if available
         var endDate = endDatePicker.selectedDates[0];
+        console.log(startDate < endDate);
 
         // Check if end date is selected and is less than start date
-        if (endDate && endDate < startDate) {
-            document.querySelector('.endDateError').textContent = "End date must be greater than or equal to the start date.";
-            return; // Exit function
-        }
+        
+
+        console.log(endDate);
+
+
+        
 
         // Perform fetch request with the selected dates
         fetch('your_api_endpoint_here', {
@@ -328,6 +338,9 @@
         });
     });
 </script>
+
+
+
 
 
 
