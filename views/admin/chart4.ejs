@@ -20,24 +20,14 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
 
-    <!-- Libraries Stylesheet -->
-    <link href="lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
-    <link href="lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css" rel="stylesheet" />
-
     <!-- Customized Bootstrap Stylesheet -->
     <link href="/admin-style/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Template Stylesheet -->
     <link href="/admin-style/css/style.css" rel="stylesheet">
-    <style>
-        canvas{
-            width: 550;
-        }
-    </style>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
-    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.16/jspdf.plugin.autotable.min.js"></script> -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body>
@@ -68,9 +58,6 @@
                         </div>
                     </div>
 
-
-
-
                     <div class="nav-item dropdown">
                         <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i class="fa fa-laptop me-2"></i>Category</a>
                         <div class="dropdown-menu bg-transparent border-0">
@@ -80,12 +67,10 @@
                     </div>
 
                     <a href="/admin/userList" class="nav-item nav-link"><i class="fa fa-table me-2"></i>User List</a>
+
                     <div class="nav-item dropdown">
                         <a href="/admin/orderlist" class="nav-item nav-link"><i class="fa fa-table me-2"></i>Order List</a>
-                        <div class="nav-item dropdown">
                     </div>
-
-
 
                     <div class="nav-item dropdown">
                         <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i class="fa fa-laptop me-2"></i>Coupon</a>
@@ -95,8 +80,7 @@
                         </div>
                     </div>
 
-
-                    <a href="/admin/salesReport" class="nav-link active"><i class="fa fa-tachometer-alt me-2"></i>Sales Report</a>
+                    <a href="/admin/salesReport" class="nav-item nav-link active"><i class="fa fa-tachometer-alt me-2"></i>Sales Report</a>
 
                 </div>
             </nav>
@@ -113,8 +97,6 @@
                 </a>
                 
                 <div class="navbar-nav align-items-center ms-auto">
-                  
-                   
                     <div class="nav-item dropdown">
                         <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
                             <i class="bi bi-person"></i>
@@ -131,4 +113,94 @@
             <!-- Navbar End -->
 
 
+            <div class="container-fluid pt-4 px-4">
+                <div class="row g-4">
+                    <div class="col-sm-12 col-xl-6">
+                        <div class="bg-light rounded h-100 p-4">
+                            <div class=" pb-2 mb-4" >
+                                <label for="sales-filter">Select Filter:</label>
+                                <select id="sales-filter">
+                                    <option value="yearly">Yearly</option>
+                                    <option value="monthly">Monthly</option>
+                                </select>
+                            </div>
+                            <canvas id="monthly-yearly-sales-chart" height="200"></canvas>
+                        </div>
+                    </div>
+                    <div class="col-sm-12 col-xl-6">
+                        <div class="bg-light rounded h-100 p-4">
+                            <h6 class="mb-4">Multiple Bar Chart</h6>
+                            <canvas id="worldwide-sales" height="200"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
+    </div>
 
+    <!-- JavaScript Libraries -->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="lib/chart/chart.min.js"></script>
+    <script src="lib/easing/easing.min.js"></script>
+    <script src="lib/waypoints/waypoints.min.js"></script>
+    <script src="lib/owlcarousel/owl.carousel.min.js"></script>
+    <script src="lib/tempusdominus/js/moment.min.js"></script>
+    <script src="lib/tempusdominus/js/moment-timezone.min.js"></script>
+    <script src="lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
+
+    <!-- Template Javascript -->
+    <script src="/admin-style/js/main.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var ctx = document.getElementById('monthly-yearly-sales-chart').getContext('2d');
+            var monthlyData = {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                datasets: [{
+                    label: 'Monthly Sales',
+                    data: [5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60],
+                    backgroundColor: 'rgba(0, 156, 255, .7)'
+                }]
+            };
+            var yearlyData = {
+                labels: ['2020', '2021', '2022', '2023', '2024'],
+                datasets: [{
+                    label: 'Yearly Sales',
+                    data: [150, 180, 220, 250, 280],
+                    backgroundColor: 'rgba(255, 99, 132, 0.7)'
+                }]
+            };
+
+            
+            var chart = new Chart(ctx, {
+                type: 'bar',
+                data: monthlyData,
+                options: {
+                    responsive: true,
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero: true
+                            }
+                        }]
+                    }
+                }
+            });
+
+
+            document.getElementById('sales-filter').addEventListener('change', function() {
+                var filter = this.value;
+                if (filter === 'yearly') {
+                    chart.data = yearlyData;
+                } else if (filter === 'monthly') {
+                    chart.data = monthlyData;
+                }
+                chart.update();
+            });
+        });
+    </script>
+</body>
+
+</html>

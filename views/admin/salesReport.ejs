@@ -66,9 +66,12 @@
       <div class="m-0" style="padding: 10px ;"   >
         <!-- Dropdown for Monthly Filtering -->
         <!-- <label for="month">Select Month:</label> -->
-        <select id="month" name="month">
-          <option value="1">January</option>
-          <option value="2">February</option>
+        <select id="month"  name="month">
+          <!-- <option >month</option> -->
+
+
+            <option value="1">January</option>
+            <option value="2">February</option>
           <option value="3">March</option>
           <option value="4">April</option>
           <option value="5">May</option>
@@ -96,7 +99,9 @@
 
         <!-- Dropdown for Year Filtering -->
         <!-- <label for="yearFilter">Select Year:</label> -->
-        <select id="yearFilter" name="year">
+        <select id="yearFilter"  name="year">
+            <!-- <option >year</option> -->
+
           <option value="2024">2024</option>
           <option value="2023">2023</option>
           <option value="2022">2022</option>
@@ -237,22 +242,234 @@
 
 
 
-
-
+<!-- 
 <script>
     // -----------------------filter by month------------------ --
+
+
+    function generateOrderListing(orders) {
+    let html = ''; // Initialize an empty string to store HTML markup
+
+    orders.forEach(order => {
+        order.orderItems.forEach((item, index) => {
+            html += `
+                <tr class="text-dark">
+                    ${index === 0 ? `<td rowspan="${order.orderItems.length}">${order.userName}</td>
+                                    <td rowspan="${order.orderItems.length}">${new Date(order.orderDate).toLocaleString('en-US', {
+                                        weekday: 'short',
+                                        day: 'numeric',
+                                        month: 'short',
+                                        year: 'numeric',
+                                        hour: 'numeric',
+                                        minute: 'numeric',
+                                        second: 'numeric',
+                                        hour12: true
+                                    })}</td>
+                                    <td rowspan="${order.orderItems.length}">${order.grandTotal}</td>
+                                    <td rowspan="${order.orderItems.length}">${order.paymentStatus.type}<br>${order.orderStatus.type}</td>
+                                    <td rowspan="${order.orderItems.length}">${order.couponName ? `${order.couponName}<br>${order.couponDiscountPercentage}%<br>${order.couponDiscount}` : 'N/A'}</td>
+                                    <td rowspan="${order.orderItems.length}">${order.tax}</td>` : ''}
+                    <td>${item.productName}</td>
+                    <td>${item.unitPrice}</td>
+                    <td>${item.quantity}</td>
+                    <td>${item.price}</td>
+                    <td>${item.categoryDiscountPecentage}%<br>${item.categoryOffer}</td>
+                    <td>${item.productDiscountPercentage}%<br>${item.productOffer}</td>
+                    <td>${item.totalPrice}</td>
+                    ${index === 0 ? `<td rowspan="${order.orderItems.length}"><a class="actionBtn" href=""></a></td>` : ''}
+                </tr>`;
+        });
+    });
+
+    return html; // Return the generated HTML
+}
+
+
     document.getElementById("filterByMonth").addEventListener("click", (event) => {
         event.preventDefault();
         const selectedMonth = document.getElementById("month").value;
-        console.log(selectedMonth);
+        console.log(selectedMonth);   // example 2
+        
+        // Make a fetch request with selected month
+        fetch('/admin/monthFilter', {
+            method: 'POST', // or 'GET' based on your server implementation
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ month: selectedMonth })
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Handle response data
+            if (data && data.length > 0) {
+            const tbody = document.querySelector('#my-table tbody');
+            tbody.innerHTML = generateOrderListing(data); // Append generated HTML to the table body
+        } else {
+            // Display a message or handle the case when no data is returned
+        }
+
+
+
+        })
+        .catch(error => {
+            // Handle errors
+            console.error('Error:', error);
+        });
     });
-      // -----------------------filter by year------------------ --
-      document.getElementById("filterByYear").addEventListener("click", (event) => {
+    
+    // -----------------------filter by year------------------ --
+    document.getElementById("filterByYear").addEventListener("click", (event) => {
         event.preventDefault();
         const yearFilter = document.getElementById("yearFilter").value;
-        console.log(yearFilter);
+        console.log(yearFilter);  //example  2023
+
+
+        
+        
+        // Make a fetch request with selected year
+        fetch('/admin/yearFilter', {
+            method: 'POST', // or 'GET' based on your server implementation
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ year: yearFilter })
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data && data.length > 0) {
+            console.log('hello');
+            const tbody = document.querySelector('#my-table tbody');
+            tbody.innerHTML = generateOrderListing(data); // Append generated HTML to the table body
+        } else {
+            // Display a message or handle the case when no data is returned
+            
+        }
+
+
+            
+            // Handle response data
+            console.log(data);
+        })
+        .catch(error => {
+            // Handle errors
+            console.error('Error:', error);
+        });
     });
 </script>
+ -->
+
+ <script>
+  // Function to generate order listing HTML
+  function generateOrderListing(orders) {
+      let html = '';
+
+      orders.forEach(order => {
+          order.orderItems.forEach((item, index) => {
+              html += `
+                  <tr class="text-dark">
+                      ${index === 0 ? `<td rowspan="${order.orderItems.length}">${order.userName}</td>
+                                      <td rowspan="${order.orderItems.length}">${new Date(order.orderDate).toLocaleString('en-US', {
+                                          weekday: 'short',
+                                          day: 'numeric',
+                                          month: 'short',
+                                          year: 'numeric',
+                                          hour: 'numeric',
+                                          minute: 'numeric',
+                                          second: 'numeric',
+                                          hour12: true
+                                      })}</td>
+                                      <td rowspan="${order.orderItems.length}">${order.grandTotal}</td>
+                                      <td rowspan="${order.orderItems.length}">${order.paymentStatus.type}<br>${order.orderStatus.type}</td>
+                                      <td rowspan="${order.orderItems.length}">${order.couponName ? `${order.couponName}<br>${order.couponDiscountPercentage}%<br>${order.couponDiscount}` : 'N/A'}</td>
+                                      <td rowspan="${order.orderItems.length}">${order.tax}</td>` : ''}
+                      <td>${item.productName}</td>
+                      <td>${item.unitPrice}</td>
+                      <td>${item.quantity}</td>
+                      <td>${item.price}</td>
+                      <td>${item.categoryDiscountPecentage}%<br>${item.categoryOffer}</td>
+                      <td>${item.productDiscountPercentage}%<br>${item.productOffer}</td>
+                      <td>${item.totalPrice}</td>
+                      ${index === 0 ? `<td rowspan="${order.orderItems.length}"><a class="actionBtn" href=""></a></td>` : ''}
+                  </tr>`;
+          });
+      });
+
+      return html;
+  }
+
+  // Function to handle filter by month
+  document.getElementById("filterByMonth").addEventListener("click", (event) => {
+      event.preventDefault();
+      const selectedMonth = document.getElementById("month").value;
+
+      console.log("Selected Month:", selectedMonth);
+
+      fetch('/admin/monthFilter', {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ month: selectedMonth })
+      })
+      .then(response => {
+          if (!response.ok) {
+              throw new Error('Network response was not ok');
+          }
+          return response.json();
+      })
+      .then(data => {
+        if (data && data.length > 0) {
+            const tbody = document.querySelector('#my-table tbody');
+            tbody.innerHTML = generateOrderListing(data); // Append generated HTML to the table body
+        } else {
+        // Display a message indicating no orders are available
+        const tbody = document.querySelector('#my-table tbody');
+        tbody.innerHTML = '<tr><td colspan="14" class="text-center">No orders available</td></tr>';
+        }
+      })
+      .catch(error => {
+          console.error('Error:', error);
+      });
+  });
+
+  // Function to handle filter by year
+  document.getElementById("filterByYear").addEventListener("click", (event) => {
+      event.preventDefault();
+      const yearFilter = document.getElementById("yearFilter").value;
+
+      console.log("Year Filter:", yearFilter);
+
+      fetch('/admin/yearFilter', {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ year: yearFilter })
+      })
+      .then(response => {
+          if (!response.ok) {
+              throw new Error('Network response was not ok');
+          }
+          return response.json();
+      })
+      .then(data => {
+        if (data && data.length > 0) {
+            const tbody = document.querySelector('#my-table tbody');
+            tbody.innerHTML = generateOrderListing(data); // Append generated HTML to the table body
+        } else {
+          // Display a message indicating no orders are available
+          const tbody = document.querySelector('#my-table tbody');
+          tbody.innerHTML = '<tr><td colspan="14" class="text-center">No orders available</td></tr>';
+        }
+         
+      })
+      .catch(error => {
+          console.error('Error:', error);
+      });
+  });
+</script>
+
+
 
 
 
@@ -267,8 +484,7 @@
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script>
     // Initialize Flatpickr for start date picker
-    var startDatePicker = flatpickr(".startDatePicker", {
-
+    const startDatePicker = flatpickr(".startDatePicker", {
         dateFormat: "Y-m-d", // Date format
         maxDate:'today',
         onChange: function(selectedDates, dateStr, instance) {
@@ -278,14 +494,12 @@
     });
 
     // Initialize Flatpickr for end date picker
-    var endDatePicker = flatpickr(".endDatePicker", {
+    const endDatePicker = flatpickr(".endDatePicker", {
         dateFormat: "Y-m-d", // Date format
         maxDate:'today'
     });
 
     console.log(78);
-
-    
 
     // Add event listener to the submit button
     document.getElementById("filterByDate").addEventListener("click", function(event) {
@@ -296,7 +510,7 @@
         document.querySelector('.endDateError').textContent = "";
 
         // Get the selected start date
-        var startDate = startDatePicker.selectedDates[0];
+        const startDate = startDatePicker.selectedDates[0]; // Changed from var to const
 
         // Check if start date is empty
         if (!startDate) {
@@ -305,32 +519,98 @@
         }
 
         // Get the selected end date if available
-        var endDate = endDatePicker.selectedDates[0];
-        console.log(startDate < endDate);
+        const endDate = endDatePicker.selectedDates[0];
+        console.log(startDate < endDate); // Changed from var to const
 
-        // Check if end date is selected and is less than start date
-        
+        // console.log(startDate);
+        // console.log(endDate);
 
-        console.log(endDate);
+        const dateBody = {
+            startDate: startDate
+        }
+        if(endDate){
+            dateBody.endDate=endDate
+        }else{
+            dateBody.endDate=startDate
+        }
+
+        console.log(dateBody);
+
+        // return
 
 
-        
+
+
+        function generateOrderListing(orders) {
+    let html = ''; // Initialize an empty string to store HTML markup
+
+    orders.forEach(order => {
+        order.orderItems.forEach((item, index) => {
+            html += `
+                <tr class="text-dark">
+                    ${index === 0 ? `<td rowspan="${order.orderItems.length}">${order.userName}</td>
+                                    <td rowspan="${order.orderItems.length}">${new Date(order.orderDate).toLocaleString('en-US', {
+                                        weekday: 'short',
+                                        day: 'numeric',
+                                        month: 'short',
+                                        year: 'numeric',
+                                        hour: 'numeric',
+                                        minute: 'numeric',
+                                        second: 'numeric',
+                                        hour12: true
+                                    })}</td>
+                                    <td rowspan="${order.orderItems.length}">${order.grandTotal}</td>
+                                    <td rowspan="${order.orderItems.length}">${order.paymentStatus.type}<br>${order.orderStatus.type}</td>
+                                    <td rowspan="${order.orderItems.length}">${order.couponName ? `${order.couponName}<br>${order.couponDiscountPercentage}%<br>${order.couponDiscount}` : 'N/A'}</td>
+                                    <td rowspan="${order.orderItems.length}">${order.tax}</td>` : ''}
+                    <td>${item.productName}</td>
+                    <td>${item.unitPrice}</td>
+                    <td>${item.quantity}</td>
+                    <td>${item.price}</td>
+                    <td>${item.categoryDiscountPecentage}%<br>${item.categoryOffer}</td>
+                    <td>${item.productDiscountPercentage}%<br>${item.productOffer}</td>
+                    <td>${item.totalPrice}</td>
+                    ${index === 0 ? `<td rowspan="${order.orderItems.length}"><a class="actionBtn" href=""></a></td>` : ''}
+                </tr>`;
+        });
+    });
+
+    return html; // Return the generated HTML
+}
 
         // Perform fetch request with the selected dates
-        fetch('your_api_endpoint_here', {
+        fetch('/admin/dateFilter', {
             method: 'POST', // Change method as needed
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({
-                startDate: startDate.toISOString(),
-                endDate: endDate ? endDate.toISOString() : null
-            })
+            body: JSON.stringify(dateBody)
         })
+
+        
+
+
+
         .then(response => response.json())
         .then(data => {
             // Handle response data
-            console.log(data);
+           
+
+
+        if (data && data.length > 0) {
+            const tbody = document.querySelector('#my-table tbody');
+            tbody.innerHTML = generateOrderListing(data); // Append generated HTML to the table body
+        } else {
+        // Display a message indicating no orders are available
+        const tbody = document.querySelector('#my-table tbody');
+        tbody.innerHTML = '<tr><td colspan="14" class="text-center">No orders available</td></tr>';
+        }
+
+
+
+
+
+
         })
         .catch(error => {
             // Handle errors
@@ -338,6 +618,7 @@
         });
     });
 </script>
+
 
 
 

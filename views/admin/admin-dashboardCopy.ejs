@@ -4,8 +4,7 @@
 
 <style>
     canvas{
-        width:500px;
-        
+        width:500px
     }
 </style>
 
@@ -87,98 +86,27 @@
 
                     <div class="col-sm-12 col-xl-6">
                         <div class="bg-light rounded h-100 p-4">
-                            <div class="pb-2 mb-4">
+
+                            <div class=" pb-2 mb-4" >
+
                                 <h6>Select Filter</h6>
+
                                 <select id="sales-filter">
-                                    <option value="yearly" data-sales="<%= JSON.stringify(locals.yearlyTotalSale) %>">Yearly</option>
-                                    <option value="monthly" selected data-sales="<%= JSON.stringify(locals.monthlyTotalSale) %>">Monthly</option>
+                                    <option value="yearly">Yearly</option>
+                                    <option value="monthly">Monthly</option>
                                 </select>
                             </div>
-                            <canvas id="monthly-yearly-sales-chart" data-yearly-sales="<%= JSON.stringify(locals.yearlyTotalSale) %>" data-monthly-sales="<%= JSON.stringify(locals.monthlyTotalSale) %>"></canvas>
+
+                            <canvas id="monthly-yearly-sales-chart" height="200"></canvas>
                         </div>
                     </div>
-                    
-                    <script>
-                        document.addEventListener('DOMContentLoaded', function() {
-                            const ctx = document.getElementById('monthly-yearly-sales-chart').getContext('2d');
-                            const salesFilter = document.getElementById('sales-filter');
-                            let chart;
-                    
-                            // Default data to be used when the page loads
-                            const defaultData = {
-                                labels: [],
-                                datasets: [{
-                                    data: [],
-                                    backgroundColor: '#FF5733'
-                                }]
-                            };
-                    
-                            // Function to parse the sales data and construct chart data
-                            function parseData(salesData) {
-                                const labels = salesData.map(item => item._id.toString());
-                                const data = salesData.map(item => item.totalSales);
-                                return {
-                                    labels: labels,
-                                    datasets: [{
-                                        data: data,
-                                        backgroundColor: '#FF5733'
-                                    }]
-                                };
-                            }
-                    
-                            // Function to update chart based on selected filter
-                            function updateChart() {
-                                const filter = salesFilter.value;
-                                let data;
-                    
-                                if (filter === 'yearly') {
-                                    data = parseData(JSON.parse(document.getElementById('monthly-yearly-sales-chart').dataset.yearlySales));
-                                } else if (filter === 'monthly') {
-                                    data = parseData(JSON.parse(document.getElementById('monthly-yearly-sales-chart').dataset.monthlySales));
-                                }
-                    
-                                // Update chart with new data
-                                if (chart) {
-                                    chart.data = data;
-                                    chart.update();
-                                } else {
-                                    chart = new Chart(ctx, {
-                                        type: 'bar',
-                                        data: data,
-                                        options: {
-                                            responsive: true,
-                                            scales: {
-                                                yAxes: [{
-                                                    ticks: {
-                                                        beginAtZero: true
-                                                    }
-                                                }]
-                                            }
-                                        }
-                                    });
-                                }
-                            }
-                    
-                            // Event listener for filter change
-                            salesFilter.addEventListener('change', updateChart);
-                    
-                            // Initially update the chart when the page loads
-                            updateChart();
-                        });
-                    </script>
-                    
-
-
-
-
-
                     <div class="col-sm-12 col-xl-6">
                         <div class="bg-light rounded h-100 p-4">
                             <div class=" pb-2 mb-4" >
                                 <h6>top- category</h6>
                                 
                             </div>
-                            <canvas id="monthly-yearly-best-selling-category" ></canvas>
+                            <canvas id="best-selling-category" ></canvas>
                         </div>
                     </div>
                     <div class="col-sm-12 col-xl-6">
@@ -187,7 +115,7 @@
                                 <h6>top-product</h6>
 
                             </div>
-                            <canvas id="monthly-yearly-best-selling-product" ></canvas>
+                            <canvas id="best-selling-product" ></canvas>
                         </div>
                     </div>
                     <div class="col-sm-12 col-xl-6">
@@ -323,15 +251,7 @@
 
 
         <!-- Back to Top -->
-<script>
-var selectElement = document.getElementById("sales-filter");
-    selectElement.addEventListener("change", function() {
-    var selectedOption = selectElement.options[selectElement.selectedIndex];
-    var dataSales = selectedOption.getAttribute("data-sales");
-    console.log(dataSales);
-});
 
-</script>
 
 
 
@@ -339,25 +259,31 @@ var selectElement = document.getElementById("sales-filter");
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        const ctx = document.getElementById('monthly-yearly-sales-chart').getContext('2d');
-        const yearlyData = {
+        var ctx = document.getElementById('monthly-yearly-sales-chart').getContext('2d');
+        var monthlyData = {
+            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+            datasets: [{
+                label: 'Monthly Sales',
+                data: [5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60],
+                // backgroundColor: 'rgba(0, 156, 255, .7)'
+                backgroundColor: '#33FF57'
+                 
+            }]
+        };
+        var yearlyData = {
             labels: ['2020', '2021', '2022', '2023', '2024'],
             datasets: [{
+                label: 'Yearly Sales',
                 data: [150, 180, 220, 250, 280],
                 backgroundColor: '#FF5733'
             }]
         };
-        const monthlyData = {
-            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-            datasets: [{
-                data: [5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60],
-                // backgroundColor: 'rgba(0, 156, 255, .7)'
-                backgroundColor: '#33FF57'
-            }]
-        };
-        const chart = new Chart(ctx, {
+
+
+        
+        var chart = new Chart(ctx, {
             type: 'bar',
-            data: yearlyData,
+            data: monthlyData,
             options: {
                 responsive: true,
                 scales: {
@@ -369,8 +295,10 @@ var selectElement = document.getElementById("sales-filter");
                 }
             }
         });
+
+
         document.getElementById('sales-filter').addEventListener('change', function() {
-            const filter = this.value;
+            var filter = this.value;
             if (filter === 'yearly') {
                 chart.data = yearlyData;
             } else if (filter === 'monthly') {
@@ -387,9 +315,13 @@ var selectElement = document.getElementById("sales-filter");
 
 
 
+        
+
+
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        var ctx = document.getElementById('monthly-yearly-best-selling-category').getContext('2d');
+        console.log(123);
+        var ctx = document.getElementById('best-selling-category').getContext('2d');
         var salesData = {
             labels: ['Category A', 'Category B', 'Category C', 'Category D', 'Category E'],
             datasets: [{

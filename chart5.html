@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monthly and Yearly Sales Report</title>
+    <!-- Include Chartist CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/chartist.js/latest/chartist.min.css">
+    <!-- Include Chartist JavaScript -->
+    <script src="https://cdn.jsdelivr.net/chartist.js/latest/chartist.min.js"></script>
+</head>
+<body>
+    <div>
+        <label for="sales-filter">Select Filter:</label>
+        <select id="sales-filter">
+            <option value="yearly">Yearly</option>
+            <option value="monthly">Monthly</option>
+        </select>
+    </div>
+    <div id="monthly-yearly-sales-chart" class="ct-chart"></div>
+
+    
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var monthlyData = {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                series: [
+                    [5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60]
+                ]
+            };
+            var yearlyData = {
+                labels: ['2020', '2021', '2022', '2023', '2024'],
+                series: [
+                    [150, 180, 220, 250, 280]
+                ]
+            };
+
+            var chart = new Chartist.Bar('#monthly-yearly-sales-chart', monthlyData, {
+                seriesBarDistance: 10,
+                axisX: {
+                    labelInterpolationFnc: function(value, index) {
+                        return index % 2 === 0 ? value : value;
+                    }
+                }
+            });
+
+            // Filter function
+            document.getElementById('sales-filter').addEventListener('change', function() {
+                var filter = this.value;
+                if (filter === 'yearly') {
+                    chart.update(yearlyData);
+                } else if (filter === 'monthly') {
+                    chart.update(monthlyData);
+                }
+            });
+        });
+    </script>
+</body>
+</html>

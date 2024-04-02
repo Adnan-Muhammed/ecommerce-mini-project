@@ -76,6 +76,14 @@ const orderSchema = new mongoose.Schema({
       description:{
         type:String,
       },
+      categoryId: {  // Change to categoryId
+        type: mongoose.Schema.Types.ObjectId,  // Store ObjectId reference
+        ref: 'categoryCollections',  // Reference to category model
+        required: true
+    },
+    categoryName:{
+      type:String,
+    },
       categoryOffer:{
         type:Number,
       },

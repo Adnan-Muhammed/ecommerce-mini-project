@@ -50,6 +50,8 @@ router.post('/categoryEdited/:id',   adminSessionMiddleware.requireAdmin, catego
 
 
 
+
+
 const couponManagement = require('../controller/couponController.js')
 router.get('/couponList', adminSessionMiddleware.requireAdmin, couponManagement.couponlist);
 router.get('/addCoupon', adminSessionMiddleware.requireAdmin, couponManagement.addCoupon);
@@ -86,13 +88,49 @@ router.get('/delete/:id/uploads/:imgUrl',  adminSessionMiddleware.requireAdmin,p
 
 
 
+
+router.post('/dateFilter',adminSessionMiddleware.requireAdmin,adminController.dateFilter)
+router.post('/yearFilter',adminSessionMiddleware.requireAdmin,adminController.yearFilter)
+router.post('/monthFilter',adminSessionMiddleware.requireAdmin,adminController.monthFilter)
+
+
+
+
+
+
+
+
 const orderManagement = require('../controller/orderManagement.js')
 router.get('/orderlist',adminSessionMiddleware.requireAdmin,orderManagement.orderUpdates)
 
 
-router.get('/datatable',(req,res)=>{
-    res.render('admin/datatable')
+router.get('/chart',(req,res)=>{
+    res.render('admin/chart2')
 })
+
+
+
+
+router.get('/chart3',(req,res)=>{
+    res.render('admin/chart3')
+})
+
+
+
+router.get('/chart4',(req,res)=>{
+    res.render('admin/chart4')
+})
+
+
+router.get('/chart5',(req,res)=>{
+    res.render('admin/chart5')
+})
+
+
+router.get('/chart6',(req,res)=>{
+    res.render('admin/chart6')
+})
+
 
 
 router.get('/datatable2',(req,res)=>{

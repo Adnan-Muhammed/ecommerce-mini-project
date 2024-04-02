@@ -156,6 +156,8 @@ const currentDate = new Date()
       }
 
       const categoryId = product.categoryId._id.toString();
+      const categoryName = product.categoryId.name; // Fetching the category name
+
 
       // Calculate total price after applying product discount and category discount
       let price = cartItem.price;
@@ -195,7 +197,8 @@ const currentDate = new Date()
         unitPrice: product.price,
         price: cartItem.price,
         description: product.description,
-        // isAvailable: product.isAvailable,
+        categoryId,
+        categoryName,
         categoryOffer,
         productOffer,
         categoryDiscountPecentage:
