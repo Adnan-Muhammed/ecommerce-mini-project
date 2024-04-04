@@ -88,7 +88,7 @@
                     <div class="col-sm-12 col-xl-6">
                         <div class="bg-light rounded h-100 p-4">
                             <div class="pb-2 mb-4">
-                                <h6>Select Filter</h6>
+                                <h6>Sales Chart</h6>
                                 <select id="sales-filter">
                                     <option value="yearly" data-sales="<%= JSON.stringify(locals.yearlyTotalSale) %>">Yearly</option>
                                     <option value="monthly" selected data-sales="<%= JSON.stringify(locals.monthlyTotalSale) %>">Monthly</option>
@@ -98,74 +98,7 @@
                         </div>
                     </div>
                     
-                    <script>
-                        document.addEventListener('DOMContentLoaded', function() {
-                            const ctx = document.getElementById('monthly-yearly-sales-chart').getContext('2d');
-                            const salesFilter = document.getElementById('sales-filter');
-                            let chart;
-                    
-                            // Default data to be used when the page loads
-                            const defaultData = {
-                                labels: [],
-                                datasets: [{
-                                    data: [],
-                                    backgroundColor: '#FF5733'
-                                }]
-                            };
-                    
-                            // Function to parse the sales data and construct chart data
-                            function parseData(salesData) {
-                                const labels = salesData.map(item => item._id.toString());
-                                const data = salesData.map(item => item.totalSales);
-                                return {
-                                    labels: labels,
-                                    datasets: [{
-                                        data: data,
-                                        backgroundColor: '#FF5733'
-                                    }]
-                                };
-                            }
-                    
-                            // Function to update chart based on selected filter
-                            function updateChart() {
-                                const filter = salesFilter.value;
-                                let data;
-                    
-                                if (filter === 'yearly') {
-                                    data = parseData(JSON.parse(document.getElementById('monthly-yearly-sales-chart').dataset.yearlySales));
-                                } else if (filter === 'monthly') {
-                                    data = parseData(JSON.parse(document.getElementById('monthly-yearly-sales-chart').dataset.monthlySales));
-                                }
-                    
-                                // Update chart with new data
-                                if (chart) {
-                                    chart.data = data;
-                                    chart.update();
-                                } else {
-                                    chart = new Chart(ctx, {
-                                        type: 'bar',
-                                        data: data,
-                                        options: {
-                                            responsive: true,
-                                            scales: {
-                                                yAxes: [{
-                                                    ticks: {
-                                                        beginAtZero: true
-                                                    }
-                                                }]
-                                            }
-                                        }
-                                    });
-                                }
-                            }
-                    
-                            // Event listener for filter change
-                            salesFilter.addEventListener('change', updateChart);
-                    
-                            // Initially update the chart when the page loads
-                            updateChart();
-                        });
-                    </script>
+                 
                     
 
 
@@ -175,21 +108,26 @@
                     <div class="col-sm-12 col-xl-6">
                         <div class="bg-light rounded h-100 p-4">
                             <div class=" pb-2 mb-4" >
-                                <h6>top- category</h6>
+                                <h6>top 5 categories</h6>
                                 
                             </div>
-                            <canvas id="monthly-yearly-best-selling-category" ></canvas>
+                            <canvas id="monthly-yearly-best-selling-category"  data-bestSelling-categories="<%= JSON.stringify(locals.top5Categories) %>"   ></canvas>
                         </div>
                     </div>
+
+
+
                     <div class="col-sm-12 col-xl-6">
                         <div class="bg-light rounded h-100 p-4">
                             <div class=" pb-2 mb-4"   >
-                                <h6>top-product</h6>
+                                <h6>top 5 products</h6>
 
                             </div>
-                            <canvas id="monthly-yearly-best-selling-product" ></canvas>
+                            <canvas id="monthly-yearly-best-selling-product"  data-bestSelling-products="<%= JSON.stringify(locals.top5Products) %>" ></canvas>
                         </div>
                     </div>
+
+
                     <div class="col-sm-12 col-xl-6">
                         <div class="bg-light rounded h-100 p-4">
                             <h6 class="mb-4">Multiple Bar Chart</h6>
@@ -203,7 +141,7 @@
 
 
             <!-- Sales Chart End -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+             <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
             <br>
 
@@ -213,15 +151,16 @@
             <!-- Recent Sales Start -->
 
 
+            <div class="container-fluid pt-4 px-4">
 
-            <!-- <div class="bg-light rounded h-100 p-4"> -->
-                <h6 class="mb-4">Sales Report</h6>
+            <div class="bg-light rounded  p-4">
+                <h6 class="mb-4">Recent Sales</h6>
                 
                 <div class="table-responsive">
                     <table id="salesTable" class="table table-bordered">
                         <thead>
                             <tr class="text-dark">
-                                <th rowspan="2"></th> <!-- Add a column for checkbox input -->
+                                <!-- <th rowspan="2"></th> Add a column for checkbox input -->
                                 <th rowspan="2">User Name</th>
                                 <th rowspan="2">Order Date</th>
                                 <th rowspan="2">Grand Total</th>
@@ -229,7 +168,7 @@
                                 <th rowspan="2">Coupon</th>
                                 <th rowspan="2">Tax</th>
                                 <th style="text-align: center;" colspan="7">Order Items</th>
-                                <th rowspan="2">Action</th>
+                                <!-- <th rowspan="2">Action</th> -->
                             </tr>
                             <tr class="text-dark">
                                 <!-- Other headers -->
@@ -250,7 +189,7 @@
                                         <!-- Checkbox input for each row -->
                                         <!-- Render order details -->
                                         <% if (index === 0) { %>
-                                            <td rowspan="<%= order.orderItems.length %>"><input type="checkbox"></td>
+                                            <!-- <td rowspan="<%= order.orderItems.length %>"><input type="checkbox"></td> -->
                                             <td rowspan="<%= order.orderItems.length %>"><%= order.userName %></td>
                                             <td rowspan="<%= order.orderItems.length %>"><%= new Date(order.orderDate).toLocaleString('en-US', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: true }) %></td>
                                             <td rowspan="<%= order.orderItems.length %>"><%= order.grandTotal %></td>
@@ -289,16 +228,17 @@
                                         </td>
                                         <td><%= item.totalPrice %></td>
                                         <!-- Render action -->
-                                        <% if (index === 0) { %>
+                                        <!-- <% if (index === 0) { %>
                                             <td rowspan="<%= order.orderItems.length %>"><a class="btn btn-sm btn-primary" href="">Download</a></td>
-                                        <% } %>
+                                        <% } %> -->
                                     </tr>
                                 <% }); %>
                             <% }); %>
                         </tbody>
                     </table>
                 </div>
-            <!-- </div> -->
+            </div>
+            </div>
 
 
 
@@ -318,20 +258,12 @@
 
 
 
-        </div>
+        <!-- </div> -->
         <!-- Content End -->
 
 
         <!-- Back to Top -->
-<script>
-var selectElement = document.getElementById("sales-filter");
-    selectElement.addEventListener("change", function() {
-    var selectedOption = selectElement.options[selectElement.selectedIndex];
-    var dataSales = selectedOption.getAttribute("data-sales");
-    console.log(dataSales);
-});
 
-</script>
 
 
 
@@ -340,44 +272,69 @@ var selectElement = document.getElementById("sales-filter");
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const ctx = document.getElementById('monthly-yearly-sales-chart').getContext('2d');
-        const yearlyData = {
-            labels: ['2020', '2021', '2022', '2023', '2024'],
+        const salesFilter = document.getElementById('sales-filter');
+        let chart;
+
+        // Default data to be used when the page loads
+        const defaultData = {
+            labels: [],
             datasets: [{
-                data: [150, 180, 220, 250, 280],
+                data: [],
                 backgroundColor: '#FF5733'
             }]
         };
-        const monthlyData = {
-            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-            datasets: [{
-                data: [5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60],
-                // backgroundColor: 'rgba(0, 156, 255, .7)'
-                backgroundColor: '#33FF57'
-            }]
-        };
-        const chart = new Chart(ctx, {
-            type: 'bar',
-            data: yearlyData,
-            options: {
-                responsive: true,
-                scales: {
-                    yAxes: [{
-                        ticks: {
-                            beginAtZero: true
-                        }
-                    }]
-                }
-            }
-        });
-        document.getElementById('sales-filter').addEventListener('change', function() {
-            const filter = this.value;
+
+        // Function to parse the sales data and construct chart data
+        function parseData(salesData) {
+            const labels = salesData.map(item => item._id.toString());
+            const data = salesData.map(item => item.totalSales);
+            return {
+                labels: labels,
+                datasets: [{
+                    data: data,
+                    backgroundColor: '#FF5733'
+                }]
+            };
+        }
+
+        // Function to update chart based on selected filter
+        function updateChart() {
+            const filter = salesFilter.value;
+            let data;
+
             if (filter === 'yearly') {
-                chart.data = yearlyData;
+                data = parseData(JSON.parse(document.getElementById('monthly-yearly-sales-chart').dataset.yearlySales));
             } else if (filter === 'monthly') {
-                chart.data = monthlyData;
+                data = parseData(JSON.parse(document.getElementById('monthly-yearly-sales-chart').dataset.monthlySales));
             }
-            chart.update();
-        });
+
+            // Update chart with new data
+            if (chart) {
+                chart.data = data;
+                chart.update();
+            } else {
+                chart = new Chart(ctx, {
+                    type: 'bar',
+                    data: data,
+                    options: {
+                        responsive: true,
+                        scales: {
+                            yAxes: [{
+                                ticks: {
+                                    beginAtZero: true
+                                }
+                            }]
+                        }
+                    }
+                });
+            }
+        }
+
+        // Event listener for filter change
+        salesFilter.addEventListener('change', updateChart);
+
+        // Initially update the chart when the page loads
+        updateChart();
     });
 </script>
 
@@ -390,14 +347,26 @@ var selectElement = document.getElementById("sales-filter");
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         var ctx = document.getElementById('monthly-yearly-best-selling-category').getContext('2d');
+        
+        // Get data from the dataset attribute
+        var dataset = document.getElementById('monthly-yearly-best-selling-category').getAttribute('data-bestSelling-categories');
+        var top5Categories = JSON.parse(dataset);
+        
+        // Extracting data from the dataset
+        var labels = [];
+        var data = [];
+        top5Categories.forEach(function(category) {
+            labels.push(category.categoryName);
+            data.push(category.totalCount);
+        });
+        
         var salesData = {
-            labels: ['Category A', 'Category B', 'Category C', 'Category D', 'Category E'],
+            labels: labels,  
             datasets: [{
                 label: 'top category',
-                data: [100, 80, 120, 90, 110],
-                backgroundColor: '#5B33FF'
-            },
-            ]
+                data: data,  
+                backgroundColor: '#FFD633'
+            }]
         };
     
         var chart = new Chart(ctx, {
@@ -415,37 +384,39 @@ var selectElement = document.getElementById("sales-filter");
             }
         });
     });
-    </script>
-    
-    
-    
-    <script>
+</script>
+
+
+
+
+<script>
     document.addEventListener('DOMContentLoaded', function() {
         var ctx = document.getElementById('monthly-yearly-best-selling-product').getContext('2d');
         
-        // Sample data for 10 products
-        var monthlyData = {
-            labels: ['Product 1', 'Product 2', 'Product 3', 'Product 4', 'Product 5', 'Product 6', 'Product 7', 'Product 8', 'Product 9', 'Product 10'],
+        // Get data from the dataset attribute
+        var dataset = document.getElementById('monthly-yearly-best-selling-product').getAttribute('data-bestSelling-products');
+        var top5Products = JSON.parse(dataset);
+        
+        // Extracting data from the dataset
+        var labels = [];
+        var data = [];
+        top5Products.forEach(function(product) {
+            labels.push(product.productName);
+            data.push(product.totalCount);
+        });
+        
+        var salesData = {
+            labels: labels,  
             datasets: [{
-                label: 'Monthly Sales',
-                data: [100, 80, 120, 90, 110, 70, 130, 95, 105, 115], // Monthly sales data for each product
-                // backgroundColor: 'rgba(0, 156, 255, .7)'
-                backgroundColor: '#FFD633'
-            }]
-        };
-        var yearlyData = {
-            labels: ['Product 1', 'Product 2', 'Product 3', 'Product 4', 'Product 5', 'Product 6', 'Product 7', 'Product 8', 'Product 9', 'Product 10'],
-            datasets: [{
-                label: 'Yearly Sales',
-                data: [1000, 800, 1200, 900, 1100, 700, 1300, 950, 1050, 1150], // Yearly sales data for each product
-                // backgroundColor: 'rgba(255, 99, 132, 0.7)'
-                backgroundColor: '#33FFC6'
+                label: 'Top Products',
+                data: data,  
+                backgroundColor: '#5B33FF'
             }]
         };
     
         var chart = new Chart(ctx, {
             type: 'bar',
-            data: monthlyData,
+            data: salesData,
             options: {
                 responsive: true,
                 scales: {
@@ -457,19 +428,14 @@ var selectElement = document.getElementById("sales-filter");
                 }
             }
         });
-    
-        document.getElementById('top-product-filter').addEventListener('change', function() {
-            var filter = this.value;
-            if (filter === 'yearly') {
-                chart.data = yearlyData;
-            } else if (filter === 'monthly') {
-                chart.data = monthlyData;
-            }
-            chart.update();
-        });
     });
-    </script>
-    
+</script>
+
+
+
+
+
+
 
         <%-include('footer')-%>
 

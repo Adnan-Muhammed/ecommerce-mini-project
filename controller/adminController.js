@@ -230,7 +230,7 @@ const generateSalesReport = async (limit) => {
 const adminDashboardGet = async (req, res) => {
   try {
       // Fetching only 5 orders for admin dashboard
-      const orders = await generateSalesReport(10); // Limiting to 5 orders for admin dashboard
+      const orders = await generateSalesReport(3); // Limiting to 5 orders for admin dashboard
       console.log(orders.length);
     //   console.log(orders);
     //   res.json(orders)
@@ -420,10 +420,6 @@ const monthlyTotalSale = months.map(month => ({
 
 
 
-
-// res.json(monthlyTotalSale)
-// res.json(yearlyTotalSale)
-
 let findTop5Categories = [
     // Match orders with paymentStatus.type "fulfilled"
     { $match: { "paymentStatus.type": "fulfilled" } },
@@ -469,6 +465,9 @@ let findTop5Categories = [
 
 const top5Categories = await OrderDB.aggregate(findTop5Categories);
 
+// console.log(top5Categories);
+// res.json(top5Categories)
+// return
 
 let findTop5Products = [
     // Match orders with paymentStatus.type "fulfilled"
@@ -525,6 +524,7 @@ const top5Products = await OrderDB.aggregate(findTop5Products);
 
 // res.json(orders)
 // return
+
 
 
 
