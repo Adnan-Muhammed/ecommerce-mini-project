@@ -1,243 +1,157 @@
-
-
 <%-include('header')-%>
-    <!--Body Content-->
-    <div id="page-content">
-    	<!--Page Title-->
-    	<div class="page section-header text-center">
-			<div class="page-title">
-        		<div class="wrapper">
-                    <h1 class="page-width">Reset Your Password</h1>
-                     <p>Enter your  and we'll send you a link to reset your password.
-                    Please  check it.
-                    </p> 
-                </div>
-      		</div>
-		</div>
-        <!--End Page Title-->
-        
-        <div class="container">
-        	<div class="row">
-                <div class="col-12 col-sm-12 col-md-6 col-lg-6 main-col offset-md-3">
-                	<div class="mb-4">
-                       <form method="post" action="/otpverified" id="otpVerification" accept-charset="UTF-8" class="contact-form">	
-                          <div class="row">
-                            <div class="col-12 col-sm-12 col-md-12 col-lg-12">
-                                <div class="form-group">
-                                    <label for="otp">OTP</label>
-                                    <input type="" name="otpform" placeholder="" id="otpcode" class="" autocorrect="off" autocapitalize="off" autofocus="">
-                                    <div class=" error" style="color: red;"> </div>
-                                </div>
-                            </div>
-                            <div class="col-12 col-sm-12 col-md-12 col-lg-12">
-
-                            </div>
-                          </div>
-                          <div class="row">
-                            <!-- <div class="error" ><p style="color: red;">khygj</p></div> -->
-
-                            <div class="text-center col-12 col-sm-12 col-md-12 col-lg-12">
-                                <div id="timer"></div>
-
-                                <!-- <input type="submit" class="btn mb-3" value="" > -->
-                                <input type="submit" class="btn mb-3" id="submitButton" value="Send">
-                                
-
-
-                                <p class="mb-4">
-									<a href="#" id="">Back to login</a> &nbsp; | &nbsp;
-								    <a href="register.html" id="customer_register_link">Create account</a>
-                                </p>
-                            </div>
-                         </div>
-                     </form>
-                    </div>
-               	</div>
-            </div>
-        </div>
-        
+<!--Body Content-->
+<div id="page-content">
+  <!--Page Title-->
+  <div class="page section-header text-center">
+    <div class="page-title">
+      <div class="wrapper">
+        <h1 class="page-width">Reset Your Password</h1>
+        <p>
+          Enter your and we'll send you a link to reset your password. Please
+          check it.
+        </p>
+      </div>
     </div>
-    
+  </div>
+  <!--End Page Title-->
 
+  <div class="container">
+    <div class="row">
+      <div class="col-12 col-sm-12 col-md-6 col-lg-6 main-col offset-md-3">
+        <div class="mb-4">
+          <form
+            method="post"
+            action="/otpverified"
+            id="otpVerification"
+            accept-charset="UTF-8"
+            class="contact-form"
+          >
+            <div class="row">
+              <div class="col-12 col-sm-12 col-md-12 col-lg-12">
+                <div class="form-group">
+                  <label for="otp">OTP</label>
+                  <input
+                    type=""
+                    name="otpform"
+                    placeholder=""
+                    id="otpcode"
+                    class=""
+                    autocorrect="off"
+                    autocapitalize="off"
+                    autofocus=""
+                  />
+                  <div class="error" style="color: red"></div>
+                </div>
+              </div>
+              <div class="col-12 col-sm-12 col-md-12 col-lg-12"></div>
+            </div>
+            <div class="row">
+              <!-- <div class="error" ><p style="color: red;">khygj</p></div> -->
 
-            
+              <div class="text-center col-12 col-sm-12 col-md-12 col-lg-12">
+                <div id="timer"></div>
+
+                <!-- <input type="submit" class="btn mb-3" value="" > -->
+                <input
+                  type="submit"
+                  class="btn mb-3"
+                  id="submitButton"
+                  value="Send"
+                />
+
+                <p class="mb-4">
+                  <a href="#" id="">Back to login</a> &nbsp; | &nbsp;
+                  <a href="register.html" id="customer_register_link"
+                    >Create account</a
+                  >
+                </p>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
 <script>
-    const timerElement = document.getElementById('timer');
-    let seconds = 30; // Set the initial timer value in seconds
-    let otpExpired = false; // Flag to track OTP expiration
+  const timerElement = document.getElementById("timer");
+  let seconds = 30; // Set the initial timer value in seconds
+  let otpExpired = false; // Flag to track OTP expiration
 
-    function updateTimer() {
-        timerElement.innerText = `left: ${seconds} seconds`;
+  function updateTimer() {
+    timerElement.innerText = `left: ${seconds} seconds`;
 
-        if (seconds > 0) {
-            seconds--;
-            setTimeout(updateTimer, 1000); // Update the timer every second
-        } else {
-            timerElement.innerText = 'its Expired';
-            otpExpired = true;
-            // Handle timer expiration actions here
-            updateButtonLabel();
-            updateResendLink();
-        }
+    if (seconds > 0) {
+      seconds--;
+      setTimeout(updateTimer, 1000); // Update the timer every second
+    } else {
+      timerElement.innerText = "its Expired";
+      otpExpired = true;
+      // Handle timer expiration actions here
+      updateButtonLabel();
+      updateResendLink();
     }
+  }
 
- 
-function updateButtonLabel() {
-    const actionButton = document.getElementById('submitButton');
+  function updateButtonLabel() {
+    const actionButton = document.getElementById("submitButton");
 
     if (otpExpired) {
-        actionButton.value = 'Resend'; // Update button value to "Resend" if OTP has expired
-        actionButton.type= ""
-        actionButton.addEventListener('click', function() {
-            window.location.href = "/resendOtp";
-        });
+      actionButton.value = "Resend"; // Update button value to "Resend" if OTP has expired
+      actionButton.type = "";
+      actionButton.addEventListener("click", function () {
+        window.location.href = "/resendOtp";
+      });
     } else {
-        actionButton.value = 'Send'; 
-        actionButton.removeEventListener('click');
+      actionButton.value = "Send";
+      actionButton.removeEventListener("click");
     }
-}
+  }
+  updateTimer();
 
-    // function updateResendLink() {
-    //     const resendLink = document.getElementById('resendOtp');
-    //     if (otpExpired) {
-    //         resendLink.href = '/resendOtp';
-    //     } 
-    // }
-   
+  const otpForm = document.getElementById("otpVerification");
+  otpForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    console.log(9999);
+    const errorElement = document.querySelector(".error");
 
-    // Start the timer when the page loads or as needed
-    updateTimer();
-
-    const otpForm = document.getElementById('otpVerification');
-    otpForm.addEventListener('submit', async (event) => {
-        event.preventDefault();
-        console.log(9999);
-        const errorElement = document.querySelector('.error');
-        
-        const otpValue = document.getElementById('otpcode').value.trim();// Trimmed the value to remove leading and trailing whitespace
+    const otpValue = document.getElementById("otpcode").value.trim(); // Trimmed the value to remove leading and trailing whitespace
     if (!otpValue) {
-        // Display error message if OTP input is empty
-        errorElement.innerText = 'Please enter OTP';
-        return;
+      // Display error message if OTP input is empty
+      errorElement.innerText = "Please enter OTP";
+      return;
     }
 
+    // const formData = new FormData(otpForm);
+    console.log(otpValue, 77777);
+    const value = JSON.stringify({ otp: otpValue });
+    console.log("its stringify otp", value);
+    try {
+      const response = await fetch("/otpverified", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        // body: formData
+        body: JSON.stringify({ otp: otpValue }), // Sending the OTP value in the request body
+      });
+      const responseData = await response.json();
 
-        // const formData = new FormData(otpForm);
-        console.log(otpValue,77777);
-        const value = JSON.stringify({ otp: otpValue })
-        console.log('its stringify otp',value );
-        try {
-            const response = await fetch('/otpverified', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                // body: formData
-                body: JSON.stringify({ otp: otpValue }), // Sending the OTP value in the request body
+      if (response.ok) {
+        // Handle success case
 
-            });
-            const responseData = await response.json();
-            console.log(123456789990);
-            console.log(responseData);
-            if (response.ok) {
-                // Handle success case
+        window.location.href = "/"; // Redirect to home page
+      } else {
+        // Handle error cases
+        errorElement.innerText = responseData.error;
+      }
+    } catch (error) {}
+  });
 
-
-                console.log('090',99999);
-                window.location.href = '/'; // Redirect to home page
-            } else {
-                // Handle error cases
-                errorElement.innerText = responseData.error;
-                console.log(responseData.error);
-            }
-        } catch (error) {
-            console.error('Error:', error);
-        }
-    });
-
-    // Update button label and resend link when the page loads
-    updateButtonLabel();
-    updateResendLink();
+  // Update button label and resend link when the page loads
+  updateButtonLabel();
+  updateResendLink();
 </script>
 
-
-
-
-
-
-<footer id="footer">
-        
-    <div class="site-footer">
-        <div class="container">
-             <!--Footer Links-->
-            <div class="footer-top">
-                <div class="row">
-                    <div class="col-12 col-sm-12 col-md-3 col-lg-3 footer-links">
-                        <h4 class="h4">Quick Shop</h4>
-                        <ul>
-                            <li><a href="#">Women</a></li>
-                            <li><a href="#">Men</a></li>
-                            <li><a href="#">Kids</a></li>
-                            <li><a href="#">Sportswear</a></li>
-                            <li><a href="#">Sale</a></li>
-                        </ul>
-                    </div>
-                    <div class="col-12 col-sm-12 col-md-3 col-lg-3 footer-links">
-                        <h4 class="h4">Informations</h4>
-                        <ul>
-                            <li><a href="#">About us</a></li>
-                            <li><a href="#">Careers</a></li>
-                            <li><a href="#">Privacy policy</a></li>
-                            <li><a href="#">Terms &amp; condition</a></li>
-                            <li><a href="#">My Account</a></li>
-                        </ul>
-                    </div>
-                    <div class="col-12 col-sm-12 col-md-3 col-lg-3 footer-links">
-                        <h4 class="h4">Customer Services</h4>
-                        <ul>
-                            <li><a href="#">Request Personal Data</a></li>
-                            <li><a href="#">FAQ's</a></li>
-                            <li><a href="#">Contact Us</a></li>
-                            <li><a href="#">Orders and Returns</a></li>
-                            <li><a href="#">Support Center</a></li>
-                        </ul>
-                    </div>
-                    <div class="col-12 col-sm-12 col-md-3 col-lg-3 contact-box">
-                        <h4 class="h4">Contact Us</h4>
-                        <ul class="addressFooter">
-                            <li><i class="icon anm anm-map-marker-al"></i><p>55 Gallaxy Enque,<br>2568 steet, 23568 NY</p></li>
-                            <li class="phone"><i class="icon anm anm-phone-s"></i><p>(440) 000 000 0000</p></li>
-                            <li class="email"><i class="icon anm anm-envelope-l"></i><p>sales@yousite.com</p></li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-            <!--End Footer Links-->
-            <hr>
-          
-        </div>
-    </div>
-</footer>
-<!--End Footer-->
-<!--Scoll Top-->
-<span id="site-scroll"><i class="icon anm anm-angle-up-r"></i></span>
-<!--End Scoll Top-->
-
- <!-- Including Jquery -->
- <script src="/assets/js/vendor/jquery-3.3.1.min.js"></script>
- <script src="/assets/js/vendor/jquery.cookie.js"></script>
- <script src="/assets/js/vendor/modernizr-3.6.0.min.js"></script>
- <script src="/assets/js/vendor/wow.min.js"></script>
- <script src="/assets/js/bootstrap.min.js"></script>
- <script src="/assets/js/plugins.js"></script>
- <script src="/assets/js/popper.min.js"></script>
- <script src="/assets/js/lazysizes.js"></script>
- <script src="/assets/js/main.js"></script>
-</div>
-</body>
-
-</html>  
-
-
-    
+<%-include('footer')-%>

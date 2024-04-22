@@ -1,217 +1,235 @@
 <%-include('header')-%>
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+/>
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-REPLACE_WITH_YOUR_INTEGRITY_CHECK" crossorigin="anonymous" />
-    <section style="background-color: #000000;">
-        <div class="container py-5">
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+  integrity="sha512-REPLACE_WITH_YOUR_INTEGRITY_CHECK"
+  crossorigin="anonymous"
+/>
+<section style="background-color: #000000">
+  <div class="container py-5">
+    <div class="row">
+      <div class="col-lg-4">
+        <div class="card mb-4">
+          <div class="card-body text-center">
+            <img
+              src="https://cdn1.iconfinder.com/data/icons/public-company-solid/32/employee_employe_workman_user_profiles_avatar_people_human_persons_icon_1-512.png"
+              alt="avatar"
+              class="rounded-circle img-fluid"
+              style="width: 150px"
+            />
 
-          <div class="row">
+            <h5 class="my-3"><%=user.name%></h5>
+            <h5 class="my-3">Referral code <%=user.referral%></h5>
+            <button onclick="shareWhatsApp()">
+              Share on WhatsApp <i class="fa fa-whatsapp"></i>
+            </button>
+            <button onclick="shareEmail()">
+              Share via Email <i class="fa fa-envelope"></i>
+            </button>
+            <button onclick="shareTwitter()">
+              Share on Twitter <i class="fa fa-twitter"></i>
+            </button>
+            <button onclick="shareFacebook()">
+              Share on Facebook <i class="fa fa-facebook"></i>
+            </button>
+          </div>
+          <script>
+            function shareWhatsApp() {
+              // Replace 'Your referral code' with the actual referral code
 
-            <div class="col-lg-4">
+              window.location.href =
+                "whatsapp://send?text=Referral code: <%=user.referral%>";
+            }
 
-              <div class="card mb-4">
-                <div class="card-body text-center">
-                  <img src="https://cdn1.iconfinder.com/data/icons/public-company-solid/32/employee_employe_workman_user_profiles_avatar_people_human_persons_icon_1-512.png" alt="avatar"
-                    class="rounded-circle img-fluid" style="width: 150px;">
-                  <h5 class="my-3"> <%=user.name%>  </h5> 
-                </div>
+            function shareEmail() {
+              var referralCode = encodeURIComponent("<%=user.referral%>");
+              var subject = encodeURIComponent("Referral code");
+              var body = encodeURIComponent(
+                "Referral code: <%=user.referral%>"
+              );
+              window.open(
+                "https://mail.google.com/mail/?view=cm&fs=1&to=&su=" +
+                  subject +
+                  "&body=" +
+                  body,
+                "_blank"
+              );
+            }
+
+            function shareTwitter() {
+              // Replace 'Your referral code' with the actual referral code
+              window.open(
+                "https://twitter.com/intent/tweet?text=Referral code: <%=user.referral%>",
+                "_blank"
+              );
+            }
+            function shareFacebook() {
+              // Replace 'Your referral code' with the actual referral code
+              var referralCode = encodeURIComponent(
+                "Referral code: <%=user.referral%>"
+              );
+              var url =
+                "https://www.facebook.com/sharer/sharer.php?u=" +
+                encodeURIComponent(window.location.href) +
+                "&quote=" +
+                referralCode;
+              window.open(url, "_blank");
+            }
+          </script>
+        </div>
+
+        <%-include('sidebar')-%>
+      </div>
+
+      <div class="col-lg-8">
+        <div class="card mb-4">
+          <div class="card-body">
+            <div class="row">
+              <div class="col-sm-3">
+                <p class="mb-0">Name:</p>
               </div>
-
-
-
-              
-              <%-include('sidebar')-%>
-
-              <!-- <div class="card mb-4 mb-lg-0">
-                <div class="card-body p-0">
-                  <ul class="list-group list-group-flush rounded-3">
-                    <li class="list-group-item d-flex justify-content-between align-items-center p-3">
-                      <p class="mb-0"><a href="/userprofile">MY PROFILE</a></p>
-                    </li>
-                    
-                    <li class="list-group-item d-flex justify-content-between align-items-center p-3">
-                      <p class="mb-0"> <a href="/userAddAddress">ADDRESS</a> </p>
-                    </li>
-                    <li class="list-group-item d-flex justify-content-between align-items-center p-3">
-                      <p class="mb-0"> <a href="/orderStatus">ORDER STATUS</a> </p>
-                    </li>
-                    <li class="list-group-item d-flex justify-content-between align-items-center p-3">
-                      <p class="mb-0"> <a href="/changePassword">CHANGE PASSWORD</a> </p>
-                    </li>
-                    <li class="list-group-item d-flex justify-content-between align-items-center p-3">
-                      <p class="mb-0"> <a href="/wallet">WALLET</a> </p>
-                    </li>
-                    
-                    <li class="list-group-item d-flex justify-content-between align-items-center p-3">
-                      <p class="mb-0"> <a href="/availableCoupons">Available Coupons</a> </p>
-                    </li>
-                  </ul>
-                </div>
-              </div> -->
-
-
-            </div>
-
-            
-            <div class="col-lg-8">
-              <div class="card mb-4">
-                <div class="card-body">
-                  <div class="row">
-                    <div class="col-sm-3">
-                      <p class="mb-0">Name:</p>
-                    </div>
-                    
-<!-- 
-                  <div class="col-sm-9">
-                    <p class="text-muted mb-0" style="display: inline;"><%=user.name%></p>
-                    <a href="#" class="btn btn-primary" style="display: inline-block; padding: 1; margin: 0; color: black;">edit</a>
-                </div> -->
-                
-
-
-                <!-- <div class="col-sm-9">
-                  <p class="text-muted mb-0" style="display: inline;"><%= user.name %></p>
-                  <a href="#" class="btn btn-primary" style="margin-left: 10px;" onclick="showInput()">Edit</a>
-                  <input type="text" id="newNameInput" style="display: none;">
-                  <button class="btn btn-primary" style="display: none;">OK</button>
-              </div> -->
 
               <div class="col-sm-9">
-                <p class="text-muted mb-0" style="display: inline;"><%= user.name %></p>
-                <a href="#" class="btn btn-primary" style="margin-left: 10px;" onclick="showInput()">Edit</a>
-                <input type="text" id="newNameInput" style="display: none;">
-                <p id="errMsg" class="text-muted mb-0" style="display: none;"></p>
+                <p class="text-muted mb-0" style="display: inline">
+                  <%= user.name %>
+                </p>
+                <a
+                  href="#"
+                  class="btn btn-primary"
+                  style="margin-left: 10px"
+                  onclick="showInput()"
+                  >Edit</a
+                >
+                <input type="text" id="newNameInput" style="display: none" />
+                <p
+                  id="errMsg"
+                  class="text-muted mb-0"
+                  style="display: none"
+                ></p>
 
-                <button id="editName" class="btn btn-primary" style="display: none;">OK</button>
-                <button id="cancelEdit" class="btn btn-primary" style="display: none;">Cancel</button>
-
+                <button
+                  id="editName"
+                  class="btn btn-primary"
+                  style="display: none"
+                >
+                  OK
+                </button>
+                <button
+                  id="cancelEdit"
+                  class="btn btn-primary"
+                  style="display: none"
+                >
+                  Cancel
+                </button>
               </div>
-
-                    
-                  </div>
-                  <hr>
-                  <div class="row">
-                    <div class="col-sm-3">
-                      <p class="mb-0">Email</p>
-                    </div>
-                    <div class="col-sm-9">
-                      <p class="text-muted mb-0"><%=user.email%> </p>
-                    </div>
-                  </div>
-                  <hr>
-                  <div class="row">
-                    <!-- <div class="col-sm-3">
+            </div>
+            <hr />
+            <div class="row">
+              <div class="col-sm-3">
+                <p class="mb-0">Email</p>
+              </div>
+              <div class="col-sm-9">
+                <p class="text-muted mb-0"><%=user.email%></p>
+              </div>
+            </div>
+            <hr />
+            <div class="row">
+              <!-- <div class="col-sm-3">
                       <p class="mb-0">Mobile</p>
                     </div> -->
-                    <div class="col-sm-9">
-                      <p class="text-muted mb-0"></p>
-                    </div>
-                  </div>
-                </div>
+              <div class="col-sm-9">
+                <p class="text-muted mb-0"></p>
               </div>
             </div>
           </div>
         </div>
-      </section>
-
-
-
-
-
+      </div>
+    </div>
+  </div>
+</section>
 
 <script>
   function showInput() {
-      const errMsg = document.getElementById("errMsg");
-      var inputField = document.getElementById("newNameInput");
-      inputField.style.display = "inline-block";
-      inputField.style.opacity = "1";
+    const errMsg = document.getElementById("errMsg");
+    var inputField = document.getElementById("newNameInput");
+    inputField.style.display = "inline-block";
+    inputField.style.opacity = "1";
 
-      var editButton = document.querySelector('.btn.btn-primary');
-      editButton.style.display = "none";
+    var editButton = document.querySelector(".btn.btn-primary");
+    editButton.style.display = "none";
 
-      const errorMessage = document.querySelector('#errorMsg');
+    const errorMessage = document.querySelector("#errorMsg");
 
-      var okButton = document.querySelector('#editName');
-      okButton.style.display = "inline-block";
+    var okButton = document.querySelector("#editName");
+    okButton.style.display = "inline-block";
 
-      var cancelButton = document.querySelector('#cancelEdit');
-      cancelButton.style.display = "inline-block";
+    var cancelButton = document.querySelector("#cancelEdit");
+    cancelButton.style.display = "inline-block";
 
-      // Clear error message when starting to edit
+    // Clear error message when starting to edit
+    errMsg.style.display = "none";
+
+    // Add event listener for the Cancel button
+    cancelButton.addEventListener("click", cancelEditing);
+
+    // Function to cancel editing
+    function cancelEditing() {
+      inputField.style.display = "none";
+      okButton.style.display = "none";
+      cancelButton.style.display = "none";
+      editButton.style.display = "inline-block";
       errMsg.style.display = "none";
+    }
 
-      // Add event listener for the Cancel button
-      cancelButton.addEventListener('click', cancelEditing);
+    // Add event listener for the OK button
+    okButton.addEventListener("click", function () {
+      var newName = inputField.value.trim(); // Fetch the input value and trim any leading/trailing spaces
 
-      // Function to cancel editing
-      function cancelEditing() {
-          console.log("Cancel Button Clicked"); // Debugging: Check if event listener is triggered
-          inputField.style.display = "none";
-          okButton.style.display = "none";
-          cancelButton.style.display = "none";
-          editButton.style.display = "inline-block";
-          errMsg.style.display = "none";
+      if (newName === "") {
+        errMsg.style.display = "block"; // Display the error message
+        errMsg.innerHTML = "Please enter a valid name";
+
+        setTimeout(function () {
+          errMsg.style.display = "none"; // Hide the error message after 2 seconds
+        }, 2000); // 2000 milliseconds = 2 seconds
+
+        return false; // Stop further execution
       }
 
-      // Add event listener for the OK button
-      okButton.addEventListener('click', function() {
-          var newName = inputField.value.trim(); // Fetch the input value and trim any leading/trailing spaces
+      // If validation passes, proceed with further actions (e.g., sending data to the server)
 
-          if (newName === '') {
-              errMsg.style.display = "block"; // Display the error message
-              errMsg.innerHTML = "Please enter a valid name";
-
-              setTimeout(function() {
-                  errMsg.style.display = "none"; // Hide the error message after 2 seconds
-              }, 2000); // 2000 milliseconds = 2 seconds
-
-              return false; // Stop further execution
+      // Example: Send the new name to the server using fetch
+      fetch("/updateUserName", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ newName: newName }),
+      })
+        .then((response) => {
+          if (response.ok) {
+            // Handle success
+            window.location.reload(); // Reload the page
+          } else {
+            // Handle error
           }
+        })
+        .catch((error) => {});
 
-          // If validation passes, proceed with further actions (e.g., sending data to the server)
-          console.log("New Name:", newName);
-
-          // Example: Send the new name to the server using fetch
-          fetch('/updateUserName', {
-              method: 'POST',
-              headers: {
-                  'Content-Type': 'application/json'
-              },
-              body: JSON.stringify({ newName: newName })
-          })
-          .then(response => {
-              if (response.ok) {
-                  // Handle success
-                  console.log("Name updated successfully.");
-                  window.location.reload(); // Reload the page
-              } else {
-                  // Handle error
-                  console.error("Failed to update name.");
-              }
-          })
-          .catch(error => {
-              console.error("Error:", error);
-          });
-
-          // Reset the input field and display buttons
-          inputField.style.display = "none";
-          inputField.value = ""; // Clear the input field
-          okButton.style.display = "none";
-          cancelButton.style.display = "none";
-          editButton.style.display = "inline-block";
-          errMsg.style.display = "none";
-      });
+      // Reset the input field and display buttons
+      inputField.style.display = "none";
+      inputField.value = ""; // Clear the input field
+      okButton.style.display = "none";
+      cancelButton.style.display = "none";
+      editButton.style.display = "inline-block";
+      errMsg.style.display = "none";
+    });
   }
 </script>
 
-
-
-
-
-
-
-
-
-
-
-    
-      <%-include('footer')-%>
+<%-include('footer')-%>

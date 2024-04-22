@@ -4,8 +4,6 @@ const CouponDB =  require('../models/coupon')
 
 
 
-// const fetchCategoryMiddleware = require("../middleware/fetchCategoryData");
-// const { log } = require("console");
 
 const determineIsLogged = (session) => {
   return session.user
@@ -30,7 +28,6 @@ const couponlist=async (req,res)=>{
     try{
         const coupons=await CouponDB.find()
         if(coupons.length>0){
-            console.log('listed');
             
 
 
@@ -38,11 +35,10 @@ const couponlist=async (req,res)=>{
 
             res.render('admin/couponList',{coupons})
         }else{
-            console.log('NO DATA');
             res.render('admin/couponList')
             }
         }catch (err){
-            console.error(err);
+          req.redirect('/error')
         }
 }
 
@@ -51,10 +47,8 @@ const couponlist=async (req,res)=>{
 
 
 const couponAdding = async (req, res) => {
-    console.log(req.body)
 
     const { couponName,discountPrice,expiryDate } = req.body;
-    console.log(expiryDate);
 
     try {
         const existingCoupon = await CouponDB.findOne({ name: couponName });
@@ -85,7 +79,6 @@ const couponAdding = async (req, res) => {
         // Respond with success message
         res.status(200).json({ message: 'Coupon added successfully' });
     } catch (err) {
-        console.error('Error adding coupon:', err);
         res.status(500).json({ errors: [{ msg: 'Server error' }] });
     }
 };
@@ -107,7 +100,6 @@ const deleteCoupon = async (req, res) => {
       }
       res.status(200).json({ message: 'Coupon deleted successfully' });
     } catch (error) {
-      console.error('Error deleting coupon:', error);
       res.status(500).json({ error: 'Internal server error' });
     }
   };
@@ -127,7 +119,6 @@ const show = async (req, res) => {
       }
       res.status(200).json({ message: 'Coupon deleted successfully' });
     } catch (error) {
-      console.error('Error deleting coupon:', error);
       res.status(500).json({ error: 'Internal server error' });
     }
   };
@@ -144,7 +135,6 @@ const show = async (req, res) => {
       }
       res.status(200).json({ message: 'Coupon deleted successfully' });
     } catch (error) {
-      console.error('Error deleting coupon:', error);
       res.status(500).json({ error: 'Internal server error' });
     }
   };
@@ -165,7 +155,6 @@ const availableCoupon = async (req, res) => {
     const emailId = (req.session.user) ? req.session.user.email : req.session.userNew.email;
     try {
         const user = await UserDB.findOne({ email: emailId }, { _id: 1, name: 1, email: 1 });
-        console.log(user);
         const currentDate = new Date(); // Get the current date
 const coupons = await CouponDB.find({
     userIds: { $not: { $in: [user._id] } },
@@ -182,7 +171,6 @@ const coupons = await CouponDB.find({
 
         res.render('user/coupons', { coupons, user });
     } catch (err) {
-        console.error(err);
         res.status(500).send('Internal Server Error');
     }
 }
@@ -203,7 +191,7 @@ const editCoupon=  async (req,res)=>{
         });
         res.render('admin/editCoupon',{coupon,formattedExpiryDate})
     } catch (err){
-        console.error(err);
+      res.redirect('/error')        
     }
 }
 
@@ -230,7 +218,6 @@ const editCouponPost = async (req, res) => {
         await coupon.save();
         res.status(200).json({ message: "Coupon updated successfully" });
     } catch (err) {
-        console.error(err);
         res.status(500).json({ error: "Failed to update coupon" });
     }
 };

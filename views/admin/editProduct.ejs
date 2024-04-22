@@ -1,403 +1,437 @@
 <%-include('header')-%>
 
+<!-- Form Start -->
 
+<div class="container-fluid pt-4 px-4">
+  <div class="row g-4">
+    <%if(locals.editProduct){%>
+    <div class="col-sm-12 col-xl-6">
+      <div class="bg-light rounded h-100 p-4">
+        <h6 class="mb-4">Update Product</h6>
+        <form
+          action="/admin/productupdated/<%=editProduct._id%>"
+          method="post"
+          enctype="multipart/form-data"
+        >
+          <div class="form-floating mb-3">
+            <input
+              type="text"
+              class="form-control"
+              id="productName"
+              placeholder="<%=editProduct.name%>"
+              name="productName"
+              value="<%=editProduct.name%>"
+            />
+            <label for="floatingInput"><%=editProduct.name%></label>
+            <div id="productNameError" class="error" style="color: red"></div>
+          </div>
+          <div class="form-floating mb-3">
+            <input
+              type="number"
+              class="form-control"
+              id="productStock"
+              placeholder="<%=editProduct.stock%>"
+              name="productStock"
+              min="1"
+              value="<%=editProduct.stock%>"
+            />
+            <label for="floatingInput"><%=editProduct.stock%></label>
+            <div id="productStockError" class="error" style="color: red"></div>
+          </div>
+          <div class="form-floating mb-3">
+            <input
+              type="number"
+              class="form-control"
+              id="productPrice"
+              placeholder="<%=editProduct.price%>"
+              name="productPrice"
+              min="1"
+              value="<%=editProduct.price%>"
+            />
+            <label for="productPrice"><%=editProduct.price%></label>
+            <div id="productPriceError" class="error" style="color: red"></div>
+          </div>
 
-    <!-- Form Start -->
+          <div class="form-check mb-3">
+            <input
+              class="form-check-input"
+              type="checkbox"
+              id="offerCheckbox"
+              name="offerCheckbox"
+            />
+            <label class="form-check-label" for="offerCheckbox">
+              Add Offer
+            </label>
+          </div>
 
+          <!-- Offer Input (optional) -->
+          <div
+            class="form-floating mb-3"
+            id="offerInputSection"
+            style="display: none"
+          >
+            <input
+              type="text"
+              class="form-control"
+              id="offerInput"
+              placeholder="offerInput"
+              name="offerInput"
+            />
+            <label for="offerInput">Offer</label>
+            <div id="offerInputError" class="error" style="color: red"></div>
+          </div>
 
-    <div class="container-fluid pt-4 px-4">
-        <div class="row g-4">
-          <%if(locals.editProduct){%>
-            <div class="col-sm-12 col-xl-6">
-                <div class="bg-light rounded h-100 p-4">
-                    <h6 class="mb-4">Update Product</h6>
-                    <form action="/admin/productupdated/<%=editProduct._id%>" method="post" enctype="multipart/form-data">
-                        <div class="form-floating mb-3">
-                          <input type="text" class="form-control" id="productName" placeholder="<%=editProduct.name%>" name="productName" value="<%=editProduct.name%>">
-                          <label for="floatingInput"><%=editProduct.name%></label>
-                          <div id="productNameError" class="error" style="color: red;"></div>
-                        </div>
-                        <div class="form-floating mb-3">
-                          <input type="number" class="form-control" id="productStock" placeholder="<%=editProduct.stock%>" name="productStock"
-                          min="1" value="<%=editProduct.stock%>">
-                          <label for="floatingInput"><%=editProduct.stock%></label>
-                          <div id="productStockError" class="error" style="color: red;"></div>
-                        </div>
-                        <div class="form-floating mb-3">
-                          <input type="number" class="form-control" id="productPrice" placeholder="<%=editProduct.price%>" name="productPrice"
-                          min="1" value="<%=editProduct.price%>">
-                          <label for="productPrice"><%=editProduct.price%></label>
-                          <div id="productPriceError" class="error" style="color: red;"></div>
-                        </div>
+          <!-- Expiry Date for Offer (optional) -->
+          <div
+            class="form-floating mb-3"
+            id="expiryDateSection"
+            style="display: none"
+          >
+            <input
+              type="date"
+              class="form-control"
+              id="offerExpiryDate"
+              placeholder="offerExpiryDate"
+              name="offerExpiryDate"
+            />
+            <label for="offerExpiryDate">Offer Expiry Date</label>
+            <div
+              id="offerExpiryDateError"
+              class="error"
+              style="color: red"
+            ></div>
+          </div>
 
-                        
+          <% if (locals.categoryList) { %>
+          <div class="form-floating mb-3">
+            <select
+              class="form-select"
+              name="productCategory"
+              id="floatingSelect"
+              aria-label="Floating label select example"
+            >
+              <% categoryList.forEach(category => { %>
+              <option value="<%= category._id %>"><%= category.name %></option>
+              <% }); %>
+            </select>
+            <label for="floatingSelect">Select Category</label>
+          </div>
+          <% }else{%>
+          <p>jhh</p>
+          <%} %>
 
-                              <div class="form-check mb-3">
-                                <input class="form-check-input" type="checkbox" id="offerCheckbox" name="offerCheckbox">
-                                <label class="form-check-label" for="offerCheckbox">
-                                  Add Offer
-                                </label>
-                              </div>
-        
-                               <!-- Offer Input (optional) -->
-                               <div class="form-floating mb-3" id="offerInputSection" style="display: none;">
-                                <input type="text" class="form-control" id="offerInput" placeholder="offerInput" name="offerInput">
-                                <label for="offerInput">Offer</label>
-                                <div id="offerInputError" class="error" style="color: red;"></div>
-                              </div>
-                              
-                              <!-- Expiry Date for Offer (optional) -->
-                              <div class="form-floating mb-3" id="expiryDateSection" style="display: none;">
-                                <input type="date" class="form-control" id="offerExpiryDate" placeholder="offerExpiryDate" name="offerExpiryDate">
-                                <label for="offerExpiryDate">Offer Expiry Date</label>
-                                <div id="offerExpiryDateError" class="error" style="color: red;"></div>
-                              </div>
-
-
-
-                              <% if (locals.categoryList) { %>
-                                <div class="form-floating mb-3">
-                                    <select class="form-select" name="productCategory" id="floatingSelect" aria-label="Floating label select example">
-                                        <% categoryList.forEach(category => { %>
-                                        <option value="<%= category._id %>">
-                                            <%= category.name %>
-                                        </option>
-                                        <% }); %>
-                                      </select>
-                                      <label for="floatingSelect">Select Category</label>
-                                    </div>
-                                    <% }else{%>
-                                      <p>jhh</p>
-                                    <%} %>
-
-                        
-                        <div class="mb-3">
-                          <label for="formFileMultiple" class="form-label">Multiple files input example (Max 4 files)</label>
-                          <%if(locals.multerError){%>
-                            <p id="multerError" class="multerError" style="color: red;">maximum images 4 </p>
-                          <%}%>
-                          <script>
-                            document.addEventListener("DOMContentLoaded", function() {
-                              var errorElement = document.getElementById("multerError");
-                              if (errorElement) {
-                                setTimeout(function() {
-                                  errorElement.parentNode.removeChild(errorElement);
-                                }, 5000); // 5000 milliseconds = 5 seconds
-                              }
-                            });
-                          </script>
-
-
-                          
-                          <input class="form-control" type="file" name="images" id="formFileMultiple" multiple  >
-                          <p id="imageError" class="error" style="color: red;"></p>
-                        </div>
-                        <div class="image-row mb-3" style="display: flex; flex-direction: column; align-items: center;">
-                          <% if (editProduct.image && editProduct.image.length > 0) { %>
-                            <p>Images:</p>
-                            <div class="image-container" style="display: flex;">
-                              <% editProduct.image.forEach((image, index) => { %>
-                                <div class="image-wrapper" style="flex: 0 0 auto; margin-right: 10px; text-align: center;">
-                                  <div class="image-item" style="position: relative; display: inline-block;">
-                                    <img  
-                                      src="<%= image %>" 
-                                      class="img-fluid mx-auto mb-5"
-                                      style="width: 90px; height: 90px;"
-                                      alt="">
-                                      <!-- <a href="/admin/delete/<%=`${editProduct._id}${image.replace('/uploads', '')}`%>" class="btn btn-primary" style="position: absolute; bottom: -5px; left: 50%; transform: translateX(-50%);">Delete</a> -->
-                                    
-                                      <!-- HTML code -->
-                                      <a href="#" 
-                                      class="btn btn-primary delete-btn" 
-                                      data-product-id="<%= editProduct._id %>" 
-                                      data-image="<%= image %>"
-                                      style="position: absolute; bottom: -5px; left: 50%; transform: translateX(-50%);">Delete</a>
-
-                                  </div>
-                                </div>
-                              <% }) %>
-                            </div>
-                          <% } else { %>
-                            <h1>No images found for this product</h1>
-                          <% } %>
-                        </div>
-                        <div class="form-floating">
-                            <textarea name="productDescription" value="" class="form-control" placeholder="Leave a comment here" id="floatingTextarea"
-                              style="height:80px;" value="<%=editProduct.description%>"> 
-                        </textarea>
-                            <label for="floatingTextarea"><%=editProduct.description%></label>
-                            <div id="productDescriptionError" class="error" style="color: red;"></div>
-                          </div>
-                        <button type="submit" class="btn btn-primary">Submit</button>
-                      </form>
-                </div>
-            </div>
+          <div class="mb-3">
+            <label for="formFileMultiple" class="form-label"
+              >Multiple files input example (Max 4 files)</label
+            >
+            <%if(locals.multerError){%>
+            <p id="multerError" class="multerError" style="color: red">
+              maximum images 4
+            </p>
             <%}%>
-        </div>
-    </div>
-    <!-- Form End -->
-
-
-
-
-
-
-
-
-
-
-
-
-
-    <!-- Footer Start -->
-
-    <!-- Footer End -->
-    </div>
-    <!-- Content End -->
-
-
-    <!-- Back to Top -->
-    <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
-    </div>
-
-    
-    <!-- 
-      <script>
-        document.addEventListener('DOMContentLoaded', function () {
-          const deleteButtons = document.querySelectorAll('.delete-image-btn');
-          
-          deleteButtons.forEach(function (button) {
-            button.addEventListener('click', function (event) {
-              event.preventDefault(); // Prevent default link behavior
-              
-              const imageUrl = button.dataset.image;
-              
-              Swal.fire({
-                title: 'Are you sure?',
-                text: 'You are about to delete this image!',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, delete it!'
-              }).then((result) => {
-                if (result.isConfirmed) {
-                  // User confirmed deletion, proceed with navigation
-                  window.location.href = '/admin/delete/' + imageUrl;
+            <script>
+              document.addEventListener("DOMContentLoaded", function () {
+                var errorElement = document.getElementById("multerError");
+                if (errorElement) {
+                  setTimeout(function () {
+                    errorElement.parentNode.removeChild(errorElement);
+                  }, 5000); // 5000 milliseconds = 5 seconds
                 }
               });
-            });
-          });
-        });
-      </script> -->
-      
-      
+            </script>
 
-      
-      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+            <input
+              class="form-control"
+              type="file"
+              name="images"
+              id="formFileMultiple"
+              multiple
+            />
+            <p id="imageError" class="error" style="color: red"></p>
+          </div>
+          <div
+            class="image-row mb-3"
+            style="display: flex; flex-direction: column; align-items: center"
+          >
+            <% if (editProduct.image && editProduct.image.length > 0) { %>
+            <p>Images:</p>
+            <div class="image-container" style="display: flex">
+              <% editProduct.image.forEach((image, index) => { %>
+              <div
+                class="image-wrapper"
+                style="flex: 0 0 auto; margin-right: 10px; text-align: center"
+              >
+                <div
+                  class="image-item"
+                  style="position: relative; display: inline-block"
+                >
+                  <img
+                    src="<%= image %>"
+                    class="img-fluid mx-auto mb-5"
+                    style="width: 90px; height: 90px"
+                    alt=""
+                  />
+                  <!-- <a href="/admin/delete/<%=`${editProduct._id}${image.replace('/uploads', '')}`%>" class="btn btn-primary" style="position: absolute; bottom: -5px; left: 50%; transform: translateX(-50%);">Delete</a> -->
+
+                  <!-- HTML code -->
+                  <a
+                    href="#"
+                    class="btn btn-primary delete-btn"
+                    data-product-id="<%= editProduct._id %>"
+                    data-image="<%= image %>"
+                    style="
+                      position: absolute;
+                      bottom: -5px;
+                      left: 50%;
+                      transform: translateX(-50%);
+                    "
+                    >Delete</a
+                  >
+                </div>
+              </div>
+              <% }) %>
+            </div>
+            <% } else { %>
+            <h1>No images found for this product</h1>
+            <% } %>
+          </div>
+          <div class="form-floating">
+            <textarea
+              name="productDescription"
+              value=""
+              class="form-control"
+              placeholder="Leave a comment here"
+              id="floatingTextarea"
+              style="height: 80px"
+              value="<%=editProduct.description%>"
+            >
+            </textarea>
+            <label for="floatingTextarea"><%=editProduct.description%></label>
+            <div
+              id="productDescriptionError"
+              class="error"
+              style="color: red"
+            ></div>
+          </div>
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+      </div>
+    </div>
+    <%}%>
+  </div>
+</div>
+<!-- Form End -->
+
+<!-- Footer Start -->
+
+<!-- Footer End -->
+<!-- </div> -->
+<!-- Content End -->
+
+<!-- Back to Top -->
+<a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"
+  ><i class="bi bi-arrow-up"></i
+></a>
+<!-- </div> -->
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 <!-- JavaScript code -->
 <script>
-  document.addEventListener('DOMContentLoaded', function () {
-      const deleteButtons = document.querySelectorAll('.delete-btn');
-  
-      deleteButtons.forEach(button => {
-          button.addEventListener('click', function (event) {
-              event.preventDefault();
-  
-              const productId = button.dataset.productId;
-              const image = button.dataset.image.replace('\\uploads\\', 'uploads/'); // Replace '/uploads' with an empty string
-              console.log(`/admin/delete/${productId}/${image}`);
-              // Show SweetAlert confirmation dialog
-              Swal.fire({
-                  title: 'Are you sure?',
-                  text: 'You won\'t be able to revert this!',
-                  icon: 'warning',
-                  showCancelButton: true,
-                  confirmButtonText: 'Yes, delete it!',
-                  cancelButtonText: 'No, cancel!',
-                  reverseButtons: true
-              }).then((result) => {
-                  if (result.isConfirmed) {
-                      // If user confirms deletion, proceed with fetch request
-                      ///delete/:id/uploads/:imgUrl
-                      fetch(`/admin/delete/${productId}/${image}`)
-                          .then(response => {
-                              if (!response.ok) {
-                                  throw new Error('Network response was not ok');
-                              }
-                              return response.json();
-                          })
-                          .then(data => {
-                              // Handle success response
-                              // Show SweetAlert for success
-                              Swal.fire({
-                                  title: 'Deleted!',
-                                  text: 'Your product has been deleted.',
-                                  icon: 'success',
-                                  confirmButtonText: 'OK'
-                              });
-                          })
-                          window.location.reload()
-                          .catch(error => {
-                              // Handle error
-                              console.error('There was a problem with the fetch operation:', error);
-                              // Show SweetAlert for error
-                              Swal.fire({
-                                  title: 'Error!',
-                                  text: 'Failed to delete product. Please try again later.',
-                                  icon: 'error',
-                                  confirmButtonText: 'OK'
-                              });
-                          });
-                  } else if (result.dismiss === Swal.DismissReason.cancel) {
-                      // If user cancels deletion, show a message
-                      Swal.fire({
-                          title: 'Cancelled',
-                          text: 'Your product is safe :)',
-                          icon: 'info',
-                          confirmButtonText: 'OK'
-                      });
-                  }
+  document.addEventListener("DOMContentLoaded", function () {
+    const deleteButtons = document.querySelectorAll(".delete-btn");
+
+    deleteButtons.forEach((button) => {
+      button.addEventListener("click", function (event) {
+        event.preventDefault();
+
+        const productId = button.dataset.productId;
+        const image = button.dataset.image.replace("\\uploads\\", "uploads/"); // Replace '/uploads' with an empty string
+        // Show SweetAlert confirmation dialog
+        Swal.fire({
+          title: "Are you sure?",
+          text: "You won't be able to revert this!",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonText: "Yes, delete it!",
+          cancelButtonText: "No, cancel!",
+          reverseButtons: true,
+        }).then((result) => {
+          if (result.isConfirmed) {
+            // If user confirms deletion, proceed with fetch request
+            ///delete/:id/uploads/:imgUrl
+            fetch(`/admin/delete/${productId}/${image}`)
+              .then((response) => {
+                if (!response.ok) {
+                  throw new Error("Network response was not ok");
+                }
+                return response.json();
+              })
+              .then((data) => {
+                // Handle success response
+                // Show SweetAlert for success
+                Swal.fire({
+                  title: "Deleted!",
+                  text: "Your product has been deleted.",
+                  icon: "success",
+                  confirmButtonText: "OK",
+                });
               });
-          });
+            window.location.reload().catch((error) => {
+              // Handle error
+              // Show SweetAlert for error
+              Swal.fire({
+                title: "Error!",
+                text: "Failed to delete product. Please try again later.",
+                icon: "error",
+                confirmButtonText: "OK",
+              });
+            });
+          } else if (result.dismiss === Swal.DismissReason.cancel) {
+            // If user cancels deletion, show a message
+            Swal.fire({
+              title: "Cancelled",
+              text: "Your product is safe :)",
+              icon: "info",
+              confirmButtonText: "OK",
+            });
+          }
+        });
       });
+    });
   });
-  </script>
-  
+</script>
 
-    
-
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-
-    
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css"
+/>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-      const form = document.querySelector('form[action="/admin/productadded"]');
+  document.addEventListener("DOMContentLoaded", function () {
+    const form = document.querySelector('form[action="/admin/productadded"]');
 
+    const offerCheckbox = document.getElementById("offerCheckbox");
+    const offerInputSection = document.getElementById("offerInputSection");
+    const expiryDateSection = document.getElementById("expiryDateSection");
+    const offerExpiryDateInput = document.getElementById("offerExpiryDate");
+    const offerInput = document.getElementById("offerInput");
 
-    const offerCheckbox = document.getElementById('offerCheckbox');
-    const offerInputSection = document.getElementById('offerInputSection');
-    const expiryDateSection = document.getElementById('expiryDateSection');
-    const offerExpiryDateInput = document.getElementById('offerExpiryDate');
-    const offerInput = document.getElementById('offerInput');
+    offerInput.addEventListener("input", function () {
+      const inputValue = offerInput.value;
 
-    offerInput.addEventListener('input', function() {
-   
-    const inputValue = offerInput.value;
-
-    // Validate if the entered value is a number
-    if (inputValue.trim() !== '' && !/^\d+$/.test(inputValue)) {
-        showError('Please enter numbers only.', 'offerInputError');
-    } else {
-        clearError('offerInputError');
-    }
-});
-
-function showError(message, errorFieldId) {
-    document.getElementById(errorFieldId).textContent = message;
-    
-}
-
-function clearError(errorFieldId) {
-    document.getElementById(errorFieldId).textContent = '';
-}
-
-    offerCheckbox.addEventListener('change', function () {
-      if (this.checked) {
-        offerInputSection.style.display = 'block';
-        expiryDateSection.style.display = 'block';
+      // Validate if the entered value is a number
+      if (inputValue.trim() !== "" && !/^\d+$/.test(inputValue)) {
+        showError("Please enter numbers only.", "offerInputError");
       } else {
-        offerInputSection.style.display = 'none';
-        expiryDateSection.style.display = 'none';
-        offerInput.value = '';
+        clearError("offerInputError");
       }
     });
 
+    function showError(message, errorFieldId) {
+      document.getElementById(errorFieldId).textContent = message;
+    }
 
-    flatpickr('#offerExpiryDate', {
-        dateFormat: "d/m/Y", // Format: dd/mm/yyyy
-        minDate: "today" // Set minimum date to today
+    function clearError(errorFieldId) {
+      document.getElementById(errorFieldId).textContent = "";
+    }
+
+    offerCheckbox.addEventListener("change", function () {
+      if (this.checked) {
+        offerInputSection.style.display = "block";
+        expiryDateSection.style.display = "block";
+      } else {
+        offerInputSection.style.display = "none";
+        expiryDateSection.style.display = "none";
+        offerInput.value = "";
+      }
     });
 
-      form.addEventListener('submit', function (event) {
-        let valid = true;
+    flatpickr("#offerExpiryDate", {
+      dateFormat: "d/m/Y", // Format: dd/mm/yyyy
+      minDate: "today", // Set minimum date to today
+    });
 
-        const errorFields = form.querySelectorAll('.error');
-        errorFields.forEach(function (error) {
-          error.textContent = '';
-        });
+    form.addEventListener("submit", function (event) {
+      let valid = true;
 
-   
-
-
-
-        const productName = form.querySelector('input[name="productName"]').value.trim();
-        if (productName === '') {
-          valid = false;
-          displayError('Product Name is required.', 'productNameError');
-        }
-
-        // Validate Stock
-        const productStock = form.querySelector('input[name="productStock"]').value.trim();
-        if (productStock === '') {
-          valid = false;
-          displayError('Stock is required.', 'productStockError');
-        }
-
-        // Validate Price
-        const productPrice = form.querySelector('input[name="productPrice"]').value.trim();
-        if (productPrice === '') {
-          valid = false;
-          displayError('Price is required.', 'productPriceError');
-        }
-
-        const productDescription = form.querySelector('textarea[name="productDescription"]').value.trim();
-
-        if (productDescription === '') {
-          valid = false;
-          displayError('Description is required.', 'productDescriptionError');
-        }
-
-        const images = form.querySelector('input[name="images"]');
-        const imageFiles = images.files;
-
-        if (imageFiles.length > 6) {
-          valid = false;
-          displayError('Maximum of 6 files allowed.', 'imageError');
-        } else {
-          for (let i = 0; i < imageFiles.length; i++) {
-            const file = imageFiles[i];
-            const fileType = file.type;
-
-            if (!fileType.startsWith('image/')) {
-              valid = false;
-              displayError('Invalid file type. Please upload only images.', 'imageError');
-              break;
-            }
-          }
-        }
-
-        if (imageFiles.length === 0) {
-          valid = false;
-          displayError('Image(s) are required.', 'imageError');
-        }
-
-        if (!valid) {
-          event.preventDefault(); // Prevent form submission if validation fails
-        }
+      const errorFields = form.querySelectorAll(".error");
+      errorFields.forEach(function (error) {
+        error.textContent = "";
       });
 
-      function displayError(message, errorFieldId) {
-        const errorField = document.getElementById(errorFieldId);
-        errorField.textContent = message;
+      const productName = form
+        .querySelector('input[name="productName"]')
+        .value.trim();
+      if (productName === "") {
+        valid = false;
+        displayError("Product Name is required.", "productNameError");
+      }
+
+      // Validate Stock
+      const productStock = form
+        .querySelector('input[name="productStock"]')
+        .value.trim();
+      if (productStock === "") {
+        valid = false;
+        displayError("Stock is required.", "productStockError");
+      }
+
+      // Validate Price
+      const productPrice = form
+        .querySelector('input[name="productPrice"]')
+        .value.trim();
+      if (productPrice === "") {
+        valid = false;
+        displayError("Price is required.", "productPriceError");
+      }
+
+      const productDescription = form
+        .querySelector('textarea[name="productDescription"]')
+        .value.trim();
+
+      if (productDescription === "") {
+        valid = false;
+        displayError("Description is required.", "productDescriptionError");
+      }
+
+      const images = form.querySelector('input[name="images"]');
+      const imageFiles = images.files;
+
+      if (imageFiles.length > 6) {
+        valid = false;
+        displayError("Maximum of 6 files allowed.", "imageError");
+      } else {
+        for (let i = 0; i < imageFiles.length; i++) {
+          const file = imageFiles[i];
+          const fileType = file.type;
+
+          if (!fileType.startsWith("image/")) {
+            valid = false;
+            displayError(
+              "Invalid file type. Please upload only images.",
+              "imageError"
+            );
+            break;
+          }
+        }
+      }
+
+      if (imageFiles.length === 0) {
+        valid = false;
+        displayError("Image(s) are required.", "imageError");
+      }
+
+      if (!valid) {
+        event.preventDefault(); // Prevent form submission if validation fails
       }
     });
-  </script>
 
+    function displayError(message, errorFieldId) {
+      const errorField = document.getElementById(errorFieldId);
+      errorField.textContent = message;
+    }
+  });
+</script>
 
-
-
-
-    <%-include('footer')-%>
+<%-include('footer')-%>

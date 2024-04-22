@@ -111,6 +111,12 @@ const orderSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
+  deliveryCharge: {
+    type: Number,
+    required: true,
+  },
+
+  
   couponId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'couponCollections', // Reference to the product model
@@ -135,10 +141,7 @@ const orderSchema = new mongoose.Schema({
       default:"cash-on-delivery",
       required: true,
     },
-    // details: {
-    //   type: String,
-    //   required: true,
-    // },
+    
   },
   paymentStatus: {
     type: {
@@ -147,21 +150,20 @@ const orderSchema = new mongoose.Schema({
       default:'pending',
       required: true,
     },
-    // details: {
-    //   type: String,
-    // },
+    
   },
   orderStatus: {
     type: {
       type: String,
-      enum: ['processing', 'shipped', 'delivered', 'returned'],
+      enum: ['processing', 'shipped', 'delivered', 'returned','failed'],
       default:'processing',
       required: true,
     },
-    // details: {
-    //   type: String,
-    // },
+  
   },
+  returnReason:{
+    type:String
+  }
 }, {
   timestamps: true, // Adds createdAt and updatedAt timestamps
 });

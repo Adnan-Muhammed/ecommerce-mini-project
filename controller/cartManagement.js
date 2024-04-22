@@ -22,170 +22,161 @@ const determineIsLogged = (session) => {
   
   
 
-//correct code
 const cartPage = async (req, res) => {
   const isLogged = determineIsLogged(req.session);
   const { primaryCategories, otherCategories } = await fetchCategoryMiddleware.fetchCategories();
   const emailId = req.session.user ? req.session.user.email : req.session.userNew.email;
+
   try {
-      const user = await UserDB.findOne({ email: emailId });
-      if (!user) {
-          return res.status(404).send('User not found');
-      }
-      const currentDate = new Date(); // Get the current date
-      // Fetch available coupons for the user
-      const coupons = await CouponDB.find({
-          isAvailable: true,
-          userIds: { $not: { $in: [user._id] } },
-          expiryDate: { $gt: currentDate } // Filter by expiry date greater than current date
+    const user = await UserDB.findOne({ email: emailId });
+    if (!user) {
+      return res.status(404).send('User not found');
+    }
+    const currentDate = new Date();
+
+    const coupons = await CouponDB.find({
+      isAvailable: true,
+      userIds: { $not: { $in: [user._id] } },
+      expiryDate: { $gt: currentDate }
+    });
+
+    const cartItems = await CartDB.find({ userId: user._id });
+
+    if (cartItems.length > 0) {
+      const productIds = cartItems.map((cartItem) => cartItem.productId);
+      const productsData = await ProductDB.find({
+        _id: { $in: productIds },
+        isAvailable: true,
+      }).populate({
+        path: 'categoryId',
+        match: { isAvailable: true } 
       });
 
+      const products = productsData.filter(data => data.categoryId !== null);
 
-      
+      const categoryOffers = {};
+      const productOffers = {};
 
-      const cartItems = await CartDB.find({ userId: user._id });
-      if (cartItems.length > 0) {
-          const productIds = cartItems.map((cartItem) => cartItem.productId);
-          const productsData = await ProductDB.find({
-            _id: { $in: productIds },
-            isAvailable: true,
-        }).populate({
-            path: 'categoryId',
-            match: { isAvailable: true } // Add condition for category's isAvailable field
-        });
+      // Separate products by category
+      const productsByCategory = {};
+      products.forEach(product => {
+        const categoryId = product.categoryId._id.toString();
+        if (!productsByCategory[categoryId]) {
+          productsByCategory[categoryId] = [];
+        }
+        productsByCategory[categoryId].push(product);
+      });
 
-      // Now products only contain items where the associated category is available
-      
-        const products = productsData.filter(data => data.categoryId !== null)
-          // Fetch category offers and calculate product offers
-          const categoryOffers = {}; // Store category offers
-          const productOffers = {}; // Store product offers
+      // Calculate product and category offers
+      for (const categoryId in productsByCategory) {
+        const categoryProducts = productsByCategory[categoryId];
+        const categoryDiscount = categoryProducts[0].categoryId.discountPercentage;
 
-          for (const product of products) {
-              const categoryId = product.categoryId._id.toString();
-              const categoryDiscount = product.categoryId.discountPercentage;
+        categoryProducts.forEach(product => {
+          const productId = product._id.toString();
 
-              // Calculate product offer
-              if (product.discountPercentage > 0) {
-                  // Check if expiry date is available and not expired
-                  if (!product.expiryDate || product.expiryDate >= currentDate) {
-                      productOffers[product._id.toString()] = product.discountPercentage;
-                  }
-              }
+          if (product.discountPercentage > 0 && (!product.expiryDate || product.expiryDate >= currentDate)) {
+            productOffers[productId] = product.discountPercentage;
+          } else {
+            if (!productOffers[productId]) {
+              const startDate = product.categoryId.startDate;
+              const endDate = product.categoryId.endDate;
 
-              
-              if (product.categoryId.startDate && product.categoryId.endDate) {
-                const startDate = new Date(product.categoryId.startDate);
-                const endDate = new Date(product.categoryId.endDate);
+              if (startDate && endDate) {
+                const startDateObj = new Date(startDate);
+                const endDateObj = new Date(endDate);
 
-                  // Check if the current date is within the discount offer period
-                  if (currentDate >= startDate && currentDate <= endDate) {
-                      if (!categoryOffers[categoryId]) {
-                          categoryOffers[categoryId] = {
-                              discountPercentage: categoryDiscount,
-                              categoryName: product.categoryId.name,
-                              products: [],
-                          };
-                      }
-                      categoryOffers[categoryId].products.push(product);
-                  }
-              } else {
-                  // If start and end dates are not available, consider the offer as permanent
+                if (currentDate >= startDateObj && currentDate <= endDateObj) {
                   if (!categoryOffers[categoryId]) {
-                      categoryOffers[categoryId] = {
-                          discountPercentage: categoryDiscount,
-                          categoryName: product.categoryId.name,
-                          products: [],
-                      };
+                    categoryOffers[categoryId] = {
+                      discountPercentage: categoryDiscount,
+                      categoryName: categoryProducts[0].categoryId.name,
+                      products: [],
+                    };
                   }
                   categoryOffers[categoryId].products.push(product);
+                }
+              } else {
+                if (!categoryOffers[categoryId]) {
+                  categoryOffers[categoryId] = {
+                    discountPercentage: categoryDiscount,
+                    categoryName: categoryProducts[0].categoryId.name,
+                    products: [],
+                  };
+                }
+                categoryOffers[categoryId].products.push(product);
               }
-
-
-
-
-
+            }
           }
-
-          // Generate detailed cart items with offers applied
-          const detailedCartItems = cartItems.map((cartItem) => {
-              const product = products.find((p) => p._id.equals(cartItem.productId));
-
-              if(!product){
-                return null
-              }
-
-              
-
-              const categoryId = product.categoryId._id.toString();
-
-              // Calculate total price after applying product discount and category discount
-
-              let price = product.price *  cartItem.quantity;
-              let categoryDiscount = 0;
-              let productDiscount = 0;
-
-              // Apply product discount if available
-              if (productOffers[product._id.toString()]) {
-                  productDiscount = productOffers[product._id.toString()];
-                  price -= (price * productDiscount) / 100;
-              }
-
-              // Apply category discount if available
-              if (categoryOffers[categoryId] && categoryOffers[categoryId].discountPercentage > 0) {
-                  categoryDiscount = categoryOffers[categoryId].discountPercentage;
-                  price -= (price * categoryDiscount) / 100;
-              }
-
-              return {
-                  productId: cartItem._id,
-                  quantity: cartItem.quantity,
-                  name: product.name,
-                  images: product.image,
-                  stock: product.stock,
-                  unitPrice: product.price,
-                  price: price,
-                  description: product.description,
-                  isAvailable: product.isAvailable,
-                  // Include category offer and product offer details if available
-                  categoryOffer: categoryDiscount > 0 ? { discountPercentage: categoryDiscount, categoryName: categoryOffers[categoryId].categoryName } : null,
-                  productOffer: productDiscount > 0 ? { discountPercentage: productDiscount } : null,
-              };
-
-
-            })
-            .filter(item => item !== null);
-
-          // Calculate total price
-          let totalPrice = detailedCartItems.reduce((total, item) => total + item.price, 0);
-
-          // Apply tax
-          const taxValue = 10.00; // You can change this to your actual tax value
-          const grandTotal = totalPrice + taxValue;
-
-          res.render('user/cart', {
-              cartItems: detailedCartItems,
-              isLogged,
-              primaryCategories,
-              otherCategories,
-              totalPrice,
-              taxValue,
-              grandTotal,
-              coupons,
-              categoryOffers,
-              productOffers,
-          });
-      } else {
-          res.render('user/cart', { isLogged, primaryCategories, otherCategories, coupons });
+        });
       }
+
+      // Generate detailed cart items with offers applied
+      const detailedCartItems = cartItems.map((cartItem) => {
+        const product = products.find((p) => p._id.equals(cartItem.productId));
+
+        if (!product) {
+          return null;
+        }
+
+        const productId = product._id.toString();
+        const categoryId = product.categoryId._id.toString();
+
+        let price = product.price * cartItem.quantity;
+        let categoryDiscount = 0;
+        let productDiscount = 0;
+
+        if (productOffers[productId]) {
+          productDiscount = productOffers[productId];
+          price -= (price * productDiscount) / 100;
+        } else if (categoryOffers[categoryId] && categoryOffers[categoryId].discountPercentage > 0) {
+          categoryDiscount = categoryOffers[categoryId].discountPercentage;
+          price -= (price * categoryDiscount) / 100;
+        }
+
+        return {
+          productId: cartItem._id,
+          quantity: cartItem.quantity,
+          name: product.name,
+          images: product.image,
+          stock: product.stock,
+          unitPrice: product.price,
+          price: price,
+          description: product.description,
+          isAvailable: product.isAvailable,
+          categoryOffer: categoryDiscount > 0 ? { discountPercentage: categoryDiscount, categoryName: categoryOffers[categoryId].categoryName } : null,
+          productOffer: productDiscount > 0 ? { discountPercentage: productDiscount } : null,
+        };
+      }).filter(item => item !== null);
+
+      let totalPrice = detailedCartItems.reduce((total, item) => total + item.price, 0);
+
+      const taxValue = 10.00; 
+      const deliveryCharge = 50.00;
+      const grandTotal = totalPrice + taxValue + deliveryCharge;
+
+      res.render('user/cart', {
+        cartItems: detailedCartItems,
+        isLogged,
+        primaryCategories,
+        otherCategories,
+        totalPrice,
+        taxValue,
+        deliveryCharge,
+        grandTotal,
+        coupons,
+        categoryOffers,
+        productOffers,
+      });
+    } else {
+      res.render('user/cart', { isLogged, primaryCategories, otherCategories, coupons });
+    }
   } catch (err) {
-      res.status(500).send('Internal Server Error right now');
+    res.status(500).send('Internal Server Error right now');
   }
 };
 
 
-
-  
 
 
 
@@ -200,9 +191,7 @@ const addtoCart = async (req, res) => {
   const email = (req.session.user) ? req.session.user.email : req.session.userNew.email;
 
 
-  // console.log(13,'uio',789);
   const productId = req.params.id;
-  // console.log(productId);
 
   try {
       const user = await UserDB.findOne({ email: email });
@@ -211,26 +200,18 @@ const addtoCart = async (req, res) => {
       console.log(product);
       console.log(newQuantity);
 
-      console.log('kiki');
       if (!user || product.stock <= 0) {
           // Handle user not found or product not available
           if(user){
-            console.log(user.name);
           }
           if(product){
-            console.log(product.name);
           }
           if(product){
-            console.log(product.stock);
           }
           req.session.cartProduct = true;
-          // res.send('<h1>gcggfcgf</h1>')
           return res.redirect(`/productdetails/${req.params.id}`);
       }
-      console.log(user.name);
       let cartItem = await CartDB.findOne({ userId: user._id, productId: product._id });
-      console.log(cartItem)
-      console.log('lolo')
 
       if (cartItem) {
         const incStock= cartItem.stock+newQuantity
@@ -259,7 +240,6 @@ const addtoCart = async (req, res) => {
 
   } catch (err) {
       // Handle errors appropriately
-      console.error(err);
       res.status(500).send('Internal Server Error');
   }
 };
@@ -280,11 +260,9 @@ const removeFromCart = async (req, res) => {
   const emailId = (req.session.user) ? req.session.user.email : req.session.userNew.email;
 
   try {
-    console.log('123456789asdfghjk');
 
     const user = await UserDB.findOne({ email: emailId });
 
-    console.log(productIdToRemove);
     if (!user) {
       // console.log('User not found');
       return res.status(404).send('User not found');
@@ -309,479 +287,166 @@ const removeFromCart = async (req, res) => {
 
 
 
-
-
-
-
-// duplicate for editing
-// const cartPage = async (req, res) => {
-//   const isLogged = determineIsLogged(req.session);
-//   const { primaryCategories, otherCategories } = await fetchCategoryMiddleware.fetchCategories();
-//   const emailId = req.session.user ? req.session.user.email : req.session.userNew.email;
-
-
-
-//   try {
-//       const user = await UserDB.findOne({ email: emailId });
-//       if (!user) {
-//           return res.status(404).send('User not found');
-//       }
-//       const currentDate = new Date(); // Get the current date
-//       // Fetch available coupons for the user
-//       const coupons = await CouponDB.find({
-//           isAvailable: true,
-//           userIds: { $not: { $in: [user._id] } },
-//           expiryDate: { $gt: currentDate } // Filter by expiry date greater than current date
-
-//       });
-//       console.log(coupons);
-//       // return
-
-//       const cartItems = await CartDB.find({ userId: user._id });
-//       if (cartItems.length > 0) {
-//           const productIds = cartItems.map((cartItem) => cartItem.productId);
-//           const productsData = await ProductDB.find({
-//             _id: { $in: productIds },
-//             isAvailable: true,
-//         }).populate({
-//             path: 'categoryId',
-//             match: { isAvailable: true } // Add condition for category's isAvailable field
-//         });
-
-//       // Now products only contain items where the associated category is available
-      
-//         const products = productsData.filter(data => data.categoryId !== null)
-//           // Fetch category offers and calculate product offers
-//           const categoryOffers = {}; // Store category offers
-//           const productOffers = {}; // Store product offers
-
-//           for (const product of products) {
-//               const categoryId = product.categoryId._id.toString();
-//               const categoryDiscount = product.categoryId.discountPercentage;
-
-//               // Calculate product offer
-//               if (product.discountPercentage > 0) {
-//                   // Check if expiry date is available and not expired
-//                   if (!product.expiryDate || product.expiryDate >= currentDate) {
-//                       productOffers[product._id.toString()] = product.discountPercentage;
-//                   }
-//               }
-
-              
-//               if (product.categoryId.startDate && product.categoryId.endDate) {
-//                 const startDate = new Date(product.categoryId.startDate);
-//                 const endDate = new Date(product.categoryId.endDate);
-
-//                   // Check if the current date is within the discount offer period
-//                   if (currentDate >= startDate && currentDate <= endDate) {
-//                       if (!categoryOffers[categoryId]) {
-//                           categoryOffers[categoryId] = {
-//                               discountPercentage: categoryDiscount,
-//                               categoryName: product.categoryId.name,
-//                               products: [],
-//                           };
-//                       }
-//                       categoryOffers[categoryId].products.push(product);
-//                   }
-//               } else {
-//                   // If start and end dates are not available, consider the offer as permanent
-//                   if (!categoryOffers[categoryId]) {
-//                       categoryOffers[categoryId] = {
-//                           discountPercentage: categoryDiscount,
-//                           categoryName: product.categoryId.name,
-//                           products: [],
-//                       };
-//                   }
-//                   categoryOffers[categoryId].products.push(product);
-//               }
-
-
-
-
-
-//           }
-
-//           // Generate detailed cart items with offers applied
-//           const detailedCartItems = cartItems.map((cartItem) => {
-//               const product = products.find((p) => p._id.equals(cartItem.productId));
-
-//               if(!product){
-//                 return null
-//               }
-
-              
-
-//               const categoryId = product.categoryId._id.toString();
-
-//               // Calculate total price after applying product discount and category discount
-//               let price = cartItem.price;
-//               let categoryDiscount = 0;
-//               let productDiscount = 0;
-
-//               // Apply product discount if available
-//               if (productOffers[product._id.toString()]) {
-//                   productDiscount = productOffers[product._id.toString()];
-//                   price -= (price * productDiscount) / 100;
-//               }
-
-//               // Apply category discount if available
-//               if (categoryOffers[categoryId] && categoryOffers[categoryId].discountPercentage > 0) {
-//                   categoryDiscount = categoryOffers[categoryId].discountPercentage;
-//                   price -= (price * categoryDiscount) / 100;
-//               }
-
-
-//               const categoryOffer = categoryDiscount > 0 ? (categoryDiscount * price) / 100 : null;
-
-// const productOffer = productDiscount > 0 
-//     ? (categoryOffer !== null ? (productDiscount * categoryOffer) / 100 : (productDiscount * price) / 100) 
-//     : null;
-
-
-//               return {
-//                   productId: cartItem._id,
-//                   name: product.name,
-//                   images: product.image,
-//                   stock: product.stock,
-//                   quantity: cartItem.quantity,
-//                   unitPrice: product.price,
-//                   price:cartItem.price,
-//                   description: product.description,
-//                   isAvailable: product.isAvailable,
-//                   categoryOffer ,
-//                   productOffer ,
-//                   categoryDiscountPecentage: categoryDiscount > 0 ? categoryDiscount : null,
-//                   productDiscountPercentage:productDiscount > 0 ?  productDiscount : null,
-//                   totalPrice:price,
-//               };
-
-
-              
-
-
-//             })
-//             .filter(item => item !== null);
-
-
-            
-
-
-
-//             console.log('-=-=-detailedCartItems=-=-=-');
-
-//             console.log(detailedCartItems);
-
-//             console.log('-=-=-detailedCartItems=-=-=-');
-
-
-//           // Calculate total price
-//           let totalPrice = detailedCartItems.reduce((total, item) => total + item.totalPrice, 0)
-
-//           // Apply tax
-//           const taxValue = 10.00; // You can change this to your actual tax value
-//           const grandTotal =Math.round( totalPrice + taxValue)
-//           console.log(grandTotal);
-
-//           res.render('user/cart', {
-//               cartItems: detailedCartItems,
-//               isLogged,
-//               primaryCategories,
-//               otherCategories,
-//               totalPrice,
-//               taxValue,
-//               grandTotal,
-//               coupons,
-//               categoryOffers,
-//               productOffers,
-//           });
-//         } else {
-//           res.render('user/cart', { isLogged, primaryCategories, otherCategories, coupons });
-//         }
-//   } catch (err) {
-//       res.status(500).send('Internal Server Error right now');
-//   }
-// };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 const updateQuantity = async (req, res) => {
-  console.log("--=-=====-===----====-----=====---=======");
   const { productId, newQuantity } = req.body;
-  // productId means cart id  ==  _id
-  // console.log(productId ,newQuantity);
   
   try {
-
     if (!productId || !newQuantity || isNaN(newQuantity) || newQuantity < 0) {
       return res.status(400).json({ error: 'Invalid input' });
     }
-    const emailId = (req.session.user) ? req.session.user.email : req.session.userNew.email;
-
-    const user = await UserDB.findOne({ email: emailId });
-    const cartItem = await CartDB.findOne({_id:productId });
     
-    const productData = await productDB.findOne({ _id: cartItem.productId }).populate({
+    const emailId = (req.session.user) ? req.session.user.email : req.session.userNew.email;
+    const user = await UserDB.findOne({ email: emailId });
+    const cartItem = await CartDB.findOne({_id: productId });
+    const productData = await ProductDB.findOne({ _id: cartItem.productId }).populate({
       path: 'categoryId',
       match: { isAvailable: true } // Add condition for category's isAvailable field
-  });
-console.log('hoooi');
-  
-if(productData.categoryId == null || productData.isAvailable ==false ){
-  console.log(90);
-  return res.status(404).json({ message: 'Product not found' });
-}
+    });
 
-if( productData.stock< newQuantity){
-  return res.status(404).json({message:'out of stock'})
-}
-
-
-
-
-
-// Initialize the final price with the original price of the product
-let finalPrice =   productData.price;
-
-
-if(newQuantity<=productData.stock){
-  cartItem.quantity = newQuantity;
-  cartItem.price = (newQuantity) * productData.price
-  await cartItem.save();
-}
-
-
-
-
-// Apply category discount percentage if available
-if (productData.categoryId.discountPercentage > 0) {
-  const currentDate = new Date();
-  let startDate = null;
-  let endDate = null;
-  // Check if startDate and endDate exist before creating Date objects
-  if (productData.categoryId.startDate) {
-      startDate = new Date(productData.categoryId.startDate);
-  }
-  if (productData.categoryId.endDate) {
-      endDate = new Date(productData.categoryId.endDate);
-  }
-  // Check if the current date falls within the offer period
-  if (!startDate || (currentDate >= startDate && currentDate <= endDate)) {
-      finalPrice -= (finalPrice * productData.categoryId.discountPercentage) / 100;
-  }
-}
-
-
-
-if (productData.discountPercentage && productData.discountPercentage > 0) {
-  const currentDate = new Date();
-  const expiryDate = productData.expiryDate ? new Date(productData.expiryDate) : null;
-
-  if (!expiryDate || currentDate <= expiryDate) {
-      finalPrice -= (finalPrice * productData.discountPercentage) / 100;
-  }
-}
-
-// Ensure the final price is not negative
-// finalPrice = Math.max(0, finalPrice)*newQuantity
-// Ensure the final price is not negative and round to the nearest integer
-finalPrice = Math.round(Math.max(0, finalPrice) * newQuantity);
-
-
-// Now 'finalPrice' contains the calculated price after applying all discounts
-console.log('Final Price:', finalPrice);
-
-//========== here the code correct rest of the code is more correction needs
-
-console.log('-=-=-=-cart items -=-=-=-');
-// const cartItems = await CartDB.find({ userId: user._id });
-const cartItems = await CartDB.find({ userId: user._id, productId: { $ne: productData._id } });
-
-const productIds = cartItems.map((cartItem) => cartItem.productId);
-const productsData = await ProductDB.find({
-  _id: { $in: productIds },
-  isAvailable: true,
-}).populate({
-  path: 'categoryId',
-  match: { isAvailable: true } // Add condition for category's isAvailable field
-});
-
-console.log(2, 'find product in productDb');
-// console.log(productsData);
-
-// Now products only contain items where the associated category is available
-const products = productsData.filter(data => data.categoryId !== null);
-
-// Fetch category offers and calculate product offers
-console.log(3, 'find product in productDb');
-
-const categoryOffers = {}; // Store category offers
-const productOffers = {}; // Store product offers
-
-
-
-
-for (const product of products) {
-  const categoryId = product.categoryId._id.toString();
-  const categoryDiscount = product.categoryId.discountPercentage;
-
-  console.log('product offer :',product.discountPercentage);
-
-  // Calculate product offer
-  if (product.discountPercentage > 0) {
-    // Check if expiry date is available and not expired
-
-    console.log('koko');
-    const currentDate = new Date()
-    if (!product.expiryDate || product.expiryDate >= currentDate) {
-    console.log('koko',1);
-
-      productOffers[product._id.toString()] = product.discountPercentage;
-    // console.log('koko',2,  currentDate );
-    console.log('koko',2,   );
-    
-
+    if (!productData || productData.categoryId === null || !productData.categoryId.isAvailable) {
+      return res.status(404).json({ message: 'Product not found' });
     }
-  }
 
-  console.log('9090', 989);
+    if (productData.stock < newQuantity) {
+      return res.status(404).json({ message: 'Out of stock' });
+    }
 
-  if (product.categoryId.startDate && product.categoryId.endDate) {
-    const currentDate = new Date()
+    // Update quantity and price in cartItem
+    if (newQuantity <= productData.stock) {
+      cartItem.quantity = newQuantity;
+      cartItem.price = newQuantity * productData.price;
+      await cartItem.save();
+    }
 
-    console.log('ioioi');
-    const startDate = new Date(product.categoryId.startDate);
-    const endDate = new Date(product.categoryId.endDate);
+    // Calculate final price after discounts
+    let finalPrice = productData.price;
 
-    // Check if the current date is within the discount offer period
-    if (currentDate >= startDate && currentDate <= endDate) {
-      if (!categoryOffers[categoryId]) {
-        categoryOffers[categoryId] = {
-          discountPercentage: categoryDiscount,
-          categoryName: product.categoryId.name,
-          products: [],
-        };
+    if (productData.discountPercentage && productData.discountPercentage > 0) {
+      const currentDate = new Date();
+      const expiryDate = productData.expiryDate ? new Date(productData.expiryDate) : null;
+
+      if (!expiryDate || currentDate <= expiryDate) {
+        finalPrice -= (finalPrice * productData.discountPercentage) / 100;
       }
-      categoryOffers[categoryId].products.push(product);
+    } else if (productData.categoryId.discountPercentage > 0) {
+      const currentDate = new Date();
+      let startDate = null;
+      let endDate = null;
+      
+      if (productData.categoryId.startDate) {
+        startDate = new Date(productData.categoryId.startDate);
+      }
+      if (productData.categoryId.endDate) {
+        endDate = new Date(productData.categoryId.endDate);
+      }
+
+      if (!startDate || (currentDate >= startDate && currentDate <= endDate)) {
+        finalPrice -= (finalPrice * productData.categoryId.discountPercentage) / 100;
+      }
     }
-  } else {
-    // If start and end dates are not available, consider the offer as permanent
-    if (!categoryOffers[categoryId]) {
-      categoryOffers[categoryId] = {
-        discountPercentage: categoryDiscount,
-        categoryName: product.categoryId.name,
-        products: [],
+
+    // Ensure the final price is not negative and round to the nearest integer
+    finalPrice = Math.round(Math.max(0, finalPrice) * newQuantity);
+
+    // Fetch other cart items of the user
+    const cartItems = await CartDB.find({ userId: user._id, productId: { $ne: productData._id } });
+    const productIds = cartItems.map((cartItem) => cartItem.productId);
+    const productsData = await ProductDB.find({
+      _id: { $in: productIds },
+      isAvailable: true,
+    }).populate({
+      path: 'categoryId',
+      match: { isAvailable: true } // Add condition for category's isAvailable field
+    });
+
+    // Filter products by available categories
+    const products = productsData.filter(data => data.categoryId !== null);
+
+    // Generate detailed cart items with offers applied
+    const detailedCartItems = cartItems.map((cartItem) => {
+      const product = products.find((p) => p._id.equals(cartItem.productId));
+
+      if (!product) {
+        return null;
+      }
+
+      let price = cartItem.price;
+      let offer = null;
+
+      if (product.discountPercentage && product.discountPercentage > 0) {
+        offer = { discountPercentage: product.discountPercentage };
+        price -= (price * product.discountPercentage) / 100;
+      } else if (product.categoryId.discountPercentage > 0) {
+        offer = { discountPercentage: product.categoryId.discountPercentage };
+        price -= (price * product.categoryId.discountPercentage) / 100;
+      }
+
+      return {
+        productId: cartItem._id,
+        quantity: cartItem.quantity,
+        name: product.name,
+        images: product.image,
+        stock: product.stock,
+        unitPrice: product.price,
+        price: price,
+        description: product.description,
+        isAvailable: product.isAvailable,
+        offer: offer,
       };
-    }
-    categoryOffers[categoryId].products.push(product);
-  }
-}
+    }).filter(item => item !== null);
 
-console.log('hai-=-=-=-',505);
-console.log(productOffers);
+    // Calculate total price from detailedCartItems
+    const totalPrice = detailedCartItems.reduce((total, item) => total + item.price, 0);
 
-// Generate detailed cart items with offers applied
-const detailedCartItems = cartItems.map((cartItem) => {
-  const product = products.find((p) => p._id.equals(cartItem.productId));
+    // Calculate subTotal and grandTotal
+    const taxValue = 10.00; // You can change this to your actual tax value
+    const deliveryCharge =50.00;
+    const subTotal = Math.round(totalPrice + finalPrice);
+    const grandTotal = Math.round(totalPrice + finalPrice + taxValue  + deliveryCharge );
 
-  if (!product) {
-    return null;
-  }
-
-  const categoryId = product.categoryId._id.toString();
-
-  // Calculate total price after applying product discount and category discount
-  let price = cartItem.price;
-  let categoryDiscount = 0;
-  let productDiscount = 0;
-
-  // Apply product discount if available
-  if (productOffers[product._id.toString()]) {
-    productDiscount = productOffers[product._id.toString()];
-    price -= (price * productDiscount) / 100;
-  }
-
-  // Apply category discount if available
-  if (categoryOffers[categoryId] && categoryOffers[categoryId].discountPercentage > 0) {
-    categoryDiscount = categoryOffers[categoryId].discountPercentage;
-    price -= (price * categoryDiscount) / 100;
-  }
-
-  return {
-    productId: cartItem._id,
-    quantity: cartItem.quantity,
-    name: product.name,
-    images: product.image,
-    stock: product.stock,
-    unitPrice: product.price,
-    price: price,
-    description: product.description,
-    isAvailable: product.isAvailable,
-    // Include category offer and product offer details if available
-    categoryOffer: categoryDiscount > 0 ? { discountPercentage: categoryDiscount, categoryName: categoryOffers[categoryId].categoryName } : null,
-    productOffer: productDiscount > 0 ? { discountPercentage: productDiscount } : null,
-  };
-}).filter(item => item !== null);
-
-// Calculate total price from detailedCartItems
-const totalPrice = detailedCartItems.reduce((total, item) => total + item.price, 0);
-// const totalPrice = Math.floor(totalPriceFind);
-
-// Now totalPrice contains the sum of prices from detailedCartItems
-
-// Calculate total price
-
-// Apply tax
-const taxValue = 10.00; // You can change this to your actual tax value
-
-
-console.log('Total Price:', totalPrice);
- const subTotal = Math.round( totalPrice + finalPrice)
-console.log(subTotal);
-console.log('updated product price :',finalPrice);
-const grandTotal =Math.round(  totalPrice + taxValue + finalPrice)
-console.log("grandTotal :", grandTotal);
-
-return res.json({
-  cartItems: detailedCartItems,
-  totalPrice,
-  taxValue,
-  subTotal,
-  grandTotal,
-  outOfStock:false,
-  newQuantity: newQuantity,
-  finalPrice: finalPrice,
-});
-
-    // Optionally, you may send a success message
+    return res.json({
+      cartItems: detailedCartItems,
+      totalPrice,
+      taxValue,
+      subTotal,
+      grandTotal,
+      outOfStock: false,
+      newQuantity: newQuantity,
+      finalPrice: finalPrice,
+    });
   } catch (err) {
-
-   
     return res.status(500).json({ error: 'Internal server error' });
   }
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -8,7 +8,16 @@ const Razorpay = require('razorPay')
 
 const OrderPayment = async (req, res) => {
   try {
-    console.log('here bck');
+    const emailId = req.session.user ? req.session.user.email : req.session.userNew.email;
+
+    const user = await UserDB.findOne({ email: emailId ,isBlocked:false});
+    if (!user) {
+    
+
+      return res.status(404).json({ message: 'now this user is blocked by admin' });
+    }
+
+
     const { amount } = req.body;
     var instance = new Razorpay({ key_id: process.env.KEY_ID, key_secret: process.env.KEY_SECRET });
     var options = {
@@ -18,12 +27,11 @@ const OrderPayment = async (req, res) => {
     };
 
 
-    console.log(amount,'ioioi');
 
     // Creating the order
     instance.orders.create(options, function (err, order) {
+
       if (err) {
-        console.error(err);
         res.status(500).send("Error creating order");
         return;
       }
@@ -33,7 +41,6 @@ const OrderPayment = async (req, res) => {
 
     });
   } catch (error) {
-    console.error(error);
     res.status(500).send("Internal Server Error");
   }
 };

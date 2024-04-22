@@ -10,15 +10,12 @@ const categorylist=async (req,res)=>{
     try{
         const categoryList=await CategoryDB.find()
         if(categoryList.length>0){
-            console.log(categoryList);
-            console.log('listed');
             res.render('admin/categorylist',{categoryList})
         }else{
-            console.log('NO DATA');
             res.render('admin/categorylist')
             }
         }catch (err){
-            console.error(err);
+            req.redirect('/error')
         }
 }
 
@@ -36,14 +33,10 @@ const addCategory=(req,res)=>{
 const editCategory=  async (req,res)=>{
     try{
         const categoryId=req.params.id
-        console.log(categoryId);
-        // const category = await CategoryDB.find({_id:categoryId},{name:1,_id:0})
         const category = await CategoryDB.findById(categoryId)
-        console.log('----==-=-====-=--=');
-       console.log(category);
 res.render('admin/editCategory',{category})
     } catch (err){
-        console.error(err);
+        req.redirect('/error')
     }
 }
 
@@ -55,10 +48,10 @@ const categoryAddedPost= async (req,res)=>{
             name:req.body.categoryName.trim().toUpperCase()
         }
         await CategoryDB.insertMany([categoryData]);
-        console.log(categoryData,"categoryData2");
             res.redirect('/admin/categoryList')
     }catch (err){
-        console.error(err);
+        req.redirect('/error')
+
     }
 }
 
@@ -72,7 +65,6 @@ const categoryAdding = async (req, res) => {
 
         if (existingCategory) {
             res.json({ exists: "this category name is existing add another one " }); // Category exists
-            console.log("existing");
         } else {
             const filteredData = Object.entries(req.body).reduce((acc, [key, value]) => {
                 if (value !== '') {
@@ -80,10 +72,7 @@ const categoryAdding = async (req, res) => {
                 }
                 return acc;
             }, {});
-            // const filteredData2 = Object.fromEntries(
-            //     Object.entries(req.body)
-            //     .filter(([key, value]) => value !== '')
-            // );
+          
             const { categoryName, discountPercentage,  startDate , endDate } = req.body;
 
             if (categoryName) {
@@ -108,11 +97,9 @@ const categoryAdding = async (req, res) => {
                 newCategory.save()
 
                 res.json({ success:"new category added" }); // Category doesn't exist
-                console.log("not existing");
             }
             }
     } catch (err) {
-        console.error(err);
         res.status(500).json({ error: 'Internal Server Error' });
     }
 };
@@ -127,7 +114,6 @@ const categoryAdding = async (req, res) => {
 
 const checkCategory2 = async (req, res) => {
     try {
-        console.log('hgfhdgcfc');
         const categoryOld = req.body.labelText.trim().toUpperCase();
         const categoryNew = req.body.categoryName.trim().toUpperCase();
 
@@ -153,115 +139,6 @@ const checkCategory2 = async (req, res) => {
 
 
 
-
-// const editCategoryPost = async (req, res) => {
-//     try {
-//         let startDate, endDate;
-
-//         if (req.body.startDate && req.body.endDate) {
-//             const startDateParts = req.body.startDate.split('/');
-//             startDate = new Date(startDateParts[2], startDateParts[1] - 1, startDateParts[0]);
-
-//             const endDateParts = req.body.endDate.split('/');
-//             endDate = new Date(endDateParts[2], endDateParts[1] - 1, endDateParts[0]);
-//         }
-
-//         console.log('Parsed start date:', startDate);
-//         console.log('Parsed end date:', endDate);
-
-//         const categoryName = req.body.categoryName.trim().toUpperCase();
-//         const existingCategories = await CategoryDB.find({ name: categoryName });
-        
-//         if (existingCategories.length > 0) {
-//             for (let i = 0; i < existingCategories.length; i++) {
-//                 const existingCategory = existingCategories[i];
-//                 const existingId = existingCategory._id.toString();
-    
-//                 if (existingId !== req.body.categoryId) {
-//                     console.log('-=-=-=-=-=-', 123);
-//                     console.log(existingId);
-//                     console.log(req.body.categoryId);
-//                     console.log('-=-=-=-=-=-', 456);
-
-//                     console.log(12345);
-//                     res.json({ exists: "this category name is existing add another one " }); // Category exists
-//                     return;
-//                 } else {
-//                     console.log('same ID');
-//                     existingCategory.name = req.body.categoryName;
-//                     existingCategory.discountPercentage = req.body.discountPercentage;
-//                     existingCategory.startDate = startDate;
-//                     existingCategory.endDate = endDate;
-    
-//                     try {
-//                         await existingCategory.save();
-//                     } catch (error) {
-//                         console.error("Error saving category:", error);
-//                         res.status(500).json({ error: "An error occurred while saving the category." });
-//                         return;
-//                     }
-//                 }
-//             }
-//             res.json({ success: "Category updated successfully." });
-//         } else {
-//             const updateCategory = await CategoryDB.findById(req.body.categoryId);
-
-//             if (updateCategory) {
-//                 updateCategory.name = req.body.categoryName;
-//                 updateCategory.discountPercentage = req.body.discountPercentage;
-//                 updateCategory.startDate = startDate;
-//                 updateCategory.endDate = endDate;
-
-//                 try {
-//                     await updateCategory.save();
-//                     res.json({ success: "Category updated successfully." });
-//                 } catch (error) {
-//                     console.error("Error saving category:", error);
-//                     res.status(500).json({ error: "An error occurred while saving the category." });
-//                 }
-//             } else {
-//                 res.status(404).json({ error: "Category not found." });
-//             }
-//         }
-//     } catch (err) {
-//         console.error(err);
-//         res.status(500).json({ error: 'Internal Server Error' });
-//     }
-// };
-
-// const editCategoryPost = async (req, res) => {
-//     try {
-//         const startDate = req.body.startDate ? new Date(req.body.startDate.split('/').reverse().join('-')) : undefined;
-//         const endDate = req.body.endDate ? new Date(req.body.endDate.split('/').reverse().join('-')) : undefined;
-
-//         const categoryName = req.body.categoryName.trim().toUpperCase();
-//         const existingCategories = await CategoryDB.find({ name: categoryName });
-        
-//         if (existingCategories.some(category => category._id.toString() !== req.body.categoryId)) {
-//             res.json({ exists: "This category name is existing, please add another one." });
-//             return;
-//         }
-//         const updateCategory = await CategoryDB.findById(req.body.categoryId);
-//         if (!updateCategory) {
-//             res.status(404).json({ error: "Category not found." });
-//             return;
-//         }
-//         if (startDate !== undefined) {
-//             updateCategory.startDate = startDate;
-//         }
-//         if (endDate !== undefined) {
-//             updateCategory.endDate = endDate;
-//         }
-//         updateCategory.name = req.body.categoryName;
-//         updateCategory.discountPercentage = req.body.discountPercentage;
-
-//         await updateCategory.save();
-//         res.json({ success: "Category updated successfully." });
-//     } catch (err) {
-//         console.error(err);
-//         res.status(500).json({ error: 'Internal Server Error' });
-//     }
-// };
 const editCategoryPost = async (req, res) => {
     try {
         const startDate = req.body.startDate ? new Date(req.body.startDate.split('/').reverse().join('-')) : undefined;
@@ -324,7 +201,6 @@ const editCategoryPost = async (req, res) => {
 
 
 const hide=  async (req,res)=>{
-    console.log('middleware1');
         try{
             const categoryIdToUpdate=req.params.id
             await CategoryDB.find({_id:categoryIdToUpdate},{name:1,_id:0})
@@ -332,6 +208,7 @@ const hide=  async (req,res)=>{
     res.redirect('/admin/categoryList')
         } catch (err){
             console.error(err);
+            res.redirect('/error')
         }
 
 }
@@ -344,7 +221,7 @@ const show=  async (req,res)=>{
             await CategoryDB.updateOne({ _id: categoryIdToUpdate }, { $set: { isAvailable: true } });
     res.redirect('/admin/categoryList')
         } catch (err){
-            console.error(err);
+            res.redirect('/error')
         }
     }
        

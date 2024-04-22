@@ -1,443 +1,775 @@
-
 <%-include('header')-%>
 
-
 <style>
-    canvas{
-        width:500px;
-        
-    }
+  canvas {
+    width: 500px;
+  }
 </style>
 
+<!-- Sale & Revenue Start -->
+<div class="container-fluid pt-4 px-4">
+  <div class="row g-4">
+    <div class="col-sm-6 col-xl-3">
+      <div
+        class="bg-light rounded d-flex align-items-center justify-content-between p-4"
+      >
+        <i class="fa fa-chart-line fa-3x text-primary"></i>
+        <div class="ms-3">
+          <p class="mb-2">Total Sales Count</p>
+          <%if(locals.totalOrder){%>
+          <h6 class="mb-0"><%=totalOrder%></h6>
+          <%}else{%>
+          <h6 class="mb-0">No Sales</h6>
+          <%}%>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-6 col-xl-3">
+      <div
+        class="bg-light rounded d-flex align-items-center justify-content-between p-4"
+      >
+        <i class="fa fa-chart-bar fa-3x text-primary"></i>
+        <div class="ms-3">
+          <p class="mb-2">Total Sales Amount</p>
+          <%if(locals.totalAmount){%>
+          <h6 class="mb-0">₹<%=totalAmount%></h6>
+          <%}else{%>
+          <h6 class="mb-0">No Sales</h6>
+          <%}%>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-6 col-xl-3">
+      <div
+        class="bg-light rounded d-flex align-items-center justify-content-between p-4"
+      >
+        <i class="fa fa-chart-area fa-3x text-primary"></i>
+        <div class="ms-3">
+          <p class="mb-2">Overall discount</p>
+          <%if(locals.totalDiscount){%>
+          <h6 class="mb-0">₹<%=totalDiscount%></h6>
+          <%}else{%>
+          <h6 class="mb-0">No Discounts</h6>
+          <%}%>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-6 col-xl-3">
+      <div
+        class="bg-light rounded d-flex align-items-center justify-content-between p-4"
+      >
+        <i class="fa fa-chart-pie fa-3x text-primary"></i>
+        <div class="ms-3">
+          <p class="mb-2">Coupon deduction</p>
+          <%if(locals.couponDiscount){%>
+          <h6 class="mb-0">₹<%=couponDiscount%></h6>
+          <%}else{%>
+          <h6 class="mb-0">Nill</h6>
+          <%}%>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Sale & Revenue End -->
 
+<!-- Sales Chart Start -->
+<div class="container-fluid pt-4 px-4">
+  <div class="row g-4">
+    <div class="col-sm-12 col-xl-6">
+      <div class="bg-light rounded h-100 p-4">
+        <div class="pb-2 mb-4">
+          <h6>Sales Chart</h6>
+          <select id="sales-filter">
+            <option
+              value="yearly"
+              data-sales="<%= JSON.stringify(locals.yearlyTotalSale) %>"
+            >
+              Yearly
+            </option>
+            <option
+              value="monthly"
+              selected
+              data-sales="<%= JSON.stringify(locals.monthlyTotalSale) %>"
+            >
+              Monthly
+            </option>
+          </select>
+        </div>
+        <canvas
+          id="monthly-yearly-sales-chart"
+          data-yearly-sales="<%= JSON.stringify(locals.yearlyTotalSale) %>"
+          data-monthly-sales="<%= JSON.stringify(locals.monthlyTotalSale) %>"
+        ></canvas>
+      </div>
+    </div>
 
-            <!-- Sale & Revenue Start -->
-            <div class="container-fluid pt-4 px-4">
-                <div class="row g-4">
-                    <div class="col-sm-6 col-xl-3">
-                        <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
-                            <i class="fa fa-chart-line fa-3x text-primary"></i>
-                            <div class="ms-3">
-                                <p class="mb-2">Total Sales Count </p>
-                                <%if(locals.totalOrder){%>
-                                    <h6 class="mb-0"><%=totalOrder%></h6>
-                                <%}else{%>
-                                    <h6 class="mb-0">No Sales</h6>
-                                <%}%>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-sm-6 col-xl-3">
-                        <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
-                            <i class="fa fa-chart-bar fa-3x text-primary"></i>
-                            <div class="ms-3">
-                                <p class="mb-2">Total Sales Amount</p>
-                                <%if(locals.totalAmount){%>
-                                    <h6 class="mb-0">₹<%=totalAmount%></h6>
-                                <%}else{%>
-                                    <h6 class="mb-0">No Sales</h6>
-                                <%}%>                            
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-sm-6 col-xl-3">
-                        <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
-                            <i class="fa fa-chart-area fa-3x text-primary"></i>
-                            <div class="ms-3">
-                                <p class="mb-2">Overall discount</p>
-                                <%if(locals.totalDiscount){%>
-                                    <h6 class="mb-0">₹<%=totalDiscount%></h6>
-                                <%}else{%>
-                                    <h6 class="mb-0">No Discounts</h6>
-                                <%}%>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-sm-6 col-xl-3">
-                        <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
-                            <i class="fa fa-chart-pie fa-3x text-primary"></i>
-                            <div class="ms-3">
-                                <p class="mb-2">Coupon deduction</p>
-                                <%if(locals.couponDiscount){%>
-                                    <h6 class="mb-0">₹<%=couponDiscount%></h6>
-                                <%}else{%>
-                                    <h6 class="mb-0">No CouponDeduction</h6>
-                                <%}%>
-                            </div>
-                        </div>
-                    </div>
-                    
-                </div>
-            </div>
-            <!-- Sale & Revenue End -->
+    <!-- <div class="col-sm-12 col-xl-6">
+  <div class="bg-light rounded h-100 p-4">
+    <div class="pb-2 mb-4">
+      <h6>Top 5 Categories Chart</h6>
+      <select id="categories-filter">
+        <option value="yearly" data-categories-yearly="<%= JSON.stringify(locals.yearlyTop5Categories) %>">Yearly</option>
+        <option value="monthly" selected data-categories-monthly="<%= JSON.stringify(locals.monthlyTop5Categories) %>">Monthly</option>
+      </select>
+    </div>
+    <canvas id="monthly-yearly-top-selling-categories" data-yearly-top5Categories="<%= JSON.stringify(locals.yearlyTop5Categories) %>" data-monthly-top5Categories="<%= JSON.stringify(locals.monthlyTop5Categories) %>"></canvas>
+  </div>
+</div> -->
 
+    <div class="col-sm-12 col-xl-6">
+      <div class="bg-light rounded h-100 p-4">
+        <div class="pb-2 mb-4">
+          <h6>Top 5 Categories Chart</h6>
+          <select id="month-select"></select>
+          <select id="year-select"></select>
+        </div>
+        <canvas
+          id="top-selling-categories"
+          data-top5-Categories="<%= JSON.stringify(locals.currentMonthTop5Categories) %>"
+        ></canvas>
+      </div>
+    </div>
 
+    <div class="col-sm-12 col-xl-6">
+      <div class="bg-light rounded h-100 p-4">
+        <div class="pb-2 mb-4">
+          <h6>Top 5 Products Chart</h6>
+          <select id="month-select-products"></select>
+          <select id="year-select-products"></select>
+        </div>
+        <canvas
+          id="top-selling-products"
+          data-top5-products="<%= JSON.stringify(locals.currentMonthTop5Products) %>"
+        ></canvas>
+      </div>
+    </div>
 
+    <!-- 
+  <div class="col-sm-12 col-xl-6">
+  <div class="bg-light rounded h-100 p-4">
+    <div class="pb-2 mb-4">
+      <h6>Top 5 Products Chart</h6>
+      <select id="sales-filter">
+        <option value="yearly" data-sales="<%= JSON.stringify(locals.yearlyTop5Products) %>">Yearly</option>
+        <option value="monthly" selected data-sales="<%= JSON.stringify(locals.monthlyTop5Products) %>">Monthly</option>
+      </select>
+    </div>
+    <canvas id="monthly-yearly-best-selling-products" data-yearly-top5Products="<%= JSON.stringify(locals.yearlyTop5Products) %>" data-monthly-top5Products="<%= JSON.stringify(locals.monthlyTop5Products) %>"></canvas>
+  </div>
+</div> -->
 
+    <div class="col-sm-12 col-xl-6">
+      <div class="bg-light rounded h-100 p-4">
+        <h6 class="mb-4">Multiple Bar Chart</h6>
+        <canvas id=""></canvas>
+      </div>
+    </div>
+  </div>
+</div>
 
+<!-- Sales Chart End -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
+<br />
 
+<!-- Recent Sales Start -->
 
-            <!-- Sales Chart Start -->
-            <div class="container-fluid pt-4 px-4">
-                <div class="row g-4">
-                        
+<div class="container-fluid pt-4 px-4">
+  <div class="bg-light rounded p-4">
+    <h6 class="mb-4">Recent Sales</h6>
 
-
-
-                    <div class="col-sm-12 col-xl-6">
-                        <div class="bg-light rounded h-100 p-4">
-                            <div class="pb-2 mb-4">
-                                <h6>Sales Chart</h6>
-                                <select id="sales-filter">
-                                    <option value="yearly" data-sales="<%= JSON.stringify(locals.yearlyTotalSale) %>">Yearly</option>
-                                    <option value="monthly" selected data-sales="<%= JSON.stringify(locals.monthlyTotalSale) %>">Monthly</option>
-                                </select>
-                            </div>
-                            <canvas id="monthly-yearly-sales-chart" data-yearly-sales="<%= JSON.stringify(locals.yearlyTotalSale) %>" data-monthly-sales="<%= JSON.stringify(locals.monthlyTotalSale) %>"></canvas>
-                        </div>
-                    </div>
-                    
-                 
-                    
-
-
-
-
-
-                    <div class="col-sm-12 col-xl-6">
-                        <div class="bg-light rounded h-100 p-4">
-                            <div class=" pb-2 mb-4" >
-                                <h6>top 5 categories</h6>
-                                
-                            </div>
-                            <canvas id="monthly-yearly-best-selling-category"  data-bestSelling-categories="<%= JSON.stringify(locals.top5Categories) %>"   ></canvas>
-                        </div>
-                    </div>
-
-
-
-                    <div class="col-sm-12 col-xl-6">
-                        <div class="bg-light rounded h-100 p-4">
-                            <div class=" pb-2 mb-4"   >
-                                <h6>top 5 products</h6>
-
-                            </div>
-                            <canvas id="monthly-yearly-best-selling-product"  data-bestSelling-products="<%= JSON.stringify(locals.top5Products) %>" ></canvas>
-                        </div>
-                    </div>
-
-
-                    <div class="col-sm-12 col-xl-6">
-                        <div class="bg-light rounded h-100 p-4">
-                            <h6 class="mb-4">Multiple Bar Chart</h6>
-                            <canvas id="" ></canvas>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-
-
-
-            <!-- Sales Chart End -->
-             <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-            <br>
-
-
-
-
-            <!-- Recent Sales Start -->
-
-
-            <div class="container-fluid pt-4 px-4">
-
-            <div class="bg-light rounded  p-4">
-                <h6 class="mb-4">Recent Sales</h6>
-                
-                <div class="table-responsive">
-                    <table id="salesTable" class="table table-bordered">
-                        <thead>
-                            <tr class="text-dark">
-                                <!-- <th rowspan="2"></th> Add a column for checkbox input -->
-                                <th rowspan="2">User Name</th>
-                                <th rowspan="2">Order Date</th>
-                                <th rowspan="2">Grand Total</th>
-                                <th rowspan="2">Payment Status &<br>Order Status</th>
-                                <th rowspan="2">Coupon</th>
-                                <th rowspan="2">Tax</th>
-                                <th style="text-align: center;" colspan="7">Order Items</th>
-                                <!-- <th rowspan="2">Action</th> -->
-                            </tr>
-                            <tr class="text-dark">
-                                <!-- Other headers -->
-                                <th>Product Name</th>
-                                <th>Unit Price</th>
-                                <th>Quantity</th>
-                                <th>Product Price</th>
-                                <th>Category Offer</th>
-                                <th>Product Offer</th>
-                                <th>Total Price</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <!-- Iterate over orders and order items -->
-                            <% orders.forEach(order => { %>
-                                <% order.orderItems.forEach((item, index) => { %>
-                                    <tr class="text-dark">
-                                        <!-- Checkbox input for each row -->
-                                        <!-- Render order details -->
-                                        <% if (index === 0) { %>
-                                            <!-- <td rowspan="<%= order.orderItems.length %>"><input type="checkbox"></td> -->
-                                            <td rowspan="<%= order.orderItems.length %>"><%= order.userName %></td>
-                                            <td rowspan="<%= order.orderItems.length %>"><%= new Date(order.orderDate).toLocaleString('en-US', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: true }) %></td>
-                                            <td rowspan="<%= order.orderItems.length %>"><%= order.grandTotal %></td>
-                                            <td rowspan="<%= order.orderItems.length %>">
-                                                <%= order.paymentStatus.type %>
-                                                <br>
-                                                <%= order.orderStatus.type %>
-                                            </td>
-                                            <td rowspan="<%= order.orderItems.length %>">
-                                                <% if(order.couponName){ %>
-                                                    <%= order.couponName %>
-                                                    <br>
-                                                    <%= order.couponDiscountPercentage %> %
-                                                    <br>
-                                                    <%= order.couponDiscount %>
-                                                <% }else{ %>
-                                                    N/A
-                                                <% } %>
-                                            </td>
-                                            <td rowspan="<%= order.orderItems.length %>"><%= order.tax %></td>
-                                        <% } %>
-                                        <!-- Render order item details -->
-                                        <td><%= item.productName %></td>
-                                        <td><%= item.unitPrice %></td>
-                                        <td><%= item.quantity %></td>
-                                        <td><%= item.price %></td>
-                                        <td>
-                                            <%= item.categoryDiscountPecentage %>%
-                                            <br>
-                                            <%= item.categoryOffer %>
-                                        </td>
-                                        <td>
-                                            <%= item.productDiscountPercentage %>%
-                                            <br>
-                                            <%= item.productOffer %>
-                                        </td>
-                                        <td><%= item.totalPrice %></td>
-                                        <!-- Render action -->
-                                        <!-- <% if (index === 0) { %>
+    <div class="table-responsive">
+      <table id="salesTable" class="table table-bordered">
+        <thead>
+          <tr class="text-dark">
+            <!-- <th rowspan="2"></th> Add a column for checkbox input -->
+            <th rowspan="2">User Name</th>
+            <th rowspan="2">Order Date</th>
+            <th rowspan="2">Grand Total</th>
+            <th rowspan="2">Payment Status &<br />Order Status</th>
+            <th rowspan="2">Coupon</th>
+            <th rowspan="2">Tax</th>
+            <th style="text-align: center" colspan="7">Order Items</th>
+            <!-- <th rowspan="2">Action</th> -->
+          </tr>
+          <tr class="text-dark">
+            <!-- Other headers -->
+            <th>Product Name</th>
+            <th>Unit Price</th>
+            <th>Quantity</th>
+            <th>Product Price</th>
+            <th>Category Offer</th>
+            <th>Product Offer</th>
+            <th>Total Price</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Iterate over orders and order items -->
+          <% orders.forEach(order => { %> <% order.orderItems.forEach((item,
+          index) => { %>
+          <tr class="text-dark">
+            <!-- Checkbox input for each row -->
+            <!-- Render order details -->
+            <% if (index === 0) { %>
+            <!-- <td rowspan="<%= order.orderItems.length %>"><input type="checkbox"></td> -->
+            <td rowspan="<%= order.orderItems.length %>">
+              <%= order.userName %>
+            </td>
+            <td rowspan="<%= order.orderItems.length %>">
+              <%= new Date(order.orderDate).toLocaleString('en-US', { weekday:
+              'short', day: 'numeric', month: 'short', year: 'numeric', hour:
+              'numeric', minute: 'numeric', second: 'numeric', hour12: true })
+              %>
+            </td>
+            <td rowspan="<%= order.orderItems.length %>">
+              <%= order.grandTotal %>
+            </td>
+            <td rowspan="<%= order.orderItems.length %>">
+              <%= order.paymentStatus.type %>
+              <br />
+              <%= order.orderStatus.type %>
+            </td>
+            <td rowspan="<%= order.orderItems.length %>">
+              <% if(order.couponName){ %> <%= order.couponName %>
+              <br />
+              <%= order.couponDiscountPercentage %> %
+              <br />
+              <%= order.couponDiscount %> <% }else{ %> N/A <% } %>
+            </td>
+            <td rowspan="<%= order.orderItems.length %>"><%= order.tax %></td>
+            <% } %>
+            <!-- Render order item details -->
+            <td><%= item.productName %></td>
+            <td><%= item.unitPrice %></td>
+            <td><%= item.quantity %></td>
+            <td><%= item.price %></td>
+            <td>
+              <%= item.categoryDiscountPecentage %>%
+              <br />
+              <%= item.categoryOffer %>
+            </td>
+            <td>
+              <%= item.productDiscountPercentage %>%
+              <br />
+              <%= item.productOffer %>
+            </td>
+            <td><%= item.totalPrice %></td>
+            <!-- Render action -->
+            <!-- <% if (index === 0) { %>
                                             <td rowspan="<%= order.orderItems.length %>"><a class="btn btn-sm btn-primary" href="">Download</a></td>
                                         <% } %> -->
-                                    </tr>
-                                <% }); %>
-                            <% }); %>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            </div>
+          </tr>
+          <% }); %> <% }); %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
 
+<!-- </div> -->
+<!-- Content End -->
 
+<!-- Back to Top -->
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        <!-- </div> -->
-        <!-- Content End -->
-
-
-        <!-- Back to Top -->
-
-
-
-
-
-
+<!-- total sales chart -->
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const ctx = document.getElementById('monthly-yearly-sales-chart').getContext('2d');
-        const salesFilter = document.getElementById('sales-filter');
-        let chart;
+  document.addEventListener("DOMContentLoaded", function () {
+    const ctx = document
+      .getElementById("monthly-yearly-sales-chart")
+      .getContext("2d");
+    const salesFilter = document.getElementById("sales-filter");
+    let chart;
 
-        // Default data to be used when the page loads
-        const defaultData = {
-            labels: [],
-            datasets: [{
-                data: [],
-                backgroundColor: '#FF5733'
-            }]
-        };
+    // Default data to be used when the page loads
+    const defaultData = {
+      labels: [],
+      datasets: [
+        {
+          data: [],
+          backgroundColor: "#FF5733",
+        },
+      ],
+    };
 
-        // Function to parse the sales data and construct chart data
-        function parseData(salesData) {
-            const labels = salesData.map(item => item._id.toString());
-            const data = salesData.map(item => item.totalSales);
-            return {
-                labels: labels,
-                datasets: [{
-                    data: data,
-                    backgroundColor: '#FF5733'
-                }]
-            };
-        }
+    // Function to parse the sales data and construct chart data
+    function parseData(salesData) {
+      const labels = salesData.map((item) => item._id.toString());
+      const data = salesData.map((item) => item.totalSales);
+      return {
+        labels: labels,
+        datasets: [
+          {
+            data: data,
+            backgroundColor: "#FF5733",
+          },
+        ],
+      };
+    }
 
-        // Function to update chart based on selected filter
-        function updateChart() {
-            const filter = salesFilter.value;
-            let data;
+    // Function to update chart based on selected filter
+    function updateChart() {
+      const filter = salesFilter.value;
+      let data;
 
-            if (filter === 'yearly') {
-                data = parseData(JSON.parse(document.getElementById('monthly-yearly-sales-chart').dataset.yearlySales));
-            } else if (filter === 'monthly') {
-                data = parseData(JSON.parse(document.getElementById('monthly-yearly-sales-chart').dataset.monthlySales));
-            }
+      if (filter === "yearly") {
+        data = parseData(
+          JSON.parse(
+            document.getElementById("monthly-yearly-sales-chart").dataset
+              .yearlySales
+          )
+        );
+      } else if (filter === "monthly") {
+        data = parseData(
+          JSON.parse(
+            document.getElementById("monthly-yearly-sales-chart").dataset
+              .monthlySales
+          )
+        );
+      }
 
-            // Update chart with new data
-            if (chart) {
-                chart.data = data;
-                chart.update();
-            } else {
-                chart = new Chart(ctx, {
-                    type: 'bar',
-                    data: data,
-                    options: {
-                        responsive: true,
-                        scales: {
-                            yAxes: [{
-                                ticks: {
-                                    beginAtZero: true
-                                }
-                            }]
-                        }
-                    }
-                });
-            }
-        }
+      // Update chart with new data
+      if (chart) {
+        chart.data = data;
+        chart.update();
+      } else {
+        chart = new Chart(ctx, {
+          type: "bar",
+          data: data,
+          options: {
+            responsive: true,
+            scales: {
+              yAxes: [
+                {
+                  ticks: {
+                    beginAtZero: true,
+                  },
+                },
+              ],
+            },
+          },
+        });
+      }
+    }
 
-        // Event listener for filter change
-        salesFilter.addEventListener('change', updateChart);
+    // Event listener for filter change
+    salesFilter.addEventListener("change", updateChart);
 
-        // Initially update the chart when the page loads
-        updateChart();
-    });
+    // Initially update the chart when the page loads
+    updateChart();
+  });
 </script>
 
-
-
-
-
-
-
+<!-- perfect CATEGORY code for monthly yearly and default -->
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        var ctx = document.getElementById('monthly-yearly-best-selling-category').getContext('2d');
-        
-        // Get data from the dataset attribute
-        var dataset = document.getElementById('monthly-yearly-best-selling-category').getAttribute('data-bestSelling-categories');
-        var top5Categories = JSON.parse(dataset);
-        
-        // Extracting data from the dataset
-        var labels = [];
-        var data = [];
-        top5Categories.forEach(function(category) {
-            labels.push(category.categoryName);
-            data.push(category.totalCount);
-        });
-        
-        var salesData = {
-            labels: labels,  
-            datasets: [{
-                label: 'top category',
-                data: data,  
-                backgroundColor: '#FFD633'
-            }]
-        };
-    
-        var chart = new Chart(ctx, {
-            type: 'bar',
-            data: salesData,
-            options: {
+  document.addEventListener("DOMContentLoaded", function () {
+    const ctx = document
+      .getElementById("top-selling-categories")
+      .getContext("2d");
+    let chart;
+
+    // Function to parse the category data and construct chart data
+    function parseData(categoriesData) {
+      const labels = categoriesData.map((item) => item.categoryName);
+      const data = categoriesData.map((item) => item.totalQuantity);
+      return {
+        labels: labels,
+        datasets: [
+          {
+            data: data,
+            backgroundColor: "#FF5733",
+          },
+        ],
+      };
+    }
+
+    // Function to update chart based on selected filter
+    function updateChart(selectedFilter) {
+      console.log(selectedFilter);
+      // return
+      // Fetch the canvas element
+      const canvas = document.getElementById("top-selling-categories");
+
+      // Check if a chart instance already exists
+      if (chart) {
+        // Destroy the existing chart
+        chart.destroy();
+      }
+
+      // Fetch data for the selected filter from backend
+      if (selectedFilter !== "initial") {
+        let fetchUrl;
+        if (selectedFilter > 12) {
+          // Fetch URL for the selected year
+          const selectedYear = document.getElementById("year-select").value;
+          fetchUrl = `/admin/top5Categories/year/${selectedYear}`;
+        } else {
+          fetchUrl = selectedFilter.includes(":")
+            ? selectedFilter
+            : `/admin/top5Categories/${selectedFilter}`;
+        }
+        fetch(fetchUrl, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            // Parse fetched data
+            console.log(data);
+            const chartData = parseData(data);
+
+            // Create a new chart instance
+            chart = new Chart(canvas, {
+              type: "bar",
+              data: chartData,
+              options: {
                 responsive: true,
                 scales: {
-                    yAxes: [{
-                        ticks: {
-                            beginAtZero: true
-                        }
-                    }]
-                }
-            }
+                  yAxes: [
+                    {
+                      ticks: {
+                        beginAtZero: true,
+                      },
+                    },
+                  ],
+                },
+              },
+            });
+          })
+          .catch((error) => {
+            console.error("Error fetching data:", error);
+          });
+      } else {
+        // Use the initial dataset in the canvas
+        const initialData = JSON.parse(canvas.dataset.top5Categories);
+        const chartData = parseData(initialData);
+        chart = new Chart(canvas, {
+          type: "bar",
+          data: chartData,
+          options: {
+            responsive: true,
+            scales: {
+              yAxes: [
+                {
+                  ticks: {
+                    beginAtZero: true,
+                  },
+                },
+              ],
+            },
+          },
         });
-    });
+      }
+    }
+
+    // Function to populate the select dropdown with options from January to the current month
+    function populateMonthSelect() {
+      const select = document.getElementById("month-select");
+      const currentDate = new Date();
+      const currentMonth = currentDate.getMonth() + 1;
+      const currentYear = currentDate.getFullYear();
+      for (let month = 1; month <= currentMonth; month++) {
+        const option = document.createElement("option");
+        option.value = month;
+        option.text = new Date(currentYear, month - 1, 1).toLocaleString(
+          "default",
+          { month: "long" }
+        );
+        select.appendChild(option);
+      }
+      // Set default selection to current month
+      select.value = currentMonth;
+    }
+
+    // Call the function to populate the select dropdown for month
+    populateMonthSelect();
+
+    // Event listener for month selection change
+    document
+      .getElementById("month-select")
+      .addEventListener("change", function () {
+        const selectedMonth = this.value;
+        updateChart(selectedMonth);
+      });
+
+    // Function to populate the select dropdown with options from 2019 to the current year
+    function populateYearSelect() {
+      const select = document.getElementById("year-select");
+      const currentDate = new Date();
+      const currentYear = currentDate.getFullYear();
+
+      // Create an option element for the default "Year" value
+      const defaultOption = document.createElement("option");
+      defaultOption.value = ""; // Set value to empty string or any other appropriate value
+      defaultOption.text = "Year"; // Display "Year" as text
+      defaultOption.disabled = true; // Make the default option disabled
+      defaultOption.selected = true; // Make the default option selected
+      select.appendChild(defaultOption);
+
+      // Populate the rest of the options with years from 2019 to the current year
+      for (let year = 2019; year <= currentYear; year++) {
+        const option = document.createElement("option");
+        option.value = year;
+        option.text = year; // Display the year value as text
+        select.appendChild(option);
+      }
+    }
+
+    // Call the function to populate the select dropdown for year
+    populateYearSelect();
+
+    // Event listener for year selection change
+    document
+      .getElementById("year-select")
+      .addEventListener("change", function () {
+        const selectedYear = this.value;
+        updateChart(selectedYear);
+      });
+
+    // Initially update the chart with the initial dataset when the page loads
+    updateChart("initial");
+  });
 </script>
 
+<!-- top products chart currentmonth -->
+<!-- <script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const ctx = document.getElementById("top-selling-products").getContext("2d");
 
+    let chart;
+    
+    // Function to parse the category data and construct chart data
+    function parseData(categoriesData) {
 
+      // console.log(categoriesData);
+
+      const labels = categoriesData.map((item) => item.productName);
+      const data = categoriesData.map((item) => item.totalQuantity);
+      return {
+        labels: labels,
+        datasets: [
+          {
+            data: data,
+            backgroundColor: "#FF5733",
+          },
+        ],
+      };
+    }
+
+    // Function to update chart based on selected filter
+    function updateChart() {
+      let data = parseData(
+        JSON.parse(
+          document.getElementById("top-selling-products").dataset.top5Products
+        )
+      );
+
+      console.log(data);
+
+      // Update chart with new data
+      if (chart) {
+        chart.data = data;
+        chart.update();
+      } else {
+        chart = new Chart(ctx, {
+          type: "bar",
+          data: data,
+          options: {
+            responsive: true,
+            scales: {
+              yAxes: [
+                {
+                  ticks: {
+                    beginAtZero: true,
+                  },
+                },
+              ],
+            },
+          },
+        });
+      }
+    }
+
+    // Event listener for filter change
+    document.getElementById("top-selling-products").addEventListener("change", updateChart);
+
+    // Initially update the chart when the page loads
+    updateChart();
+  });
+</script> -->
 
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        var ctx = document.getElementById('monthly-yearly-best-selling-product').getContext('2d');
-        
-        // Get data from the dataset attribute
-        var dataset = document.getElementById('monthly-yearly-best-selling-product').getAttribute('data-bestSelling-products');
-        var top5Products = JSON.parse(dataset);
-        
-        // Extracting data from the dataset
-        var labels = [];
-        var data = [];
-        top5Products.forEach(function(product) {
-            labels.push(product.productName);
-            data.push(product.totalCount);
-        });
-        
-        var salesData = {
-            labels: labels,  
-            datasets: [{
-                label: 'Top Products',
-                data: data,  
-                backgroundColor: '#5B33FF'
-            }]
-        };
-    
-        var chart = new Chart(ctx, {
-            type: 'bar',
-            data: salesData,
-            options: {
+  document.addEventListener("DOMContentLoaded", function () {
+    const ctx = document
+      .getElementById("top-selling-products")
+      .getContext("2d");
+    let chart;
+
+    // Function to parse the product data and construct chart data
+    function parseData(productsData) {
+      const labels = productsData.map((item) => item.productName);
+      const data = productsData.map((item) => item.totalQuantity);
+      return {
+        labels: labels,
+        datasets: [
+          {
+            data: data,
+            backgroundColor: "#FF5733",
+          },
+        ],
+      };
+    }
+
+    // Function to update chart based on selected filter
+    function updateChart(selectedFilter) {
+      // Fetch the canvas element
+      const canvas = document.getElementById("top-selling-products");
+
+      // Check if a chart instance already exists
+      if (chart) {
+        // Destroy the existing chart
+        chart.destroy();
+      }
+
+      // Fetch data for the selected filter from backend
+      if (selectedFilter !== "initial") {
+        let fetchUrl;
+        if (selectedFilter > 12) {
+          // Fetch URL for the selected year
+          const selectedYear = document.getElementById(
+            "year-select-products"
+          ).value;
+          fetchUrl = `/admin/top5Products/year/${selectedYear}`;
+        } else {
+          fetchUrl = selectedFilter.includes(":")
+            ? selectedFilter
+            : `/admin/top5Products/${selectedFilter}`;
+        }
+        fetch(fetchUrl, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            // Parse fetched data
+            console.log(data);
+            const chartData = parseData(data);
+
+            // Create a new chart instance
+            chart = new Chart(canvas, {
+              type: "bar",
+              data: chartData,
+              options: {
                 responsive: true,
                 scales: {
-                    yAxes: [{
-                        ticks: {
-                            beginAtZero: true
-                        }
-                    }]
-                }
-            }
+                  yAxes: [
+                    {
+                      ticks: {
+                        beginAtZero: true,
+                      },
+                    },
+                  ],
+                },
+              },
+            });
+          })
+          .catch((error) => {
+            console.error("Error fetching data:", error);
+          });
+      } else {
+        // Use the initial dataset in the canvas
+        const initialData = JSON.parse(canvas.dataset.top5Products);
+        const chartData = parseData(initialData);
+        chart = new Chart(canvas, {
+          type: "bar",
+          data: chartData,
+          options: {
+            responsive: true,
+            scales: {
+              yAxes: [
+                {
+                  ticks: {
+                    beginAtZero: true,
+                  },
+                },
+              ],
+            },
+          },
         });
-    });
+      }
+    }
+
+    // Function to populate the select dropdown with options from January to the current month
+    function populateMonthSelect() {
+      const select = document.getElementById("month-select-products");
+      const currentDate = new Date();
+      const currentMonth = currentDate.getMonth() + 1;
+      const currentYear = currentDate.getFullYear();
+      for (let month = 1; month <= currentMonth; month++) {
+        const option = document.createElement("option");
+        option.value = month;
+        option.text = new Date(currentYear, month - 1, 1).toLocaleString(
+          "default",
+          { month: "long" }
+        );
+        select.appendChild(option);
+      }
+      // Set default selection to current month
+      select.value = currentMonth;
+    }
+
+    // Call the function to populate the select dropdown for month
+    populateMonthSelect();
+
+    // Event listener for month selection change
+    document
+      .getElementById("month-select-products")
+      .addEventListener("change", function () {
+        const selectedMonth = this.value;
+        updateChart(selectedMonth);
+      });
+
+    // Function to populate the select dropdown with options from 2019 to the current year
+    function populateYearSelect() {
+      const select = document.getElementById("year-select-products");
+      const currentDate = new Date();
+      const currentYear = currentDate.getFullYear();
+
+      // Create an option element for the default "Year" value
+      const defaultOption = document.createElement("option");
+      defaultOption.value = ""; // Set value to empty string or any other appropriate value
+      defaultOption.text = "Year"; // Display "Year" as text
+      defaultOption.disabled = true; // Make the default option disabled
+      defaultOption.selected = true; // Make the default option selected
+      select.appendChild(defaultOption);
+
+      // Populate the rest of the options with years from 2019 to the current year
+      for (let year = 2019; year <= currentYear; year++) {
+        const option = document.createElement("option");
+        option.value = year;
+        option.text = year; // Display the year value as text
+        select.appendChild(option);
+      }
+    }
+
+    // Call the function to populate the select dropdown for year
+    populateYearSelect();
+
+    // Event listener for year selection change
+    document
+      .getElementById("year-select-products")
+      .addEventListener("change", function () {
+        const selectedYear = this.value;
+        updateChart(selectedYear);
+      });
+
+    // Initially update the chart with the initial dataset when the page loads
+    updateChart("initial");
+  });
 </script>
 
-
-
-
-
-
-
-        <%-include('footer')-%>
-
-
-      
+<%-include('footer')-%>

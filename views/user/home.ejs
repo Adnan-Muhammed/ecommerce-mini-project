@@ -1,207 +1,237 @@
 <%-include('header')-%>
 
-
-
-        <!--Body Content-->
-        <div id="page-content">
-			<!--Home slider-->
-            <div class="slideshow slideshow-wrapper pb-4">
-                <div class="home-slideshow">
-                    <div class="slide">
-                        <div class="blur-up lazyload">
-                            <img class="blur-up lazyload desktop-show" data-src="/assets/images/slideshow-banners/home3-banner.jpg" src="/assets/images/slideshow-banners/home3-banner.jpg" alt="There is Beauty in Simplycity" title="There is Beauty in Simplycity" />
-                            <img class="blur-up lazyload mobile-show" data-src="/assets/images/slideshow-banners/home3-banner-mobile.jpg" src="/assets/images/slideshow-banners/home3-banner-mobile.jpg" alt="There is Beauty in Simplycity" title="There is Beauty in Simplycity" />
-                            <div class="slideshow__text-wrap slideshow__overlay classic middle">
-                                <div class="slideshow__text-content left">
-                                    <div class="container">
-                                        <div class="wrap-caption left">
-                                            <h2 class="h1 mega-title slideshow__title">There is Beauty in Simplycity</h2>
-                                            <span class="mega-subtitle slideshow__subtitle">Save up to 50% off this weekend only</span>
-                                            <span class="btn">Shop now</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+<!--Body Content-->
+<div id="page-content">
+  <!--Home slider-->
+  <div class="slideshow slideshow-wrapper pb-4">
+    <div class="home-slideshow">
+      <div class="slide">
+        <div class="blur-up lazyload">
+          <img
+            class="blur-up lazyload desktop-show"
+            data-src="/assets/images/slideshow-banners/home3-banner.jpg"
+            src="/assets/images/slideshow-banners/home3-banner.jpg"
+            alt="There is Beauty in Simplycity"
+            title="There is Beauty in Simplycity"
+          />
+          <img
+            class="blur-up lazyload mobile-show"
+            data-src="/assets/images/slideshow-banners/home3-banner-mobile.jpg"
+            src="/assets/images/slideshow-banners/home3-banner-mobile.jpg"
+            alt="There is Beauty in Simplycity"
+            title="There is Beauty in Simplycity"
+          />
+          <div class="slideshow__text-wrap slideshow__overlay classic middle">
+            <div class="slideshow__text-content left">
+              <div class="container">
+                <div class="wrap-caption left">
+                  <h2 class="h1 mega-title slideshow__title">
+                    There is Beauty in Simplycity
+                  </h2>
+                  <span class="mega-subtitle slideshow__subtitle"
+                    >Save up to 50% off this weekend only</span
+                  >
+                  <span class="btn">Shop now</span>
                 </div>
-        	</div>
-            <!--End Home slider-->
-            
-            <!--Small Banners-->
-            
-            <!--End Small Banners-->
-            
-            <!--Collection Tab slider-->
-
-
-
-
-
-
-            
-       
-
-            <div class="tab-slider-product section">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-12 col-sm-12 col-md-12 col-lg-12">
-                            
-                            <div class="tabs-listing">
-                                <ul class="tabs clearfix">
-                                    <li class="active" rel="tab1">Women</li>
-                                    <li rel="tab2">Men</li>
-                                </ul>
-                                
-                                <div class="tab_container">
-                                    <div id="tab1" class="tab_content grid-products style3">
-                                        <div class="productSlider">
-                                            <% if (locals.product) { %>
-                                                <% product.forEach((product) => { %>
-                                                    <% if (product.categoryName === "MEN4") { %>
-
-                                                        <div class="col-12 item">
-                                                            <!-- product name -->
-                                                            <div class="<%=product.name%>">
-                                                                <a href="product-layout-1.html"><%= product.name%> </a>
-                                                            </div>
-                                                            
-                                                            <div class="">
-                                                                <a href="product-layout-1.html">
-                                                                    <!-- image -->
-                                                                    <img class="primary blur-up lazyload" data-src="<%=product.image[0]%>" src="<%=product.image[0]%>"  alt="image" title="product">
-                                                                  
-                                                                </a>
-                                                                <!-- end product image -->
-                                                            </div>
-                                                            <!-- end product image -->
-                                                            
-                                                            <div class="button-set button-style2">
-                                                                <form class="variants add btn-style2" action="#" method="post">
-                                                                    <button class="btn cartIcon btn-addto-cart" type="button" tabindex="0"><i class="icon anm anm-bag-l"></i></button>
-                                                                </form>
-                                                                <a href="javascript:void(0)" title="Quick View" class="btn-style2 quick-view-popup quick-view" data-toggle="modal" data-target="#content_quickview">
-                                                                    <i class="icon anm anm-search-plus-r"></i>
-                                                                </a>
-                                                                <div class="wishlist-btn btn-style2">
-                                                                    <a class="wishlist add-to-wishlist" href="wishlist.html">
-                                                                        <i class="icon anm anm-heart-l"></i>
-                                                                    </a>
-                                                                </div>
-                                                                <div class="compare-btn btn-style2">
-                                                                    <a class="compare add-to-compare" href="compare.html" title="Add to Compare">
-                                                                        <i class="icon anm anm-random-r"></i>
-                                                                    </a>
-                                                                </div>
-                                                            </div>
-                                                  
-                                                            <!--start product details -->
-                                                            <div class="product-details text-center">
-                                                                <!-- product price -->
-                                                                <div class="product-price">
-                                                                    <span class="price">$<%=product.price%></span>
-                                                                </div>
-                                                                <!-- End product price -->
-                                                                
-                                                                <!-- <div class="product-review">
-                                                                    <i class="font-13 fa fa-star"></i>
-                                                                    <i class="font-13 fa fa-star"></i>
-                                                                    <i class="font-13 fa fa-star"></i>
-                                                                    <i class="font-13 fa fa-star-o"></i>
-                                                                    <i class="font-13 fa fa-star-o"></i>
-                                                                </div> -->
-                                                            </div>
-                                                            <!-- End product details -->
-                                                        </div>
-                                                        <% } %>
-                                                <% }) %>
-                                            <% } else { %>
-                                                <h1>No products available</h1>
-                                                <% } %>
-                                        </div>
-                                    </div>
-
-
-                                    
-
-                                    <div id="tab2" class="tab_content grid-products style3">
-                                        <div class="productSlider">
-                                        
-                                            <!-- product third start -->
-                                            <% if (locals.product) { %>
-                                                <% product.forEach((product) => { %>
-                                                    <% if (product.categoryName === "KIDS") { %>
-
-                                                        <div class="col-12 item">
-                                                            <!-- product name -->
-                                                            <div class="<%=product.name%>">
-                                                                <a href="product-layout-1.html"><%= product.name%> </a>
-                                                            </div>
-                                                            
-                                                            <div class="">
-                                                                <a href="product-layout-1.html">
-                                                                    <!-- image -->
-                                                                    <img class="primary blur-up lazyload" data-src="<%=product.image[0]%>" src="<%=product.image[0]%>"  alt="image" title="product">
-                                                                  
-                                                                </a>
-                                                                <!-- end product image -->
-                                                            </div>
-                                                            <!-- end product image -->
-                                                            
-                                                            <div class="button-set button-style2">
-                                                                <form class="variants add btn-style2" action="#" method="post">
-                                                                    <button class="btn cartIcon btn-addto-cart" type="button" tabindex="0"><i class="icon anm anm-bag-l"></i></button>
-                                                                </form>
-                                                                <a href="javascript:void(0)" title="Quick View" class="btn-style2 quick-view-popup quick-view" data-toggle="modal" data-target="#content_quickview">
-                                                                    <i class="icon anm anm-search-plus-r"></i>
-                                                                </a>
-                                                                <div class="wishlist-btn btn-style2">
-                                                                    <a class="wishlist add-to-wishlist" href="wishlist.html">
-                                                                        <i class="icon anm anm-heart-l"></i>
-                                                                    </a>
-                                                                </div>
-                                                                <div class="compare-btn btn-style2">
-                                                                    <a class="compare add-to-compare" href="compare.html" title="Add to Compare">
-                                                                        <i class="icon anm anm-random-r"></i>
-                                                                    </a>
-                                                                </div>
-                                                            </div>
-                                                  
-                                                            <!--start product details -->
-                                                            <div class="product-details text-center">
-                                                                <!-- product price -->
-                                                                <div class="product-price">
-                                                                    <span class="price">$<%=product.price%></span>
-                                                                </div>
-                                                                <!-- End product price -->
-                                                                
-                                                                <!-- <div class="product-review">
-                                                                    <i class="font-13 fa fa-star"></i>
-                                                                    <i class="font-13 fa fa-star"></i>
-                                                                    <i class="font-13 fa fa-star"></i>
-                                                                    <i class="font-13 fa fa-star-o"></i>
-                                                                    <i class="font-13 fa fa-star-o"></i>
-                                                                </div> -->
-                                                            </div>
-                                                            <!-- End product details -->
-                                                        </div>
-                                                        <% } %>
-                                                <% }) %>
-                                            <% } else { %>
-                                                <h1>No products available</h1>
-                                                <% } %>
-                                                
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>    
-                </div>
-            </div>         
+              </div>
+            </div>
+          </div>
         </div>
-        <%-include('footer')-%>
+      </div>
+    </div>
+  </div>
+  <!--End Home slider-->
 
-    </body>
-    </html>
-    
+  <!--Small Banners-->
+
+  <!--End Small Banners-->
+
+  <!--Collection Tab slider-->
+
+  <div class="tab-slider-product section">
+    <div class="container">
+      <div class="row">
+        <div class="col-12 col-sm-12 col-md-12 col-lg-12">
+          <div class="tabs-listing">
+            <ul class="tabs clearfix">
+              <li class="active" rel="tab1">Women</li>
+              <li rel="tab2">Men</li>
+            </ul>
+
+            <div class="tab_container">
+              <div id="tab1" class="tab_content grid-products style3">
+                <div class="productSlider">
+                  <% if (locals.product) { %> <% product.forEach((product) => {
+                  %> <% if (product.categoryName === "MEN4") { %>
+
+                  <div class="col-12 item">
+                    <!-- product name -->
+                    <div class="<%=product.name%>">
+                      <a href="product-layout-1.html"><%= product.name%> </a>
+                    </div>
+
+                    <div class="">
+                      <a href="product-layout-1.html">
+                        <!-- image -->
+                        <img
+                          class="primary blur-up lazyload"
+                          data-src="<%=product.image[0]%>"
+                          src="<%=product.image[0]%>"
+                          alt="image"
+                          title="product"
+                        />
+                      </a>
+                      <!-- end product image -->
+                    </div>
+                    <!-- end product image -->
+
+                    <div class="button-set button-style2">
+                      <form
+                        class="variants add btn-style2"
+                        action="#"
+                        method="post"
+                      >
+                        <button
+                          class="btn cartIcon btn-addto-cart"
+                          type="button"
+                          tabindex="0"
+                        >
+                          <i class="icon anm anm-bag-l"></i>
+                        </button>
+                      </form>
+                      <a
+                        href="javascript:void(0)"
+                        title="Quick View"
+                        class="btn-style2 quick-view-popup quick-view"
+                        data-toggle="modal"
+                        data-target="#content_quickview"
+                      >
+                        <i class="icon anm anm-search-plus-r"></i>
+                      </a>
+                      <div class="wishlist-btn btn-style2">
+                        <a
+                          class="wishlist add-to-wishlist"
+                          href="wishlist.html"
+                        >
+                          <i class="icon anm anm-heart-l"></i>
+                        </a>
+                      </div>
+                      <div class="compare-btn btn-style2">
+                        <a
+                          class="compare add-to-compare"
+                          href="compare.html"
+                          title="Add to Compare"
+                        >
+                          <i class="icon anm anm-random-r"></i>
+                        </a>
+                      </div>
+                    </div>
+
+                    <!--start product details -->
+                    <div class="product-details text-center">
+                      <!-- product price -->
+                      <div class="product-price">
+                        <span class="price">$<%=product.price%></span>
+                      </div>
+                      <!-- End product price -->
+                    </div>
+                    <!-- End product details -->
+                  </div>
+                  <% } %> <% }) %> <% } else { %>
+                  <h1>No products available</h1>
+                  <% } %>
+                </div>
+              </div>
+
+              <div id="tab2" class="tab_content grid-products style3">
+                <div class="productSlider">
+                  <!-- product third start -->
+                  <% if (locals.product) { %> <% product.forEach((product) => {
+                  %> <% if (product.categoryName === "KIDS") { %>
+
+                  <div class="col-12 item">
+                    <!-- product name -->
+                    <div class="<%=product.name%>">
+                      <a href="product-layout-1.html"><%= product.name%> </a>
+                    </div>
+
+                    <div class="">
+                      <a href="product-layout-1.html">
+                        <!-- image -->
+                        <img
+                          class="primary blur-up lazyload"
+                          data-src="<%=product.image[0]%>"
+                          src="<%=product.image[0]%>"
+                          alt="image"
+                          title="product"
+                        />
+                      </a>
+                      <!-- end product image -->
+                    </div>
+                    <!-- end product image -->
+
+                    <div class="button-set button-style2">
+                      <form
+                        class="variants add btn-style2"
+                        action="#"
+                        method="post"
+                      >
+                        <button
+                          class="btn cartIcon btn-addto-cart"
+                          type="button"
+                          tabindex="0"
+                        >
+                          <i class="icon anm anm-bag-l"></i>
+                        </button>
+                      </form>
+                      <a
+                        href="javascript:void(0)"
+                        title="Quick View"
+                        class="btn-style2 quick-view-popup quick-view"
+                        data-toggle="modal"
+                        data-target="#content_quickview"
+                      >
+                        <i class="icon anm anm-search-plus-r"></i>
+                      </a>
+                      <div class="wishlist-btn btn-style2">
+                        <a
+                          class="wishlist add-to-wishlist"
+                          href="wishlist.html"
+                        >
+                          <i class="icon anm anm-heart-l"></i>
+                        </a>
+                      </div>
+                      <div class="compare-btn btn-style2">
+                        <a
+                          class="compare add-to-compare"
+                          href="compare.html"
+                          title="Add to Compare"
+                        >
+                          <i class="icon anm anm-random-r"></i>
+                        </a>
+                      </div>
+                    </div>
+
+                    <!--start product details -->
+                    <div class="product-details text-center">
+                      <!-- product price -->
+                      <div class="product-price">
+                        <span class="price">$<%=product.price%></span>
+                      </div>
+                      <!-- End product price -->
+                    </div>
+                    <!-- End product details -->
+                  </div>
+                  <% } %> <% }) %> <% } else { %>
+                  <h1>No products available</h1>
+                  <% } %>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<%-include('footer')-%>

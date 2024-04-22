@@ -7,8 +7,9 @@ const orderManagement = require('../controller/orderManagement')
 const userSessionHandling=require('../middleware/userSessionHandling')
 
 
-router.post('/placeOrder', userSessionHandling.isBlockedNow, orderManagement.placeOrder  )
+router.post('/placeOrder',   orderManagement.placeOrder  )
 router.get('/orderplaced/success', userSessionHandling.isBlockedNow2, orderManagement.orderPlacedSuccess)
+router.get('/orderplaced/failed', userSessionHandling.isBlockedNow2, orderManagement.orderPlacedFailed)
 
 
 
@@ -16,7 +17,9 @@ router.post('/admin/editOrder/:orderId', userSessionHandling.isBlockedNow, order
 
   
 router.post('/cancelOrder/:orderId',userSessionHandling.isBlockedNow, orderManagement.handleOrderStatusUpdate )
-router.post('/returnOrder/:orderId',userSessionHandling.isBlockedNow, orderManagement.handleOrderStatusUpdate)
+router.post('/returnOrder/:orderId', userSessionHandling.isBlockedNow, orderManagement.handleOrderStatusUpdate)
+
+router.post('/orderPaymentUpdate',  orderManagement.repaymentOrder)
 
 
 module.exports=router

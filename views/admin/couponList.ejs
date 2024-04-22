@@ -1,192 +1,191 @@
-
 <%-include('header')-%>
 
+<!-- Table Start -->
+<div class="container-fluid pt-4 px-4">
+  <div class="row g-4">
+    <div class="bg-light rounded h-100 p-4">
+      <!-- <h6 class="mb-4">Responsive Table</h6> -->
+      <div class="table-responsive">
+        <% if(locals.coupons){ %>
+        <table class="table">
+          <thead>
+            <tr>
+              <th scope="col">index</th>
+              <th scope="col">coupon list</th>
+              <th scope="col">coupon discount percentage</th>
+              <th scope="col">coupon Expiry Date</th>
+              <th scope="col">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% coupons.forEach((data, index) => { %>
+            <tr>
+              <td scope="row"><%= index + 1 %></td>
+              <td><%= data.name %></td>
+              <td><%= data.discountValue%>%</td>
+              <td><%=data.expiryDate.toDateString(); %></td>
+              <td>
+                <% if (data.isAvailable == true) { %>
+                <button
+                  class="btn btn-info block-btn"
+                  data-coupon-id="<%= data._id %>"
+                >
+                  to unlist
+                </button>
+                <% } else { %>
+                <button
+                  class="btn btn-info unblock-btn"
+                  data-coupon-id="<%= data._id %>"
+                >
+                  to list
+                </button>
+                <% } %>
 
-       
+                <button
+                  class="btn btn-info delete-btn"
+                  data-coupon-id="<%= data._id %>"
+                >
+                  delete
+                </button>
+                <button
+                  class="btn btn-info edit-btn"
+                  data-coupon-id="<%= data._id %>"
+                >
+                  edit
+                </button>
+              </td>
+            </tr>
+            <% }); %>
+          </tbody>
+        </table>
+        <% } else{%>
+        <h1>no data</h1>
+        <%}%>
+      </div>
+    </div>
 
-            <!-- Table Start -->
-            <div class="container-fluid pt-4 px-4">
-                <div class="row g-4">
-                    <div class="bg-light rounded h-100 p-4">
-                        <!-- <h6 class="mb-4">Responsive Table</h6> -->
-                        <div class="table-responsive">
-                            <% if(locals.coupons){ %>
-                                <table class="table">
-                                    <thead>
-                                        <tr>
-                                            <th scope="col">index</th>
-                                            <th scope="col">coupon list</th>
-                                            <th scope="col">coupon discount percentage</th>
-                                            <th scope="col">coupon Expiry Date</th>
-                                            <th scope="col">Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <% coupons.forEach((data, index) => { %>
-                                            <tr>
-                                                <td scope="row"><%= index + 1 %></td>
-                                                <td><%= data.name %></td>
-                                                <td><%= data.discountValue%>%</td>
-                                                <td><%=data.expiryDate.toDateString(); %> </td>
-                                                <td>
-                                                  <% if (data.isAvailable == true) { %>
-                                                    <button class="btn btn-info block-btn" data-coupon-id="<%= data._id %>">to unlist </button>
-                                                <% } else { %>
-                                                    <button class="btn btn-info unblock-btn" data-coupon-id="<%= data._id %>">to list</button>
-                                                <% } %>
+    <!-- Include SweetAlert library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
 
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const deleteButtons = document.querySelectorAll(".delete-btn");
+        deleteButtons.forEach(function (button) {
+          button.addEventListener("click", function () {
+            const couponId = this.getAttribute("data-coupon-id");
+            swal({
+              title: "Are you sure?",
+              text: "Once deleted, you will not be able to recover this coupon!",
+              icon: "warning",
+              buttons: true,
+              dangerMode: true,
+            }).then((willDelete) => {
+              if (willDelete) {
+                fetch("/admin/deleteCoupon", {
+                  method: "DELETE",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify({ couponId: couponId }),
+                })
+                  .then((response) => {
+                    if (response.ok) {
+                      window.location.reload();
+                    } else {
+                    }
+                  })
+                  .catch((error) => {});
+              } else {
+              }
+            });
+          });
+        });
+      });
+    </script>
 
-                                                    <button class="btn btn-info delete-btn" data-coupon-id="<%= data._id %>">delete</button>
-                                                    <button class="btn btn-info edit-btn" data-coupon-id="<%= data._id %>">edit</button>
-
-                                                </td>
-                                            </tr>
-                                        <% }); %>
-                                    </tbody>
-                                </table>
-                            <% } else{%>
-                            <h1>no data</h1>
-                            <%}%>
-                        </div>
-                    </div>
-
-
-<!-- Include SweetAlert library -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
-
-
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-      const deleteButtons = document.querySelectorAll('.delete-btn');
-      deleteButtons.forEach(function (button) {
-        button.addEventListener('click', function () {
-          const couponId = this.getAttribute('data-coupon-id');
+    <script>
+      document.querySelectorAll(".block-btn").forEach((btn) => {
+        btn.addEventListener("click", function () {
+          const couponId = this.getAttribute("data-coupon-id");
           swal({
             title: "Are you sure?",
-            text: "Once deleted, you will not be able to recover this coupon!",
+            text: "Do you want to unlist this coupon?",
             icon: "warning",
-            buttons: true,
+            buttons: ["Cancel", "Unlist"],
             dangerMode: true,
-          })
-          .then((willDelete) => {
-            if (willDelete) {
-              fetch('/admin/deleteCoupon', {
-                method: 'DELETE',
-                headers: {
-                  'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ couponId: couponId })
+          }).then((willUnlist) => {
+            if (willUnlist) {
+              fetch(`/admin/unlist/coupon/${couponId}`, {
+                method: "GET",
               })
-              .then(response => {
-                if (response.ok) {
-                  console.log("Coupon with ID " + couponId + " deleted!");
-                  window.location.reload()
-                } else {
-                  console.error('Error deleting coupon');
-                }
-              })
-              .catch(error => {
-                console.error('Error deleting coupon:', error);
-              });
-            } else {
-              console.log("Coupon deletion cancelled.");
+                .then((response) => {
+                  if (response.ok) {
+                    swal(
+                      "Success!",
+                      "Coupon unlisted successfully.",
+                      "success"
+                    );
+                    window.location.reload();
+                  } else {
+                    swal("Error!", "Failed to unlist the coupon.", "error");
+                  }
+                })
+                .catch((error) => {
+                  swal("Error!", "Failed to unlist the coupon.", "error");
+                });
             }
           });
         });
       });
-    });
-</script>
-  
 
-
-<script>
-	document.querySelectorAll('.block-btn').forEach(btn => {
-					btn.addEventListener('click', function() {
-									const couponId = this.getAttribute('data-coupon-id');
-									swal({
-													title: 'Are you sure?',
-													text: 'Do you want to unlist this coupon?',
-													icon: 'warning',
-													buttons: ['Cancel', 'Unlist'],
-													dangerMode: true,
-									}).then((willUnlist) => {
-													if (willUnlist) {
-																	fetch(`/admin/unlist/coupon/${couponId}`, {
-																					method: 'GET'
-																	}).then(response => {
-																					if (response.ok) {
-																									swal('Success!', 'Coupon unlisted successfully.', 'success');
-																									window.location.reload()
-																					} else {
-																									swal('Error!', 'Failed to unlist the coupon.', 'error');
-																					}
-																	}).catch(error => {
-																					console.error('Error:', error);
-																					swal('Error!', 'Failed to unlist the coupon.', 'error');
-																	});
-													}
-									});
-					});
-	});
-
-	document.querySelectorAll('.unblock-btn').forEach(btn => {
-					btn.addEventListener('click', function() {
-									const couponId = this.getAttribute('data-coupon-id');
-									swal({
-													title: 'Are you sure?',
-													text: 'Do you want to list this coupon?',
-													icon: 'warning',
-													buttons: ['Cancel', 'List'],
-													dangerMode: true,
-									}).then((willList) => {
-													if (willList) {
-																	fetch(`/admin/list/coupon/${couponId}`, {
-																					method: 'GET'
-																	}).then(response => {
-																					if (response.ok) {
-																									swal('Success!', 'Coupon listed successfully.', 'success');
-																									window.location.reload()
-																					} else {
-																									swal('Error!', 'Failed to list the coupon.', 'error');
-																					}
-																	}).catch(error => {
-																					console.error('Error:', error);
-																					swal('Error!', 'Failed to list the coupon.', 'error');
-																	});
-													}
-									});
-					});
-	});
-
-
-	document.querySelectorAll('.edit-btn').forEach(btn => {
-    btn.addEventListener('click', function() {
-        const couponId = this.getAttribute('data-coupon-id');
-        swal({
-            title: 'Are you sure?',
-            text: 'Do you want to edit this coupon?',
-            icon: 'warning',
-            buttons: ['Cancel', 'Edit'],
+      document.querySelectorAll(".unblock-btn").forEach((btn) => {
+        btn.addEventListener("click", function () {
+          const couponId = this.getAttribute("data-coupon-id");
+          swal({
+            title: "Are you sure?",
+            text: "Do you want to list this coupon?",
+            icon: "warning",
+            buttons: ["Cancel", "List"],
             dangerMode: true,
-        }).then((willList) => {
+          }).then((willList) => {
             if (willList) {
-                console.log(couponId);
-																window.location.href=`/admin/editCoupon/${couponId}`;
-                
+              fetch(`/admin/list/coupon/${couponId}`, {
+                method: "GET",
+              })
+                .then((response) => {
+                  if (response.ok) {
+                    swal("Success!", "Coupon listed successfully.", "success");
+                    window.location.reload();
+                  } else {
+                    swal("Error!", "Failed to list the coupon.", "error");
+                  }
+                })
+                .catch((error) => {
+                  swal("Error!", "Failed to list the coupon.", "error");
+                });
             }
+          });
         });
-    });
-});
+      });
 
-</script>
+      document.querySelectorAll(".edit-btn").forEach((btn) => {
+        btn.addEventListener("click", function () {
+          const couponId = this.getAttribute("data-coupon-id");
+          swal({
+            title: "Are you sure?",
+            text: "Do you want to edit this coupon?",
+            icon: "warning",
+            buttons: ["Cancel", "Edit"],
+            dangerMode: true,
+          }).then((willList) => {
+            if (willList) {
+              window.location.href = `/admin/editCoupon/${couponId}`;
+            }
+          });
+        });
+      });
+    </script>
 
-
-
-
-
-
-<%-include('footer')-%>
-
-
-
-                          
+    <%-include('footer')-%>
+  </div>
+</div>

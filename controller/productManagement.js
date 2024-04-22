@@ -17,30 +17,6 @@ const determineIsLogged = (session) => {
     : null;
 };
 
-//user side-=-=-=-=-
-
-// const productListUser = async (req, res) => {
-//     const isLogged = determineIsLogged(req.session);
-//     const { primaryCategories, otherCategories } = await fetchCategoryMiddleware.fetchCategories();
-//     const  categoryData  = req.params.id.toUpperCase()
-//     try {
-//      // console.log(565656);
-//         const isCategory=await CategoryDB.find({name:categoryData,isAvailable:true})
-//         const  product=await productDB.find({isAvailable:true,categoryName:categoryData})
-//         if(isCategory&&product){
-//          // console.log(product)
-//             res.render('user/productlist',{isLogged,product,primaryCategories, otherCategories})
-//         }
-//     } catch (err) {
-//         console.error(err);
-//     }
-// }
-
-//gpt
-
-//==-=-=-=-=-=-
-
-//admin side -=-=-=-=-=-
 
 const productListAdmin = async (req, res) => {
   try {
@@ -55,14 +31,11 @@ const productListAdmin = async (req, res) => {
       .skip(skip)
       .limit(productsPerPage);
     const totalProductsCount = await productDB.countDocuments();
-    // console.log(totalProductsCount);
 
 
     console.log(productList);
     const totalPages = Math.ceil(totalProductsCount / productsPerPage);
 
-    // const productList=await productDB.find()
-    // console.log(productList.length);
     if (productList.length > 0) {
       console.log('listed',productList);
       res.render("admin/productlist", {
@@ -71,17 +44,15 @@ const productListAdmin = async (req, res) => {
         currentPage: page,
       });
     } else {
-      // console.log('NO DATA');
       res.render("admin/categorylist");
     }
   } catch (err) {
-    console.error("sorry");
+    res.redirect('/error')
   }
 };
 
 const addProduct = async (req, res) => {
   try {
-    // console.log('rrrrr');
     const categoryList = await CategoryDB.find(
       { isAvailable: true },
       { name: 1, _id: 1 }
@@ -90,7 +61,8 @@ const addProduct = async (req, res) => {
     req.session.multerError = null;
     res.render("admin/addproduct", { categoryList, multerError });
   } catch (err) {
-    console.error(err);
+    res.redirect('/error')
+
   }
 };
 
@@ -127,7 +99,6 @@ console.log(1);
  
 
     if (err instanceof multer.MulterError) {
-      console.log(`err is length : ${req.files.length}`);
       if (req.params.id) {
         req.session.multerError = true;
         return res.redirect(`/admin/productUpdate/${existingProductId}`);
@@ -135,14 +106,12 @@ console.log(1);
         req.session.multerError = true;
         return res.redirect("/admin/addProduct");
       }
-      // return res.status(400).send({ message: 'Multer error' });
     } else if (err) {
       return res.status(500).send({ message: "Server error" });
     }
 
     try {
 
-      console.log(req.body);
 
       const newImages = req.files.map((file) => file.path.substring(6));
 
@@ -230,7 +199,6 @@ console.log(1);
         
       return res.redirect("/admin/productlist");
     } catch (error) {
-      console.error(error);
       return res.status(500).send({ message: "Error adding product" });
     }
   });
@@ -248,53 +216,41 @@ console.log(1);
 //productUnlist admin
 const productUnlist = async (req, res) => {
   try {
-    // console.log(1111111);
     const productId = req.params.id;
-    // console.log(productId);
     const productishere = await productDB.find({ _id: productId });
-    // console.log(productishere);
     const nowproduct = await productDB.updateOne(
       { _id: productId },
       { $set: { isAvailable: false } }
     );
-    // console.log(nowproduct);
     res.redirect("/admin/productlist");
   } catch (err) {
-    console.error(err);
+    res.redirect('/error')
   }
 };
 const productDelete = async (req, res) => {
   try {
-    // console.log('deleting');
     const productId = req.params.id;
-    // console.log(productId);
     const productishere = await productDB.find({ _id: productId });
-    // console.log(productishere);
     const nowproduct = await productDB.deleteOne({ _id: productId });
     const removeFromCart = await CartDB.deleteOne({ productId: productId });
-    // console.log(nowproduct);
-    // console.log(removeFromCart);
     res.redirect("/admin/productlist");
   } catch (err) {
-    console.error(err);
+    res.redirect('/error')
+
   }
 };
 
 const productList = async (req, res) => {
   try {
-    //  console.log(2222);
     const productId = req.params.id;
-    // console.log(productId);
     const productishere = await productDB.find({ _id: productId });
-    // console.log(productishere);
     const nowproduct = await productDB.updateOne(
       { _id: productId },
       { $set: { isAvailable: true } }
     );
-    // console.log(nowproduct);
     res.redirect("/admin/productlist");
   } catch (err) {
-    console.error(err);
+    res.redirect('/error')
   }
 };
 
@@ -303,15 +259,15 @@ const productUpdate = async (req, res) => {
   req.session.multerError = null;
   try {
     const productId = req.params.id;
-    // console.log('updating this product');
     const editProduct = await productDB.findById(productId);
-    // console.log(editProduct.name);
 
     const categoryList = await CategoryDB.find(
       { isAvailable: true },
       { name: 1, _id: 1 }
     );    res.render("admin/editProduct", { editProduct, multerError ,categoryList });
-  } catch (err) {}
+  } catch (err) {
+    res.redirect('/error')
+  }
 };
 
 
@@ -323,277 +279,85 @@ const productUpdatePost = async (req, res) => {
     const updatedProduct = await productDB
       .findById(updateProduct)
       .select("name isAvailable image");
-    // console.log(updatedProduct);
-  } catch (err) {}
+  } catch (err) {
+    res.redirect('/error')
+  }
 };
 
-// const productImgDelete=async(req,res)=>{
-//     try{
-//         const productObjectId=req.params.id
-//         req.session.productId=productObjectId
-
-//         const url=req.params.imgUrl
-//      // console.log(121212);
-//         const imgUrl=`\\uploads\\${url}`
-//      // console.log(imgUrl);
-
-//         const img=await productDB.updateOne(
-//             { _id: productObjectId },
-//             { $pull: { image: imgUrl } }
-//           );
-//           res.redirect(`/admin/productUpdate/${productObjectId}`)
-//     }catch(err){
-//         console.error(err);
-//     }
-// }
 
 const productImgDelete = async (req, res) => {
   try {
     const productObjectId = req.params.id;
     const imgUrl = req.params.imgUrl;
-    // Construct the image URL consistent with the database format
     const imgPath = `\\uploads\\${imgUrl}`; // Assuming your database stores URLs with forward slashes
-    // Remove the image path from the product's image array
     const img = await productDB.updateOne(
       { _id: productObjectId },
       { $pull: { image: imgPath } }
     );
-    // Send a success response
     res.json({ message: "Image deleted successfully" });
   } catch (err) {
-    console.error(err);
     res.status(500).json({ error: "Internal Server Error" }); // Send an error response
   }
 };
 
-//
-// const productDetail = async (req, res) => {
-//   // console.log(1818);
-//   const isLogged = determineIsLogged(req.session);
-//   const { primaryCategories, otherCategories } =
-//     await fetchCategoryMiddleware.fetchCategories();
-//   try {
-//     // console.log(isLogged);
-//     const productId = req.params.id;
-//     console.log(111,'productId is ',productId);
-
-//     // Extract the valid ObjectId from the provided string
-//     // const validObjectId = new mongoose.Types.ObjectId(productId);
-
-//     // Use the valid ObjectId to query the database
-//     // const productDetails = await productDB.findById(validObjectId);
-
-//     const productDetails=await productDB.findById(productId)
-//     // console.log(productDetails,444);
-//     // console.log(222);
-//     // const session = req.session.cartProduct
-
-
-//     if(!productDetails){
-//       throw new Error('product not found'); // Handle case where product doesn't exist
-
-//     }
-
-
-//     const session = (req.session.cartProduct)??null
-//     delete req.session.cartProduct
-    
-
-//     let wishlistsession =  (req.session.wishlist)??null
-//     delete req.session.wishlist
-
-
-// console.log(wishlistsession);
-// console.log('rtyuio');
-// console.log(productDetails);
-
-//     res.render("user/product-detail", {
-//       session,
-//       wishlistsession,
-//       productDetails,
-//       isLogged,
-//       primaryCategories,
-//       otherCategories,
-//     });
-//   } catch (err) {
-//     res.redirect('/error')
-//   }
-// };
-
-
-
 
 
 const productDetail = async (req, res) => {
-  // console.log(1818);
   const isLogged = determineIsLogged(req.session);
-  const { primaryCategories, otherCategories } =
-    await fetchCategoryMiddleware.fetchCategories();
+  const { primaryCategories, otherCategories } = await fetchCategoryMiddleware.fetchCategories();
+
   try {
-    // console.log(isLogged);
     const productId = req.params.id;
-    console.log(111,'productId is ',productId);
 
-    // Extract the valid ObjectId from the provided string
-    // const validObjectId = new mongoose.Types.ObjectId(productId);
+    const product = await productDB.findOne({ _id: productId, isAvailable: true }).populate('categoryId');
 
-    // Use the valid ObjectId to query the database
-    // const productDetails = await productDB.findById(validObjectId);
-
-console.log('its find');
-    const product = await productDB.findOne({_id:productId, isAvailable: true})
-    .populate('categoryId');
-
-console.log(product);
-
-
-    if(!product){
-      console.log('find');
-      throw new Error('product not found'); // Handle case where product doesn't exist
-
+    if (!product) {
+      throw new Error('Product not found'); // Handle case where product doesn't exist
     }
 
-    // Assuming you have the product details available in a variable named product
+    const currentDate = new Date();
+    const categoryId = product.categoryId._id.toString();
+    const categoryDiscount = product.categoryId.discountPercentage;
+    let offerPrice = product.price;
 
-const currentDate = new Date();
-const categoryId = product.categoryId._id.toString();
-console.log(categoryId);
+    // Check if product has a discount and it hasn't expired
+    if (product.discountPercentage && (!product.expiryDate || currentDate <= product.expiryDate)) {
+      offerPrice -= (offerPrice * product.discountPercentage) / 100; // Apply product discount
+    } else if (product.categoryId.startDate && product.categoryId.endDate) {
+      // Check if product falls within category discount offer period
+      const startDate = new Date(product.categoryId.startDate);
+      const endDate = new Date(product.categoryId.endDate);
+      if (currentDate >= startDate && currentDate <= endDate) {
+        offerPrice -= (offerPrice * categoryDiscount) / 100; // Apply category discount
+      }
+    } else {
+      offerPrice -= (offerPrice * categoryDiscount) / 100; // Apply category discount if offer is permanent
+    }
 
-const categoryDiscount = product.categoryId.discountPercentage;
-let offerPrice = product.price;
+    const session = req.session.cartProduct ?? null;
+    delete req.session.cartProduct;
 
-// Check if product falls within category discount offer period
-if (product.categoryId.startDate && product.categoryId.endDate) {
-  const startDate = new Date(product.categoryId.startDate);
-  const endDate = new Date(product.categoryId.endDate);
-  if (currentDate >= startDate && currentDate <= endDate) {
-    offerPrice -= (offerPrice * categoryDiscount) / 100; // Apply category discount
-  }
-} else {
-  offerPrice -= (offerPrice * categoryDiscount) / 100; // Apply category discount if offer is permanent
-}
-
-// Check if product has a discount and it hasn't expired
-if (product.discountPercentage && (!product.expiryDate || currentDate <= product.expiryDate)) {
-  offerPrice -= (offerPrice * product.discountPercentage) / 100; // Apply product discount
-}
-
-// Now, offerPrice contains the calculated offer price for the single product
-
-
-
-
-
-
-
-
-
-
-    const session = (req.session.cartProduct)??null
-    delete req.session.cartProduct
-    
-
-    let wishlistsession =  (req.session.wishlist)??null
-    delete req.session.wishlist
-
-
-console.log(wishlistsession);
-console.log('rtyuio');
-// console.log(product);
-console.log(offerPrice);
+    let wishlistsession = req.session.wishlist ?? null;
+    delete req.session.wishlist;
 
     res.render("user/product-detail", {
       session,
       wishlistsession,
-      productDetails:product,
+      productDetails: product,
       offerPrice,
       isLogged,
       primaryCategories,
       otherCategories,
     });
   } catch (err) {
-
-    res.redirect('/error')
+    res.redirect('/error');
   }
 };
 
 
 
-const userSideproductDetails = (req, res) => {
-  res.render("user/product-details-zoom");
-};
-
-//orginal
 
 
-
-// const productListUser = async (req, res) => {
-//   // console.log("asdfghjklertyui wertyu sdfghj xcvbn");
-//   const isLogged = determineIsLogged(req.session);
-//   const { primaryCategories, otherCategories } =
-//     await fetchCategoryMiddleware.fetchCategories();
-//   const categoryName = req.params.id;
-//   const categoryData = req.params.id.toUpperCase();
-
-//   // const page = parseInt(req.query.page) || 1; // Get the page number from the query parameter, default to page 1
-//   // const limit = 4; // Number of items per page
-
-
-//   try {
-
-
-
-//     const page = parseInt(req.query.page) || 1; // Get the page number from the query parameter, default to page 1
-//     const limit = 4; // Number of items per page
-
-//     // Find the category by name to get its ID
-//     const category = await CategoryDB.findOne({ name: categoryData,isAvailable:true });
-//     if (!category) {
-//       throw new Error('Category not found'); // Handle case where category doesn't exist
-//     }
-//     const categoryId = category._id;
-
-//     const totalProductsCount = await productDB.countDocuments({
-//       isAvailable: true,
-//       categoryId: categoryId, // Match products by categoryId
-//     });
-//     const totalPages = Math.ceil(totalProductsCount / limit);
-//     const offset = (page - 1) * limit;
-
-
-
-//     const currentDate = new Date(); // Get the current date
-
-//     const products = await productDB
-//       .find({ isAvailable: true, categoryId: categoryId }) // Match products by categoryId
-//       .skip(offset)
-//       .limit(limit)
-//       .populate('categoryId'); // Populate category information
-
-
-
-
-
-// console.log(products);
-
-
-
-
-
-//     res.render("user/productlist", {
-//       isLogged,
-//       product: products,
-//       primaryCategories,
-//       otherCategories,
-//       totalPages,
-//       currentPage: page,
-//       categoryName,
-//     });
-//   } catch (err) {
-//     console.error(err);
-//     res.redirect('/error')
-//   }
-// };
 
 
 
@@ -629,49 +393,49 @@ const productListUser = async (req, res) => {
       .limit(limit)
       .populate('categoryId'); // Populate category information
 
-    // Loop through each product in the products array
+    
+
+
     const productsWithOfferPrice = await Promise.all(products.map(async (product) => {
       const categoryId = product.categoryId._id.toString();
       const categoryDiscount = product.categoryId.discountPercentage;
       let offerPrice = product.price;
-
-      // Check if the current date is within the discount offer period
-      if (product.categoryId.startDate && product.categoryId.endDate) {
-        const startDate = new Date(product.categoryId.startDate);
-        const endDate = new Date(product.categoryId.endDate);
-        if (currentDate >= startDate && currentDate <= endDate) {
-          // Apply category discount if available
-          offerPrice -= (offerPrice * categoryDiscount) / 100;
-        }
-      } else {
-        // If start and end dates are not available, consider the offer as permanent
-        // Apply category discount if available
-        offerPrice -= (offerPrice * categoryDiscount) / 100;
-      }
-
+      let applyCategoryDiscount = true;
+    
       // Check if the product has a discount (offer) and it hasn't expired
       if (product.discountPercentage && (!product.expiryDate || currentDate <= product.expiryDate)) {
         // Apply product discount if available
         offerPrice -= (offerPrice * product.discountPercentage) / 100;
+        // If product offer exists, do not apply category offer
+        applyCategoryDiscount = false;
       }
-
+    
+      if (applyCategoryDiscount) {
+        // Check if the current date is within the discount offer period
+        if (product.categoryId.startDate && product.categoryId.endDate) {
+          const startDate = new Date(product.categoryId.startDate);
+          const endDate = new Date(product.categoryId.endDate);
+          if (currentDate >= startDate && currentDate <= endDate) {
+            // Apply category discount if available and no product discount is applicable
+            offerPrice -= (offerPrice * categoryDiscount) / 100;
+          }
+        } else {
+          // If start and end dates are not available, consider the offer as permanent
+          // Apply category discount if available and no product discount is applicable
+          offerPrice -= (offerPrice * categoryDiscount) / 100;
+        }
+      }
+    
       return {
         ...product.toObject(), // Convert Mongoose document to plain object
         offerPrice: offerPrice,
         normalPrice: product.price // Include the normal price
       };
     }));
-
-
+    
+    
     
 
-    console.log(productsWithOfferPrice);
-
-
-    console.log('-=-=-=-=-----=====');
-
-
-    // return
     res.render("user/productlist", {
       isLogged,
       product: productsWithOfferPrice, // Corrected "product" to "products"
@@ -682,7 +446,6 @@ const productListUser = async (req, res) => {
       categoryName,
     });
   } catch (err) {
-    console.error(err);
     res.redirect('/error');
   }
 };
@@ -701,9 +464,7 @@ const productListUser = async (req, res) => {
 
 
 const fetchData = async (req, res) => {
-  console.log('fetchData');
  const descending = parseInt(req.body.descending)
-  console.log('lol');
   const categoryData = req.params.id.toUpperCase();
   const minValueParsing = req.body.minValue;
   const maxValueParsing = req.body.maxValue;
@@ -711,15 +472,12 @@ const fetchData = async (req, res) => {
   const minValue = parseInt(minValueParsing);
   const maxValue = parseInt(maxValueParsing);
 
-  console.log(minValue, maxValue);
   const searchTerm = req.body.searchTerm || null;
-  console.log(searchTerm);
   const regex = /₹(\d+)\s*-\s*₹(\d+)/;
 
   try {
     const page = parseInt(req.body.page) || 1; // Get the page number from the query parameter, default to page 1
 
-    console.log(page,'ki');
     const limit = 4; // Number of items per page
     const offset = (page - 1) * limit;
 
@@ -756,8 +514,7 @@ const fetchData = async (req, res) => {
     const [{ metadata, data }] = await productDB.aggregate(pipeline);
     const totalDocs = metadata.length > 0 ? metadata[0].total : 0;
     const totalPages = Math.ceil(totalDocs / limit);
-    console.log('kijvf');
-    console.log(data);
+   
 
     res.json({
       sortedProducts: data,
@@ -769,32 +526,20 @@ const fetchData = async (req, res) => {
       searchTerm
     });
   } catch (err) {
-    console.error(err);
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
 
 const priceSortDescending = async (req, res) => {
-  console.log("its descending");
   const { value, searchTerm } = req.body.value;
-  // const priceString=data.value
-  console.log(12345678);
-  console.log(898);
-
-  console.log("priceSortDescending");
-
-  // console.log(priceString);
+ 
   const regex = /₹(\d+)\s*-\s*₹(\d+)/;
   const match = value.match(regex);
-  // console.log(match);
   const minValue = parseInt(match[1], 10);
   const maxValue = parseInt(match[2], 10);
-  console.log(minValue, maxValue);
 
   const categoryData = req.params.id.toUpperCase();
-  // console.log(categoryData,222);
   const page = parseInt(req.query.page) || 1; // Get the page number from the query parameter, default to page 1
-  // console.log(page,999);
   const limit = 4; // Number of items per page
 
   try {
@@ -806,28 +551,6 @@ const priceSortDescending = async (req, res) => {
     const categoryId = category._id;
 
 
-    // const pipeline = [
-    //   {
-    //     $match: {
-    //       categoryName: categoryData,
-    //       price: { $gte: minValue, $lte: maxValue },
-    //       isAvailable: true,
-    //       ...(searchTerm && { name: searchTerm }), // Include name field conditionally
-    //     },
-    //   },
-    //   {
-    //     $sort: {
-    //       price: 1, // 1 for ascending, -1 for descending
-    //     },
-    //   },
-    //   {
-    //     $count: "documentCount",
-    //   },
-    // ];
-    // const totalProductsCount = await productDB.aggregate(pipeline);
-    // // console.log(totalProductsCount);
-    // console.log(totalProductsCount[0].documentCount);
-
 
     const totalProductsCount = await productDB.countDocuments({
       isAvailable: true,
@@ -838,12 +561,10 @@ const priceSortDescending = async (req, res) => {
     console.log(totalProductsCount, "99");
     console.log(1234);
     const countValue = totalProductsCount;
-    // console.log(countValue);
-    // console.log(`filtered products count is ${countValue}`);
+   
 
     const totalPages = Math.ceil(countValue / limit);
-    // console.log(totalPages);
-    // console.log(7876);
+    
 
     const offset = (page - 1) * limit;
 
@@ -866,7 +587,6 @@ const priceSortDescending = async (req, res) => {
       .aggregate(pipeline2)
       .skip(offset)
       .limit(limit);
-    // console.log('hello');
     res.json({
       sortedProducts,
       totalPages,
@@ -878,26 +598,21 @@ const priceSortDescending = async (req, res) => {
       descending:-1,
     });
   } catch (err) {
-    console.error(err);
+    res.status(500).json({ error: "Internal Server Error" });
+
   }
 };
 
 const priceSortAscending = async (req, res) => {
-  console.log("priceSortAscend");
-  console.log("its ascending");
+
   const { value, searchTerm } = req.body.value;
-  console.log(12345678);
-  console.log(898);
+ 
   const regex = /₹(\d+)\s*-\s*₹(\d+)/;
   const match = value.match(regex);
-  // console.log(match);
   const minValue = parseInt(match[1], 10);
   const maxValue = parseInt(match[2], 10);
-  console.log(minValue, maxValue);
   const categoryData = req.params.id.toUpperCase();
-  // console.log(categoryData,222);
   const page = parseInt(req.query.page) || 1; // Get the page number from the query parameter, default to page 1
-  // console.log(page,999);
   const limit = 4; // Number of items per page
 
   try {
@@ -917,13 +632,8 @@ const priceSortAscending = async (req, res) => {
       price: { $gte: minValue, $lte: maxValue }, // Price range condition
       ...(searchTerm && { name: searchTerm }), // Include name field conditionally
     });
-    console.log(totalProductsCount, "99");
     const countValue = totalProductsCount;
-    console.log(countValue, "787");
-    // console.log(`filtered products count is ${countValue}`);
     const totalPages = Math.ceil(countValue / limit);
-    // console.log(totalPages);
-    // console.log(7876);
     const offset = (page - 1) * limit;
     const pipeline2 = [
       {
@@ -944,7 +654,6 @@ const priceSortAscending = async (req, res) => {
       .aggregate(pipeline2)
       .skip(offset)
       .limit(limit);
-    // console.log('hello');
     res.json({
       sortedProducts,
       totalPages,
@@ -955,7 +664,8 @@ const priceSortAscending = async (req, res) => {
       searchTerm,
     });
   } catch (err) {
-    console.error(err);
+    res.status(500).json({ error: "Internal Server Error" });
+
   }
 };
 
@@ -1003,13 +713,6 @@ const searchProduct = async (req, res) => {
 
     const [{ metadata, data }] = await productDB.aggregate(pipeline);
 
-    console.log(data);
-console.log('-=-===--=-=-');
-
-
-
-
-
 
 
 
@@ -1028,7 +731,6 @@ console.log('-=-===--=-=-');
       searchTerm: searchValue,
     });
   } catch (err) {
-    console.error(err);
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
@@ -1041,9 +743,6 @@ module.exports = {
   addProduct,
   productadded,
   productListAdmin,
-  //new codes
-  // userSideProductlist,
-  userSideproductDetails,
   productListUser,
   productUnlist,
   productDelete,
@@ -1052,15 +751,9 @@ module.exports = {
   productUpdatePost,
   productImgDelete,
   productDetail,
-  //new
   priceSortAscending,
   priceSortDescending,
   searchProduct,
   fetchData,
-
-
-
-
-
 };
 

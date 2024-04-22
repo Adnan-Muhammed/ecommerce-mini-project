@@ -83,7 +83,9 @@ const  isBlockedNow2=async (req,res,next)=>{
                 console.log('isBlocked==true');
                 req.session.isBlocked=true
                 req.session.user=null
+                console.log('hello its place order user test',12345);
                 return res.redirect('/loginpage')
+
             }
             console.log(1111111);
             if(req.session.changePassword){
@@ -120,19 +122,22 @@ const  isBlockedNow2=async (req,res,next)=>{
 
 const otpSession=(req,res,next)=>{
     if( req.session.userNew?.otp){
+        if(req.session.updatePassword){
+          return  next()
+        }
         console.log('no otp session');
        return res.redirect('/')
-    }else{
+    }else if(req.session.user){
         next()  
+}else{
+    return res.redirect('/error')
 }
 }
 
 
 
 const userlogged = (req, res, next) => {
-    //for cart page
 console.log('userSessionHandling middleware');
-    // console.log(req.session.cartId);
     console.log('is getting here also');
     if (req.session.userNew || req.session.user) {
         next();

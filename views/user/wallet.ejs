@@ -1,136 +1,117 @@
-<% function formatDate(dateString) {
-    const options = { day: 'numeric', month: 'short', year: 'numeric' };
-    const formattedDate = new Date(dateString).toLocaleDateString('en-US', options);
-    return formattedDate;
-  }
-  
-  function formatTimeWithoutStandardTime(timeString) {
-    const options = { hour: 'numeric', minute: 'numeric', hour12: false };
-    const formattedTime = new Date(timeString).toLocaleTimeString('en-US', options);
-    return formattedTime;
-  }
-  %>
-  
-  <%-include('header')-%>
-  
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-REPLACE_WITH_YOUR_INTEGRITY_CHECK" crossorigin="anonymous" />
-      <section style="background-color: #000000;">
-          <div class="container py-5">
-  
-            <div class="row">
-              <div class="col-lg-4">
-                <div class="card mb-4">
-                  <div class="card-body text-center">
-                    <img src="https://cdn1.iconfinder.com/data/icons/public-company-solid/32/employee_employe_workman_user_profiles_avatar_people_human_persons_icon_1-512.png" alt="avatar"
-                      class="rounded-circle img-fluid" style="width: 150px;">
-                    <h5 class="my-3"> <%=user.name%>   </h5> 
+<% function formatDate(dateString) { const options = { day: 'numeric', month:
+'short', year: 'numeric' }; const formattedDate = new
+Date(dateString).toLocaleDateString('en-US', options); return formattedDate; }
+function formatTimeWithoutStandardTime(timeString) { const options = { hour:
+'numeric', minute: 'numeric', hour12: false }; const formattedTime = new
+Date(timeString).toLocaleTimeString('en-US', options); return formattedTime; }
+%> <%-include('header')-%>
+
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+  integrity="sha512-REPLACE_WITH_YOUR_INTEGRITY_CHECK"
+  crossorigin="anonymous"
+/>
+<section style="background-color: #000000">
+  <div class="container py-5">
+    <div class="row">
+      <div class="col-lg-4">
+        <div class="card mb-4">
+          <div class="card-body text-center">
+            <img
+              src="https://cdn1.iconfinder.com/data/icons/public-company-solid/32/employee_employe_workman_user_profiles_avatar_people_human_persons_icon_1-512.png"
+              alt="avatar"
+              class="rounded-circle img-fluid"
+              style="width: 150px"
+            />
+            <h5 class="my-3"><%=user.name%></h5>
+          </div>
+        </div>
+
+        <%-include('sidebar')-%>
+      </div>
+      <div class="col-lg-8">
+        <div class="row">
+          <div class="col-xl-4">
+            <!-- Profile picture card-->
+            <div class="card mb-4 mb-xl-0">
+              <div class="card-header">WALLET</div>
+              <div class="card-body text-center">
+                <div class="card text-bg-success mb-3">
+                  <div class="card-body">
+                    <h5 class="card-title">Total Balance</h5>
+                    <h3 class="card-text">
+                      &#x20B9; = <%= Math.round(user.wallet)%>
+                    </h3>
                   </div>
                 </div>
-
-
-
-
-              <%-include('sidebar')-%>
-                
-
-
-              </div>
-              <div class="col-lg-8">
-                  <div class="row">
-                      <div class="col-xl-4">
-                          <!-- Profile picture card-->
-                          <div class="card mb-4 mb-xl-0">
-                              <div class="card-header">WALLET</div>
-                              <div class="card-body text-center">
-                                <div class="card text-bg-success mb-3" >
-                                  <div class="card-body">
-                                    <h5 class="card-title">Total Balance</h5>
-                                    <h3 class="card-text">&#x20B9; = <%= Math.round(user.wallet)%> </h3>
-                                  </div>
-                                </div>
-                                  <!-- Profile picture image-->
-                              </div>
-                          </div>
-                      </div>
-
-
-                      <!-- user/wallet.ejs -->
-<div class="col-xl-8">
-  <div class="col-12">
-      <div class="card h-100 mb-4">
-          <div class="card-header pb-0 px-3">
-              <div class="row">
-                  <div class="col-md-6">
-                      <h6 class="mb-2">Your Transactions</h6>
-                  </div>
-              </div>
-          </div>
-          <div style="max-height: 450px; overflow-y: auto;">
-              <% if (user.transactions && user.transactions.length > 0) { %>
-                  <% user.transactions.forEach(transaction => { %>
-                      <li class="list-group-item border-0 d-flex justify-content-between ps-0 mb-2 border-radius-lg">
-                         
-
-                          <div class="d-flex align-items-center">
-                            <div class="d-flex flex-column">
-                                <!-- Display transaction details -->
-                                <h6 class="mb-1 text-dark text-sm"><%= transaction._id %></h6>
-                                <span class="text-xs">Date: <%= transaction.formattedTimestamp %></span>
-                                <% if (transaction.isReturned) { %>
-                                  <!-- <span class="text-xs">Returned: <%= transaction.isReturned %></span> -->
-                                  <span class="text-xs">by Returned</span>
-                                  <% } %>
-                                <% if (transaction.isReferral) { %>
-                                  <!-- <span class="text-xs">isReferral: <%= transaction.isReferral %></span> -->
-                                  <span class="text-xs">by Reffered </span>
-                                  <% } %>
-                                <!-- Add any other details you want to display -->
-                            </div>
-                        </div>
-                        <div class="d-flex align-items-center text-sm font-weight-bold">
-                            <% if (transaction.isReferral || transaction.isReturned) { %>
-                                <!-- If both isReferral and isReturned are true, display amount in green -->
-                                <span style="color: green;">- &#x20B9; <%= Math.round(transaction.amount) %></span>
-                            <% } else { %>
-                                <!-- Otherwise, display amount in red -->
-                                - &#x20B9; <%= Math.round(transaction.amount) %>
-                            <% } %>
-                        </div>
-                        
-
-
-
-
-
-                      </li>
-                      <hr>
-                  <% }); %>
-              <% } else { %>
-                  <p>No transactions found.</p>
-              <% } %>
-          </div>
-      </div>
-  </div>
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-                  </div>
+                <!-- Profile picture image-->
               </div>
             </div>
           </div>
-        </section>
-  
-  
-  
-  <%-include('footer')-%>
+
+          <!-- user/wallet.ejs -->
+          <div class="col-xl-8">
+            <div class="col-12">
+              <div class="card h-100 mb-4">
+                <div class="card-header pb-0 px-3">
+                  <div class="row">
+                    <div class="col-md-6">
+                      <h6 class="mb-2">Your Transactions</h6>
+                    </div>
+                  </div>
+                </div>
+                <div style="max-height: 450px; overflow-y: auto">
+                  <% if (user.transactions && user.transactions.length > 0) { %>
+                  <% user.transactions.forEach(transaction => { %>
+                  <li
+                    class="list-group-item border-0 d-flex justify-content-between ps-0 mb-2 border-radius-lg"
+                  >
+                    <div class="d-flex align-items-center">
+                      <div class="d-flex flex-column">
+                        <!-- Display transaction details -->
+                        <h6 class="mb-1 text-dark text-sm">
+                          <%= transaction._id %>
+                        </h6>
+                        <span class="text-xs"
+                          >Date: <%= transaction.formattedTimestamp %></span
+                        >
+                        <% if (transaction.isReturned) { %>
+                        <!-- <span class="text-xs">Returned: <%= transaction.isReturned %></span> -->
+                        <span class="text-xs">by Returned</span>
+                        <% } %> <% if (transaction.isReferral) { %>
+                        <!-- <span class="text-xs">isReferral: <%= transaction.isReferral %></span> -->
+                        <span class="text-xs">by Reffered </span>
+                        <% } %>
+                        <!-- Add any other details you want to display -->
+                      </div>
+                    </div>
+                    <div
+                      class="d-flex align-items-center text-sm font-weight-bold"
+                    >
+                      <% if (transaction.isReferral || transaction.isReturned) {
+                      %>
+                      <!-- If both isReferral and isReturned are true, display amount in green -->
+                      <span style="color: green"
+                        >- &#x20B9; <%= Math.round(transaction.amount) %></span
+                      >
+                      <% } else { %>
+                      <!-- Otherwise, display amount in red -->
+                      - &#x20B9; <%= Math.round(transaction.amount) %> <% } %>
+                    </div>
+                  </li>
+                  <hr />
+                  <% }); %> <% } else { %>
+                  <p>No transactions found.</p>
+                  <% } %>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<%-include('footer')-%>

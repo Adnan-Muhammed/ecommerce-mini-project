@@ -1,486 +1,671 @@
 <%- include('header') -%>
-<link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+<link
+  href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+  rel="stylesheet"
+/>
 
 <!--Body Content-->
 <div id="page-content">
-    <!--Page Title-->
-    <div class="page section-header text-center">
-        <div class="page-title">
-            <div class="wrapper">
-                <h1 class="page-width">My Order List</h1>
-            </div>
-        </div>
+  <!--Page Title-->
+  <div class="page section-header text-center">
+    <div class="page-title">
+      <div class="wrapper">
+        <h1 class="page-width">My Order List</h1>
+      </div>
     </div>
-    <!--End Page Title-->
-    <div class="container">
-        <div class="row">
-            <div class="col-12 col-sm-12 col-md-12 col-lg-12 main-col">
-                <% if(locals.orderList.length > 0) { %>
-                <div class="alert alert-success text-uppercase" role="alert">
-                    <i class="icon anm anm-truck-l icon-large"></i> &nbsp;<strong>Congratulations!</strong> You've got free shipping!
+  </div>
+  <!--End Page Title-->
+  <div class="container">
+    <div class="row">
+      <div class="col-12 col-sm-12 col-md-12 col-lg-12 main-col">
+        <% if(locals.orderList.length > 0) { %>
+        <div class="alert alert-success text-uppercase" role="alert">
+          <i class="icon anm anm-truck-l icon-large"></i> &nbsp;<strong
+            >Congratulations!</strong
+          >
+          You've got free shipping!
+        </div>
+
+        <!-- <form action="#" method="post" class="cart style2"> -->
+        <table class="table table-striped">
+          <thead
+            class="cart__row cart__header text-white"
+            style="background-color: cadetblue"
+          >
+            <tr>
+              <th class="text-center">Billing Address</th>
+              <th class="text-center">Quantity</th>
+              <th class="text-right">Price</th>
+              <th class="text-center">Payment</th>
+              <th class="text-center">Order Status</th>
+              <th class="text-center">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% locals.orderList.forEach(order => { %>
+            <tr class="cart__row border-bottom line1 cart-flex border-top">
+              <td
+                style="text-align: center"
+                class="cart__price-wrapper cart-flex-item"
+              >
+                <div>
+                  <strong>Name:</strong> <%= order.billingAddress.name %><br />
+                  <strong>Phone:</strong> <%= order.billingAddress.telephone
+                  %><br />
+                  <strong>Address:</strong> <%= order.billingAddress.address
+                  %><br />
+                  <strong>City:</strong> <%= order.billingAddress.city %><br />
+                  <strong>Region/State:</strong> <%=
+                  order.billingAddress.regionState %><br />
+                  <strong>Postcode:</strong> <%= order.billingAddress.postCode
+                  %><br />
                 </div>
+              </td>
+              <td
+                style="text-align: center"
+                class="cart__price-wrapper cart-flex-item"
+              >
+                <button
+                  type="button"
+                  class="btn btn-primary"
+                  data-toggle="modal"
+                  data-target="#exampleModal<%= order._id %>"
+                  style="display: block"
+                >
+                  Order Details
+                </button>
+                <%if(order.orderStatus.type === 'delivered'){%>
+                <button
+                  type="button"
+                  onclick="invoice('<%= order._id %>')"
+                  class="mt-1 btn btn-primary"
+                  data-target="#exampleModal<%= order._id %>"
+                  style="display: block"
+                >
+                  Download Invoice
+                </button>
+                <%}%>
+              </td>
+              <td class="text-right small--hide cart-price">
+                <div
+                  id="productPrice"
+                  value="<%= order.grandTotal %>"
+                  data-product-id="<%= order._id %>"
+                >
+                  <span class="money"
+                    ><strong>₹<%= Math.round(order.grandTotal) %></strong>
+                  </span>
+                </div>
+              </td>
+              <td class="text-center small--hide cart-price">
+                <div style="text-align: center" class="list-view-item__title">
+                  <!-- <span> -->
+                  <p>
+                    <strong> <%= order.paymentMethod.type %> </strong>
+                    <br />
+                    <strong> <%= order.paymentStatus.type %> </strong>
 
-                <!-- <form action="#" method="post" class="cart style2"> -->
-                <table class="table table-striped">
-                    <thead class="cart__row cart__header  text-white" style="background-color: cadetblue;">
-                        <tr>
-                            <th class="text-center">Billing Address</th>
-                            <th class="text-center">Quantity</th>
-                            <th  class="text-right">Price</th>
-                            <th class="text-center">Payment Status</th>
-                            <th  class="text-center">Order Status</th>
-                            <th  class="text-center">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <% locals.orderList.forEach(order => { %>
-                        <tr class="cart__row border-bottom line1 cart-flex border-top">
-                            <td style="text-align: center;" class="cart__price-wrapper cart-flex-item">
-                                <div>
-                                    <strong>Name:</strong> <%= order.billingAddress.name %><br>
-                                    <strong>Phone:</strong> <%= order.billingAddress.telephone %><br>
-                                    <strong>Address:</strong> <%= order.billingAddress.address %><br>
-                                    <strong>City:</strong> <%= order.billingAddress.city %><br>
-                                    <strong>Region/State:</strong> <%= order.billingAddress.regionState %><br>
-                                    <strong>Postcode:</strong> <%= order.billingAddress.postCode %><br>
-                                </div>
-                            </td>
-                            <td style="text-align: center; "  class="cart__price-wrapper cart-flex-item" >
+                    <% if(order.paymentStatus.type =="failed" &&
+                    order.orderStatus.type =="processing" ){ %>
+                    <button
+                      type="button"
+                      class="mt-1 ml-4 btn btn-primary repayment-btn"
+                      data-order-id="<%= order._id %>"
+                      data-order-totalPrice="<%= order.grandTotal %>"
+                      style="display: block"
+                    >
+                      Repayment
+                    </button>
+                    <% } %>
+                  </p>
+                  <!-- </span> -->
+                </div>
+              </td>
+              <td class="text-center small--hide cart-price">
+                <div style="text-align: center" class="list-view-item__title">
+                  <!-- <span> -->
+                  <h4><%= order.orderStatus.type %></h4>
+                  <!-- </span> -->
+                </div>
+              </td>
 
-                                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal<%= order._id %>" style="display: block;">
-                                    Order Details
-                                </button>
-                                <%if(order.paymentStatus.type === 'fulfilled'){%>
-                                    <button type="button"  onclick="invoice('<%= order._id %>')" class="mt-1 btn btn-primary"  data-target="#exampleModal<%= order._id %>" style="display: block;">
-                                        Download Invoice
-                                    </button>
-                                <%}%>
+              <td class="text-center small--hide cart-price">
+                <% if (order.orderStatus.type === "delivered") { %>
+                <!-- Show Return button -->
 
-                                 
+                <button
+                  id="return<%= order.id %>"
+                  class="btn btn-warning return-btn"
+                  data-order-id="<%= order.id %>"
+                  data-order-status="returned"
+                  data-toggle="modal"
+                  data-target="#returnReasonModal<%= order.id %>"
+                >
+                  Return
+                </button>
 
-                                
-                                
-
-
-                            </td>
-                            <td  class="text-right small--hide cart-price">
-                                <div id="productPrice" value="<%= order.grandTotal %>" data-product-id="<%= order._id %>">
-                                    <span class="money"><strong>₹<%= Math.round(order.grandTotal) %></strong> </span>
-                                </div>
-                            </td>
-                            <td class="text-center small--hide cart-price">
-                                <div style="text-align: center;" class="list-view-item__title">
-                                    <!-- <span> -->
-                                        <h4>
-                                            <%= order.paymentStatus.type %>
-                                        </h4>
-                                    <!-- </span> -->
-                                </div>
-                            </td><td class="text-center small--hide cart-price">
-                                <div style="text-align: center;" class="list-view-item__title">
-                                    <!-- <span> -->
-                                        <h4>
-                                            <%= order.orderStatus.type %>
-                                        </h4>
-                                    <!-- </span> -->
-                                </div>
-                            </td>
-                            <!-- <td class="text-center small--hide cart-price">
-                                <button class="btn btn-info cancelled-btn" data-order-id="<%= order.id %>">Cancelled</button>
-                            </td> -->
-
-                                <!-- Only display the Cancelled button if the order status is not already "cancelled" -->
-                                <td class="text-center small--hide cart-price">
-                                    <% if (order.orderStatus.type === "delivered") { %>
-                                        <!-- Show Return button -->
-                                        <button class="btn btn-warning return-btn" data-order-id="<%= order.id %>" data-order-status="returned">Return</button>
-                                    <% } else if (order.orderStatus.type !== "cancelled" && order.orderStatus.type !== "returned"  ) { %>
-                                        <!-- Show Cancelled button -->
-                                        <button class="btn btn-info cancelled-btn" data-order-id="<%= order.id %>" data-order-status="cancelled">Cancel</button>
-                                    <% } %>
-                                </td>
-                                
-                        </tr>
-                        <!-- Button trigger modal -->
-                        <!-- <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal<%= order._id %>">
-                            Order Details
-                        </button> -->
-                        
-
-                        <!-- Modal -->
-
-
-
-
-
-
-                        <div class="modal fade" id="exampleModal<%= order._id %>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                            <div class="modal-dialog" role="document">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="exampleModalLabel">Order Details</h5>
-                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <div class="card-body p-4" style="max-height: 400px; overflow-y: auto;">
-                                            <% order.orderItems.forEach(item => { %>
-                                            <div class="d-flex flex-row mb-4 pb-2 border-bottom">
-                                                <div class="flex-fill">
-                                                    <strong>Product ID:</strong> <%= item.productId %><br>
-                                                    <h6 class="fw-bold">Product Name: <%= item.productName %></h6>
-                                                    <p class="fw-bold">Quantity: <%= item.quantity %></p>
-                                                    <h6 class="mb-0">Unit Price: ₹<%= item.unitPrice %> <span class="small text-muted"></span></h6>
-                                                    <h6 class="mb-0">Total Price: ₹<%= item.price %> <span class="small text-muted"></span></h6>
-                                                </div>
-                                                <div class="ml-3">
-                                                    <img class="img-fluid" src="<%= item.images[0] %>" width="90" height="70">
-                                                </div>
-                                            </div>
-
-                                            <% }); %>
-
-                                            <p class="fw-bold">Tax  ₹<%= order.tax %></p>
-
-                                            <%if(order.couponId){%>
-                                                <p class="fw-bold">discount Price<%=order.discountPrice%></p>
-                                            <%}%>
-                                            <p class="fw-bold">grandTotal<%= order.grandTotal %></p>
-
-
-                                        </div>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div> 
-
-
-
-                        <!-- Invoice Modal -->
-
-                        <!-- Invoice Modal -->
-
-                        <!-- Invoice Modal -->
-<!-- Invoice Modal -->
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                       
-                        
-
-
-
-
-
-                        <% }); %>
-                    </tbody>
-                </table>
-                <% } else { %>
-                <h1>No order products</h1>
-                <p><a href="/" class="btn btn--has-icon-after" style="background-color: black; color: aliceblue;">Continue shopping <i class="fa fa-caret-right" aria-hidden="true"></i></a></p>
+                <% } else if (order.orderStatus.type !== "cancelled" &&
+                order.orderStatus.type !== "returned") { %>
+                <!-- Show Cancelled button -->
+                <button
+                  class="btn btn-info cancelled-btn"
+                  data-order-id="<%= order.id %>"
+                  data-order-status="cancelled"
+                >
+                  Cancel
+                </button>
                 <% } %>
-                <!-- </form> -->
+              </td>
+            </tr>
+
+            <!-- Modal -->
+
+            <div
+              class="modal fade"
+              id="returnReasonModal<%= order.id %>"
+              tabindex="-1"
+              role="dialog"
+              data-order-status="returned"
+              aria-labelledby="returnReasonModalLabel"
+              aria-hidden="true"
+            >
+              <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="returnReasonModalLabel">
+                      Select Return Reason
+                    </h5>
+                    <button
+                      type="button"
+                      class="close"
+                      data-dismiss="modal"
+                      aria-label="Close"
+                    >
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <div class="modal-body">
+                    <form id="returnReasonForm">
+                      <div class="form-group">
+                        <label>Select reason for return:</label><br />
+                        <div class="form-check">
+                          <input type="text" value="<%= order.id %>" hidden />
+                          <input
+                            type="radio"
+                            name="returnReason"
+                            id="reason1"
+                            value="Wrong size or color"
+                          />
+                          <label class="form-check-label" for="reason1"
+                            >Wrong size or color</label
+                          >
+                        </div>
+                        <div class="form-check">
+                          <input
+                            type="radio"
+                            name="returnReason"
+                            id="reason2"
+                            value="Damaged during shipping"
+                          />
+                          <label class="form-check-label" for="reason2"
+                            >Damaged during shipping</label
+                          >
+                        </div>
+                        <div class="form-check">
+                          <input
+                            type="radio"
+                            name="returnReason"
+                            id="reason3"
+                            value="Not as described"
+                          />
+                          <label class="form-check-label" for="reason3"
+                            >Not as described</label
+                          >
+                        </div>
+                      </div>
+                    </form>
+                  </div>
+
+                  <div
+                    class="modal-footer"
+                    style="display: flex; justify-content: space-between"
+                  >
+                    <div>
+                      <button
+                        type="button"
+                        class="btn btn-secondary"
+                        data-dismiss="modal"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        type="button"
+                        class="btn btn-primary"
+                        id="confirmReturnBtn"
+                        onclick="getData('<%= order.id %>')"
+                      >
+                        OK
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
-            <h1></h1>
-        </div>
+
+            <div
+              class="modal fade"
+              id="exampleModal<%= order._id %>"
+              tabindex="-1"
+              role="dialog"
+              aria-labelledby="exampleModalLabel"
+              aria-hidden="true"
+            >
+              <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">
+                      Order Details
+                    </h5>
+                    <button
+                      type="button"
+                      class="close"
+                      data-dismiss="modal"
+                      aria-label="Close"
+                    >
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <div class="modal-body">
+                    <div
+                      class="card-body p-4"
+                      style="max-height: 400px; overflow-y: auto"
+                    >
+                      <% order.orderItems.forEach(item => { %>
+                      <div class="d-flex flex-row mb-4 pb-2 border-bottom">
+                        <div class="flex-fill">
+                          <strong>Product ID:</strong> <%= item.productId %><br />
+                          <h6 class="fw-bold">
+                            Product Name: <%= item.productName %>
+                          </h6>
+                          <p class="fw-bold">Quantity: <%= item.quantity %></p>
+                          <h6 class="mb-0">
+                            Unit Price: ₹<%= item.unitPrice %>
+                            <span class="small text-muted"></span>
+                          </h6>
+                          <h6 class="mb-0">
+                            Total Price: ₹<%= item.price %>
+                            <span class="small text-muted"></span>
+                          </h6>
+
+                          <%if(item.categoryOffer>0){%>
+                          <h6 class="mb-0">
+                            category offer : ₹<%= item.categoryOffer %>
+                            <span class="small text-muted"></span>
+                          </h6>
+                          <%}else{%>
+                          <h6 class="mb-0">
+                            category offer : nill
+                            <span class="small text-muted"></span>
+                          </h6>
+                          <%}%> <%if(item.productOffer>0){%>
+                          <h6 class="mb-0">
+                            product offer : ₹<%= item.productOffer %>
+                            <span class="small text-muted"></span>
+                          </h6>
+                          <%}else{%>
+                          <h6 class="mb-0">
+                            product offer : nill
+                            <span class="small text-muted"></span>
+                          </h6>
+                          <%}%>
+
+                          <h6 class="mb-0">
+                            totalPrice : ₹<%= item.totalPrice %>
+                            <span class="small text-muted"></span>
+                          </h6>
+                        </div>
+                        <div class="ml-3">
+                          <img
+                            class="img-fluid"
+                            src="<%= item.images[0] %>"
+                            width="90"
+                            height="70"
+                          />
+                        </div>
+                      </div>
+
+                      <% }); %> <%if(order.couponId){%>
+                      <p class="fw-bold">
+                        coupon discount :₹<%=order.couponDiscount%>
+                      </p>
+                      <%}%>
+                      <p class="fw-bold">Tax ₹<%= order.tax %></p>
+                      <p class="fw-bold">
+                        Delivery Charge ₹<%= order.deliveryCharge %>
+                      </p>
+
+                      <p class="fw-bold">
+                        grandTotal : ₹<%=order.grandTotal %>
+                      </p>
+                    </div>
+                  </div>
+                  <div class="modal-footer">
+                    <button
+                      type="button"
+                      class="btn btn-secondary"
+                      data-dismiss="modal"
+                    >
+                      Close
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Modal for Return Reason -->
+
+            <% }); %>
+          </tbody>
+        </table>
+        <% } else { %>
+        <h1>No order products</h1>
+        <p>
+          <a
+            href="/"
+            class="btn btn--has-icon-after"
+            style="background-color: black; color: aliceblue"
+            >Continue shopping
+            <i class="fa fa-caret-right" aria-hidden="true"></i
+          ></a>
+        </p>
+        <% } %>
+        <!-- </form> -->
+      </div>
+      <h1></h1>
     </div>
+  </div>
 </div>
 
-
-
-
-
-  <!-- Bootstrap JS -->
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<!-- Bootstrap JS -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
 <!--End Body Content-->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css"
+/>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
 <%- include('footer') -%>
 
-
-
-
-
-
-
-
-
-
-
-
 <script>
-    async function invoice(orderId) {
-        try {
-            const response = await fetch(`/download-invoice/${orderId}`);
-            if (response.ok) {
-                const blob = await response.blob();
-                const url = window.URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = 'invoice.pdf';
-                a.click();
+  async function invoice(orderId) {
+    try {
+      const response = await fetch(`/download-invoice/${orderId}`);
+      if (response.ok) {
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "invoice.pdf";
+        a.click();
 
-                console.log('Downloaded PDF');
-
-                window.URL.revokeObjectURL(url);
-            } else {
-                console.error('Error generating PDF');
-            }
-        } catch (error) {
-            console.error(error);
-        }
-    }
-  </script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<!-- <script>
-    $(document).ready(function() {
-        // Event handler for Cancelled button click
-        $('.cancelled-btn').click(function() {
-            // Get the order ID from the data attribute
-            var orderId = $(this).data('order-id');
-            var orderStatus = $(this).data('order-status')
-
-            console.log(orderStatus);
-            console.log(111);
-            // Show SweetAlert confirmation dialog
-            Swal.fire({
-                title: 'Are you sure?',
-                text: 'You are about to cancel this order!',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonText: 'Yes, cancel it!',
-                cancelButtonText: 'No, keep it'
-            }).then((result) => {
-                // If the user clicks Confirm
-                if (result.isConfirmed) {
-                    // Perform fetch GET request to cancel the order
-                    fetch(`/cancelOrder/${orderId}`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                            // You can add more headers if needed
-                        },
-                            body: JSON.stringify({orderStatus})
-                    })
-                    .then(response => {
-                        // Check if the response was successful (status code 200-299)
-                        if (response.ok) {
-                            return response.json(); // Parse the JSON data
-                        } else {
-                            throw new Error('Failed to cancel order'); // Throw an error if response is not OK
-                        }
-                    })
-                    .then(data => {
-                        // Handle the data received from the server (if any)
-                        // For example, display a success message
-                        Swal.fire('Cancelled!', 'Your order has been cancelled.', 'success')
-                        .then(() => {
-                            // Reload the page after successful cancellation
-                            window.location.reload();
-                        });
-                    })
-                    .catch(error => {
-                        // Handle any errors that occurred during the fetch request
-                        console.error('Error:', error);
-                        // Display an error message to the user
-                        Swal.fire('Error!', 'Failed to cancel order. Please try again later.', 'error');
-                    });
-                }
-            });
-        });
-    });
-</script> -->
-
-
-
-
-
-<script>
-$(document).ready(function() {
-    // Event handler for Cancelled button click
-    $('.cancelled-btn').click(function() {
-        // Get the order ID from the data attribute
-        var orderId = $(this).data('order-id');
-        var orderStatus = $(this).data('order-status')
-
-        console.log(orderStatus);
-        console.log(111);
-        // Show SweetAlert confirmation dialog
-        Swal.fire({
-            title: 'Are you sure?',
-            text: 'You are about to cancel this order!',
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonText: 'Yes, cancel it!',
-            cancelButtonText: 'No, keep it'
-        }).then((result) => {
-            // If the user clicks Confirm
-            if (result.isConfirmed) {
-                // Perform fetch POST request to cancel the order
-                fetch(`/cancelOrder/${orderId}`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                        // You can add more headers if needed
-                    },
-                    body: JSON.stringify({ orderStatus })
-                })
-                .then(response => {
-                    // Check if the response was successful (status code 200-299)
-                    if (response.ok) {
-                        return response.json(); // Parse the JSON data
-                    } else {
-                        throw new Error('Failed to cancel order'); // Throw an error if response is not OK
-                    }
-                })
-                .then(data => {
-                    // Handle the data received from the server (if any)
-                    // For example, display a success message
-                    Swal.fire('Cancelled!', 'Your order has been cancelled.', 'success')
-                    .then(() => {
-                        // Reload the page after successful cancellation
-                        window.location.reload();
-                    });
-                })
-                .catch(error => {
-                    // Handle any errors that occurred during the fetch request
-                    console.error('Error:', error);
-                    // Display an error message to the user
-                    Swal.fire('Error!', 'Failed to cancel order. Please try again later.', 'error');
-                });
-            }
-        });
-    });
-
-    // Event handler for Return button click
-    $('.return-btn').click(function() {
-        // Get the order ID from the data attribute
-        var orderId = $(this).data('order-id');
-        var orderStatus = $(this).data('order-status')
-
-        console.log(orderStatus);
-        console.log(111);
-        // Show SweetAlert confirmation dialog
-        Swal.fire({
-            title: 'Are you sure?',
-            text: 'You are about to return this order!',
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonText: 'Yes, return it!',
-            cancelButtonText: 'No, keep it'
-        }).then((result) => {
-            // If the user clicks Confirm
-            if (result.isConfirmed) {
-                // Perform fetch POST request to return the order
-                fetch(`/returnOrder/${orderId}`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                        // You can add more headers if needed
-                    },
-                    body: JSON.stringify({ orderStatus })
-                })
-                .then(response => {
-                    // Check if the response was successful (status code 200-299)
-                    if (response.ok) {
-                        return response.json(); // Parse the JSON data
-                    } else {
-                        throw new Error('Failed to return order'); // Throw an error if response is not OK
-                    }
-                })
-                .then(data => {
-                    // Handle the data received from the server (if any)
-                    // For example, display a success message
-                    Swal.fire('Returned!', 'Your order has been returned.', 'success')
-                    .then(() => {
-                        // Reload the page after successful return
-                        window.location.reload();
-                    });
-                })
-                .catch(error => {
-                    // Handle any errors that occurred during the fetch request
-                    console.error('Error:', error);
-                    // Display an error message to the user
-                    Swal.fire('Error!', 'Failed to return order. Please try again later.', 'error');
-                });
-            }
-        });
-    });
-});
+        window.URL.revokeObjectURL(url);
+      } else {
+      }
+    } catch (error) {}
+  }
 </script>
 
+<script>
+  $(document).ready(function () {
+    // Event handler for Cancelled button click
+    $(".cancelled-btn").click(function () {
+      // Get the order ID from the data attribute
+      var orderId = $(this).data("order-id");
+      var orderStatus = $(this).data("order-status");
 
-
-
-
+      // Show SweetAlert confirmation dialog
+      Swal.fire({
+        title: "Are you sure?",
+        text: "You are about to cancel this order!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Yes, cancel it!",
+        cancelButtonText: "No, keep it",
+      }).then((result) => {
+        // If the user clicks Confirm
+        if (result.isConfirmed) {
+          // Perform fetch POST request to cancel the order
+          fetch(`/cancelOrder/${orderId}`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              // You can add more headers if needed
+            },
+            body: JSON.stringify({ orderStatus }),
+          })
+            .then((response) => {
+              // Check if the response was successful (status code 200-299)
+              if (response.ok) {
+                return response.json(); // Parse the JSON data
+              } else {
+                throw new Error("Failed to cancel order"); // Throw an error if response is not OK
+              }
+            })
+            .then((data) => {
+              // Handle the data received from the server (if any)
+              // For example, display a success message
+              Swal.fire(
+                "Cancelled!",
+                "Your order has been cancelled.",
+                "success"
+              ).then(() => {
+                // Reload the page after successful cancellation
+                window.location.reload();
+              });
+            })
+            .catch((error) => {
+              // Handle any errors that occurred during the fetch request
+              console.error("Error:", error);
+              // Display an error message to the user
+              Swal.fire(
+                "Error!",
+                "Failed to cancel order. Please try again later.",
+                "error"
+              );
+            });
+        }
+      });
+    });
+  });
+</script>
 
 <script>
-    async function invoice(orderId) {
-        try {
-            const response = await fetch(`/download-invoice/${orderId}`);
-            if (response.ok) {
-                const blob = await response.blob();
-                const url = window.URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = 'invoice.pdf';
-                a.click();
-                window.URL.revokeObjectURL(url);
-            } else {
-                console.error('Error generating PDF');
-            }
-        } catch (error) {
-            console.error(error);
-        }
+  function getData(orderId) {
+    var returnReason = $('input[name="returnReason"]:checked').val();
+    if (!returnReason) {
+      return;
     }
-  </script>
 
+    var orderStatus = $(`#returnReasonModal${orderId}`).data("order-status");
+    var data = {
+      orderId: orderId,
+      returnReason: returnReason,
+      orderStatus: orderStatus,
+    };
 
+    $(`#returnReasonModal${orderId}  .btn-secondary`).click();
 
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You are about to return this order!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes, return it!",
+      cancelButtonText: "No, keep it",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        returnOrder(data);
+      } else {
+        window.location.reload();
+      }
+    });
+  }
 
+  async function returnOrder(data) {
+    try {
+      const response = await fetch(`/returnOrder/${data.orderId}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
 
-</body>
+      if (!response.ok) {
+        throw new Error("Failed to return order");
+      }
 
+      const responseData = await response.json();
+      Swal.fire("Returned!", "Your order has been returned.", "success").then(
+        () => {
+          window.location.reload();
+        }
+      );
+    } catch (error) {
+      Swal.fire(
+        "Error!",
+        "Failed to return order. Please try again later.",
+        "error"
+      );
+    }
+  }
+</script>
 
+<script>
+  async function invoice(orderId) {
+    try {
+      const response = await fetch(`/download-invoice/${orderId}`);
+      if (response.ok) {
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "invoice.pdf";
+        a.click();
+        window.URL.revokeObjectURL(url);
+      } else {
+      }
+    } catch (error) {}
+  }
+</script>
 
-</html>
+<script>
+  // JavaScript code to handle repayment button click event
+  document.querySelectorAll(".repayment-btn").forEach((button) => {
+    button.addEventListener("click", async () => {
+      const orderId = button.dataset.orderId;
+      const totalPrice = button.dataset.orderTotalprice;
+
+      try {
+        // Execute Razorpay payment
+        await executeRazorpayPayment(orderId, totalPrice);
+      } catch (error) {}
+    });
+  });
+
+  async function executeRazorpayPayment(orderId, totalPrice) {
+    try {
+      const response = await fetch("/create/orderId", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          amount: totalPrice * 100,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to create Razorpay order");
+      }
+
+      const responseData = await response.json();
+      const razorpayOrderId = responseData.orderId;
+
+      // Initialize Razorpay payment
+      const options = {
+        key: "rzp_test_EPbDs3EDqJVES2",
+        amount: totalPrice * 100,
+        currency: "INR",
+        name: "Velocity",
+        description: "Online Payment",
+        order_id: razorpayOrderId,
+        handler: function (response) {
+          // Handle successful payment
+          executeOrderUpdate(orderId);
+        },
+        prefill: {
+          name: "Customer Name",
+          email: "customer@example.com",
+        },
+        notes: {
+          address: "Customer Address",
+        },
+        theme: {
+          color: "#F37254",
+        },
+      };
+
+      const rzp1 = new Razorpay(options);
+      rzp1.open();
+    } catch (error) {}
+  }
+
+  async function executeOrderUpdate(orderId) {
+    try {
+      const response = await fetch("/orderPaymentUpdate", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          orderId,
+        }),
+      });
+
+      if (response.ok) {
+        // Show success message
+        Swal.fire({
+          icon: "success",
+          title: "Payment Successful",
+          text: "Your payment has been successfully processed.",
+        }).then(() => {
+          // Reload the page
+          window.location.reload();
+        });
+      } else {
+        // Show error message
+        Swal.fire({
+          icon: "error",
+          title: "Payment Update Failed",
+          text: "An error occurred while updating payment status. Please try again later.",
+        });
+      }
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Payment Update Failed",
+        text: "An error occurred while updating payment status. Please try again later.",
+      });
+    }
+  }
+</script>

@@ -2,159 +2,84 @@
 
 <!-- Form Start -->
 <div class="container-fluid pt-4 px-4">
-    <div class="row g-4">
-        <div class="col-sm-12 col-xl-6">
-            <div class="bg-light rounded h-100 p-4">
-                <h6 class="mb-4">Add Coupon</h6>
-                
-                <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="couponName" data-coupon-id="<%=coupon._id%>"
-                        placeholder="couponName " name="couponName" value="<%=coupon.name%>">
-                    <label for="floatingInput">coupon name  :<%=coupon.name%></label>
-                    <div class="couponName-error" style="color: #ff000f;"></div>
-                   
-                </div> 
+  <div class="row g-4">
+    <div class="col-sm-12 col-xl-6">
+      <div class="bg-light rounded h-100 p-4">
+        <h6 class="mb-4">Add Coupon</h6>
 
-                <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="discountPrice" placeholder="discountPrice" name="discountPrice"value="<%=coupon.discountValue%>">
-                    <label for="floatingInput">discount percent : <%=coupon.discountValue%></label>
-                    <div class="discount-error" style="color: red;"></div> <!-- Error message for discount price -->
-                </div>
-
-                <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="expiryDate" placeholder="Expiry Date" name="expiryDate">
-                    <label for="expiryDate" id="expiryDate" >expiry Date:  <%=formattedExpiryDate%></label>
-                    <div class="expiryDate-error"style="color: red;"></div> <!-- Error message for expiry date -->
-                </div>
-                
-                <button type="button" class="btn btn-primary" onclick="createCoupon()">Submit</button>
-            </div>
+        <div class="form-floating mb-3">
+          <input
+            type="text"
+            class="form-control"
+            id="couponName"
+            data-coupon-id="<%=coupon._id%>"
+            placeholder="couponName "
+            name="couponName"
+            value="<%=coupon.name%>"
+          />
+          <label for="floatingInput">coupon name :<%=coupon.name%></label>
+          <div class="couponName-error" style="color: #ff000f"></div>
         </div>
+
+        <div class="form-floating mb-3">
+          <input
+            type="text"
+            class="form-control"
+            id="discountPrice"
+            placeholder="discountPrice"
+            name="discountPrice"
+            value="<%=coupon.discountValue%>"
+          />
+          <label for="floatingInput"
+            >discount percent : <%=coupon.discountValue%></label
+          >
+          <div class="discount-error" style="color: red"></div>
+          <!-- Error message for discount price -->
+        </div>
+
+        <div class="form-floating mb-3">
+          <input
+            type="text"
+            class="form-control"
+            id="expiryDate"
+            placeholder="Expiry Date"
+            name="expiryDate"
+          />
+          <label for="expiryDate" id="expiryDate"
+            >expiry Date: <%=formattedExpiryDate%></label
+          >
+          <div class="expiryDate-error" style="color: red"></div>
+          <!-- Error message for expiry date -->
+        </div>
+
+        <button type="button" class="btn btn-primary" onclick="createCoupon()">
+          Submit
+        </button>
+      </div>
     </div>
+  </div>
 </div>
 <!-- Form End -->
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css"
+/>
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
 <script>
-    // Initialize Flatpickr
-    flatpickr('#expiryDate', {
-        dateFormat: "d/m/Y", // Format: dd/mm/yyyy
-        minDate: "today" // Set minimum date to today
-    });
+  // Initialize Flatpickr
+  flatpickr("#expiryDate", {
+    dateFormat: "d/m/Y", // Format: dd/mm/yyyy
+    minDate: "today", // Set minimum date to today
+  });
 
-
-
-
-    
-//     function createCoupon() {
-//         // Get form inputs
-//         // couponId._id
-//         const couponId = document.getElementById('couponName').dataset.couponId;
-//         console.log(couponId);
-//         const couponName = document.getElementById('couponName').value.trim();
-//         const discountPrice = document.getElementById('discountPrice').value.trim();
-//         const expiryDate = document.getElementById('expiryDate').value.trim();
-
-//         // Regular expressions for validation
-//         const nameRegex = /^[a-zA-Z]+[a-zA-Z0-9 ]*$/; // Alphabets, optionally followed by alphabets, numbers, and spaces
-//         const priceRegex = /^\d+(\.\d+)?$/; // Numbers
-//         const dateRegex = /^(0?[1-9]|[12][0-9]|3[01])\/(0?[1-9]|1[0-2])\/\d{4}$/; // Date in dd/mm/yyyy format
-
-//         // Clear all existing error messages
-//         clearErrorMessages();
-
-//         // Validate coupon name
-
-//         if(!couponName){
-//             document.querySelector('.couponName-error').innerHTML = "its required";
-
-//             return
-//         }
-//         if (!nameRegex.test(couponName)) {
-            
-//             document.querySelector('.couponName-error').innerHTML = "Coupon name must start with an alphabet .";
-//             return;
-//         }
-//         if(!discountPrice){
-//             document.querySelector('.discount-error').innerHTML = "Discount price is required ";
-//             return
-//         }
-
-//         // Validate discount price
-//         if (!priceRegex.test(discountPrice)) {
-//             document.querySelector('.discount-error').innerHTML = "Discount price must be a number.";
-//             return;
-//         }
-
-//         if (!expiryDate) {
-//             document.querySelector('.expiryDate-error').innerHTML = "Expiry date is required";
-//             return;
-//         }
-
-
-//         // Validate expiry date
-//         if (!dateRegex.test(expiryDate)) {
-//             document.querySelector('.expiryDate-error').innerHTML = "Expiry date must be in dd/mm/yyyy format.";
-//             return;
-//         }
-
-
-
-
-
-
-
-
-
-//         fetch(`/admin/editCouponPost/${couponId}`, {
-//     method: 'POST',
-//     headers: {
-//         'Content-Type': 'application/json'
-//     },
-//     body: JSON.stringify({
-//         couponName: couponName,
-//         discountPrice: discountPrice,
-//         expiryDate: expiryDate // Include expiry date in the request body
-//     })
-// })
-// .then(response => {
-//     if (response.ok) {
-//         return response.json(); // Parse response body as JSON
-//     } else {
-//         return response.json().then(error => {
-//             console.error(error);
-//             throw new Error(error.errors[0].msg); // Throw an Error with the error message
-//         });
-//     }
-// })
-// .then(data => {
-//     // Handle response data
-//     alert('Coupon created successfully.');
-//     window.location.href = '/admin/couponList';
-// })
-// .catch(error => {
-//     console.error('Fetch error:', error);
-//     if (error.message === "Coupon already exists") {
-//         alert("Coupon already exists. Please use a different name.");
-//     } else {
-//         alert('Failed to create coupon. Please try again later.');
-//     }
-// });
-
-
-
-//     }
-
-
-function createCoupon() {
+  function createCoupon() {
     // Get form inputs
-    const couponId = document.getElementById('couponName').dataset.couponId;
-    console.log(couponId);
-    const couponName = document.getElementById('couponName').value.trim();
-    const discountPrice = document.getElementById('discountPrice').value.trim();
-    const expiryDate = document.getElementById('expiryDate').value.trim();
+    const couponId = document.getElementById("couponName").dataset.couponId;
+    const couponName = document.getElementById("couponName").value.trim();
+    const discountPrice = document.getElementById("discountPrice").value.trim();
+    const expiryDate = document.getElementById("expiryDate").value.trim();
 
     // Regular expressions for validation
     const nameRegex = /^[a-zA-Z]+[a-zA-Z0-9 ]*$/; // Alphabets, optionally followed by alphabets, numbers, and spaces
@@ -166,80 +91,77 @@ function createCoupon() {
 
     // Validate coupon name
     if (!nameRegex.test(couponName)) {
-        document.querySelector('.couponName-error').innerHTML = "Coupon name must start with an alphabet.";
-        return;
+      document.querySelector(".couponName-error").innerHTML =
+        "Coupon name must start with an alphabet.";
+      return;
     }
     // Validate discount price
     if (!priceRegex.test(discountPrice)) {
-        document.querySelector('.discount-error').innerHTML = "Discount price must be a number.";
-        return;
+      document.querySelector(".discount-error").innerHTML =
+        "Discount price must be a number.";
+      return;
     }
     // Validate expiry date
     if (!dateRegex.test(expiryDate)) {
-        document.querySelector('.expiryDate-error').innerHTML = "Expiry date must be in dd/mm/yyyy format.";
-        return;
+      document.querySelector(".expiryDate-error").innerHTML =
+        "Expiry date must be in dd/mm/yyyy format.";
+      return;
     }
 
     // Create a data object with non-empty values
     const data = {};
-    if (couponName !== '') {
-        data.couponName = couponName;
+    if (couponName !== "") {
+      data.couponName = couponName;
     }
-    if (discountPrice !== '') {
-        data.discountPrice = discountPrice;
+    if (discountPrice !== "") {
+      data.discountPrice = discountPrice;
     }
-    if (expiryDate !== '') {
-        data.expiryDate = expiryDate;
+    if (expiryDate !== "") {
+      data.expiryDate = expiryDate;
     }
 
     // Fetch request only if data object is not empty
     if (Object.keys(data).length > 0) {
-        fetch(`/admin/editCouponPost/${couponId}`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(data)
+      fetch(`/admin/editCouponPost/${couponId}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      })
+        .then((response) => {
+          if (response.ok) {
+            return response.json(); // Parse response body as JSON
+          } else {
+            return response.json().then((error) => {
+              console.error(error);
+              throw new Error(error.errors[0].msg); // Throw an Error with the error message
+            });
+          }
         })
-        .then(response => {
-            if (response.ok) {
-                return response.json(); // Parse response body as JSON
-            } else {
-                return response.json().then(error => {
-                    console.error(error);
-                    throw new Error(error.errors[0].msg); // Throw an Error with the error message
-                });
-            }
+        .then((data) => {
+          // Handle response data
+          alert(data.message);
+          window.location.href = "/admin/couponList";
         })
-        .then(data => {
-            // Handle response data
-            alert(data.message);
-            window.location.href = '/admin/couponList';
-        })
-        .catch(error => {
-            console.error('Fetch error:', error);
-            if (error.message === "Coupon already exists") {
-                alert("Coupon already exists. Please use a different name.");
-            } else {
-                alert('Failed to create coupon. Please try again later.');
-            }
+        .catch((error) => {
+          if (error.message === "Coupon already exists") {
+            alert("Coupon already exists. Please use a different name.");
+          } else {
+            alert("Failed to create coupon. Please try again later.");
+          }
         });
     } else {
-        alert('No data to send.'); // Or handle it in another appropriate way
+      alert("No data to send."); // Or handle it in another appropriate way
     }
-}
+  }
 
-
-
-    function clearErrorMessages() {
-        // Clear all error messages
-        document.querySelector('.couponName-error').innerHTML = '';
-        document.querySelector('.discount-error').innerHTML = '';
-        document.querySelector('.expiryDate-error').innerHTML = '';
-    }
-
-
-  
+  function clearErrorMessages() {
+    // Clear all error messages
+    document.querySelector(".couponName-error").innerHTML = "";
+    document.querySelector(".discount-error").innerHTML = "";
+    document.querySelector(".expiryDate-error").innerHTML = "";
+  }
 </script>
 
 <!-- Footer Start -->

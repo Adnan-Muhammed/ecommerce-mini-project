@@ -1,37 +1,3 @@
-// const mongoose=require('../database/mongodbConnect')
-
-
-
-// //schema setup
-// const  couponSchema=new  mongoose.Schema(
-//     {
-//         name:{
-//             type:String,
-//             unique:true,
-//         },
-//         discountValue:{
-//             type:Number,
-//             required:true,
-//         },
-
-//         isAvailable:{
-//             type:Boolean,
-//             default:true,
-//         },
-    
-//     userIds: [{
-//         type: mongoose.Schema.Types.ObjectId,
-//         ref: 'userCollection' // Assuming you have a User model
-//     }]
-//     }
-// )
-// //model create
-// const CouponDB=new mongoose.model('couponCollections',couponSchema)
-
-// module.exports=CouponDB
-
-
-
 
 
 

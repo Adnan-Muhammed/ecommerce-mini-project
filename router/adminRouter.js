@@ -104,41 +104,38 @@ const orderManagement = require('../controller/orderManagement.js')
 router.get('/orderlist',adminSessionMiddleware.requireAdmin,orderManagement.orderUpdates)
 
 
-router.get('/chart',(req,res)=>{
-    res.render('admin/chart2')
+const OrderDB = require('../models/order.js')
+router.get('/test',async(req,res)=>{
+
+    // const filter = { "paymentStatus.type": "fulfilled" }; 
+    const projection = { billingAddress: 0, createdAt:0,updatedAt:0};
+    const orders = await OrderDB.find(
+        // filter,
+        {},
+            projection);    
+        res.json(orders)
 })
 
 
 
 
-router.get('/chart3',(req,res)=>{
-    res.render('admin/chart3')
-})
 
 
 
-router.get('/chart4',(req,res)=>{
-    res.render('admin/chart4')
-})
 
+router.get('/top5Products/:month',  adminController.top5ProductsMonth)
+router.get('/top5Products/year/:year', adminController.top5ProductsYear )
 
-router.get('/chart5',(req,res)=>{
-    res.render('admin/chart5')
-})
-
-
-router.get('/chart6',(req,res)=>{
-    res.render('admin/chart6')
-})
+router.get('/top5Categories/:month',  adminController.top5CategoriesMonth)
+router.get('/top5Categories/year/:year', adminController.top5CategoriesYear )
 
 
 
-router.get('/datatable2',(req,res)=>{
-    res.render('admin/datatable2')
-})
 
 
-router.get('/salesreport4',(req,res)=>{
-    res.render('admin/salesReport4')
-})
+
+
+
+
+
 module.exports = router;

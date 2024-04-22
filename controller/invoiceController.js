@@ -6,62 +6,6 @@ const OrderDB = require("../models/order");
 const PDFDocument = require('pdfkit');
 
 
-const getOrderById = async (orderId) => {
-//     let pipeline = [
-//         {
-//             $match: {
-                
-
-//                 "paymentStatus.type": "fulfilled",
-//                 // "_id": "orderId"
-//             }
-//         },
-//         {
-//             $project: {
-//                 "_id": 1,
-//                 "userName": 1,
-//                 "paymentMethod": 1,
-//                 "paymentStatus": 1,
-//                 "orderStatus": 1,
-//                 "orderDate": 1,
-//                 "grandTotal": 1,
-//                 "orderItems.productId": 1,
-//                 "orderItems.productName": 1,
-//                 "orderItems.unitPrice": 1,
-//                 "orderItems.quantity": 1,
-//                 "orderItems.price": 1,
-//                 "orderItems.description": 1,
-//                 "orderItems.categoryOffer": 1,
-//                 "orderItems.categoryDiscountPecentage": 1,
-//                 "orderItems.productOffer": 1,
-//                 "orderItems.productDiscountPercentage": 1,
-//                 "orderItems.totalPrice": 1,
-//                 "tax": 1,
-//                 "couponName": 1,
-//                 "couponDiscount": 1,
-//                 "couponDiscountPercentage": 1,
-//                 "shipping": 1,
-//                 "billingAddress": 1,
-//             }
-//         },
-//     ];
-
-    
-
-//     const orderAggregate = await OrderDB.aggregate(pipeline);
-
-//     return orderAggregate;
-
-
-
-    const order = await OrderDB.findById(orderId).lean().exec();
-
-    if(!order){
-        throw new Error('error')
-    
-    }
-    return order;
-};
 
 
 
@@ -71,13 +15,10 @@ const getOrderById = async (orderId) => {
 
 
 
-    // const { generateInvoicePDF } = require('./pdfGenerator'); // Import your PDF generation function
 
 const downloadInvoice = async (req, res) => {
     const orderId = req.params.orderId;
-    console.log(orderId);
-    console.log('opk',77);
-    // return
+ 
 
 
     try{
@@ -86,7 +27,6 @@ const downloadInvoice = async (req, res) => {
         const orderDetail = await getOrderById(orderId); // Assuming this function retrieves a single order object
         
 
-        console.log(orderDetail);
 
 
         // return

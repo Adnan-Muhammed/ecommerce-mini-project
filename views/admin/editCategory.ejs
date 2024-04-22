@@ -1,234 +1,288 @@
-
 <%-include('header')-%>
 
 <!-- Form Start -->
 <div class="container-fluid pt-4 px-4">
-    <div class="row g-4">
-        <div class="col-sm-12 col-xl-6">
-            <div class="bg-light rounded h-100 p-4">
-                <%if(locals.category){%>
-                <h6 class="mb-4">Add Category</h6>
-                <form id="categoryForm" >
+  <div class="row g-4">
+    <div class="col-sm-12 col-xl-6">
+      <div class="bg-light rounded h-100 p-4">
+        <%if(locals.category){%>
+        <h6 class="mb-4">Add Category</h6>
+        <form id="categoryForm">
+          <div class="form-floating mb-3">
+            <input
+              type="text"
+              class="form-control"
+              id="productName"
+              placeholder="product name"
+              name="categoryName"
+              data-category-Id="<%=category._id%>"
+            />
+            <label for="floatingInput"><%=category.name%></label>
+            <div class="categoryNameError" style="color: red"></div>
+          </div>
 
-                    <div class="form-floating mb-3">
-                        <input type="text" class="form-control" id="productName" placeholder="product name"
-                            name="categoryName" data-category-Id="<%=category._id%>">
-                        <label for="floatingInput"><%=category.name%></label>
-                        <div class="categoryNameError" style="color: red;"></div>
-                    </div>
+          <div class="form-check mb-3">
+            <%if(locals.category.discountPercentage){%>
+            <input
+              class="form-check-input"
+              type="checkbox"
+              id="isDiscountCheckbox"
+              checked
+            />
+            <%}else{%>
+            <input
+              class="form-check-input"
+              type="checkbox"
+              id="isDiscountCheckbox"
+            />
+            <%}%>
+            <label class="form-check-label" for="isDiscountCheckbox">
+              Discount
+            </label>
+          </div>
 
+          <div class="form-floating mb-3" id="discountPercentageContainer">
+            <input
+              type="number"
+              class="form-control"
+              id="discountPercentage"
+              placeholder="Discount Percentage"
+              name="discountPercentage"
+            />
+            <label for="floatingInput"
+              >discountPercentage : <%=category.discountPercentage%>%</label
+            >
+            <div class="discountPercentageError" style="color: red"></div>
+          </div>
 
-                    <div class="form-check mb-3">
-                        <%if(locals.category.discountPercentage){%>
-                            <input class="form-check-input" type="checkbox" id="isDiscountCheckbox" checked>
-                            <%}else{%>
-                                <input class="form-check-input" type="checkbox" id="isDiscountCheckbox">
-                            <%}%>
-                        <label class="form-check-label" for="isDiscountCheckbox">
-                            Discount
-                        </label>
-                    </div>
-                    
-                    <div class="form-floating mb-3" id="discountPercentageContainer">
-                        <input type="number" class="form-control" id="discountPercentage"
-                        placeholder="Discount Percentage" name="discountPercentage">
-                        <label for="floatingInput">discountPercentage : <%=category.discountPercentage%>%</label>
-                        <div class="discountPercentageError" style="color: red;"></div>
-                    </div>
+          <div class="form-check mb-3">
+            <%if(locals.category.startDate){%>
+            <input
+              class="form-check-input"
+              type="checkbox"
+              id="permanentDiscountCheckbox"
+            />
+            <%}else{%>
+            <input
+              class="form-check-input"
+              type="checkbox"
+              id="permanentDiscountCheckbox"
+              checked
+            />
+            <%}%>
+            <label
+              class="form-check-label"
+              for="permanentDiscountCheckbox"
+              id="permanentDiscountLabel"
+            >
+              Permanent Discount
+            </label>
+          </div>
 
+          <div class="form-floating mb-3" id="startDateContainer">
+            <input
+              type="text"
+              class="form-control startDatePicker"
+              value="<%=category.startDate%>"
+              id="startDate"
+              placeholder="Start Date"
+              name="startDate"
+            />
+            <label for="floatingInput">Start Date</label>
+            <div class="startDateError error" style="color: red"></div>
+          </div>
 
+          <div class="form-floating mb-3" id="endDateContainer">
+            <input
+              type="text"
+              class="form-control endDatePicker"
+              value="<%=category.endDate%>"
+              id="endDate"
+              placeholder="End Date"
+              name="endDate"
+            />
+            <label for="floatingInput">End Date</label>
+            <div class="endDateError error" style="color: red"></div>
+          </div>
 
-                    <div class="form-check mb-3">
-                        <%if(locals.category.startDate){%>
-                            <input class="form-check-input" type="checkbox" id="permanentDiscountCheckbox" >
-                            <%}else{%>
-                                <input class="form-check-input" type="checkbox" id="permanentDiscountCheckbox" checked>
-                            <%}%>
-                        <label class="form-check-label" for="permanentDiscountCheckbox" id="permanentDiscountLabel">
-                            Permanent Discount
-                        </label>
-                    </div>
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
 
-
-                    <div class="form-floating mb-3" id="startDateContainer">
-                        <input type="text" class="form-control startDatePicker" value="<%=category.startDate%>" id="startDate" placeholder="Start Date"
-                            name="startDate">
-                        <label for="floatingInput">Start Date</label>
-                        <div class="startDateError error" style="color: red;"></div>
-                    </div>
-
-                    <div class="form-floating mb-3" id="endDateContainer">
-                        <input type="text" class="form-control endDatePicker" value="<%=category.endDate%>" id="endDate" placeholder="End Date"
-                            name="endDate">
-                        <label for="floatingInput">End Date</label>
-                        <div class="endDateError error" style="color: red;"></div>
-                    </div>
-
-                    <button type="submit" class="btn btn-primary">Submit</button>
-                </form>
-
-                <%}%>
-            </div>
-        </div>
+        <%}%>
+      </div>
     </div>
+  </div>
 </div>
 
-
-
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css"
+/>
 
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
-
-
 <script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const form = document.querySelector('#categoryForm');
+  document.addEventListener("DOMContentLoaded", () => {
+    const form = document.querySelector("#categoryForm");
 
-        const categoryName = document.getElementById('productName').value.trim().toUpperCase();
-        
+    const categoryName = document
+      .getElementById("productName")
+      .value.trim()
+      .toUpperCase();
 
-        const startDatePicker = flatpickr('.startDatePicker', {
-            dateFormat: 'd/m/Y',
-            minDate: 'today',
-            onClose: function (selectedDates) {
-                if (selectedDates.length > 0) {
-                    endDatePicker.set('minDate', selectedDates[0]);
-                }
-            }
-        });
-
-        const endDatePicker = flatpickr('.endDatePicker', {
-            dateFormat: 'd/m/Y',
-            minDate: 'today',
-        });
-
-        const discountPercentageContainer = document.getElementById('discountPercentageContainer');
-        const startDateContainer = document.getElementById('startDateContainer');
-        const endDateContainer = document.getElementById('endDateContainer');
-        const permanentDiscountCheckbox = document.getElementById('permanentDiscountCheckbox');
-        const firstCheckbox = document.getElementById('isDiscountCheckbox');
-        const permanentDiscountLabel = document.getElementById('permanentDiscountLabel');
-
-        function toggleFields() {
-            const isFirstCheckboxChecked = firstCheckbox.checked;
-            const isPermanentDiscountChecked = permanentDiscountCheckbox.checked;
-
-            discountPercentageContainer.style.display = isFirstCheckboxChecked ? 'block' : 'none';
-            permanentDiscountCheckbox.style.display = isFirstCheckboxChecked ? 'block' : 'none';
-            permanentDiscountLabel.style.display = isFirstCheckboxChecked ? 'block' : 'none';
-
-            startDateContainer.style.display = isPermanentDiscountChecked ? 'none' : (isFirstCheckboxChecked ? 'block' : 'none');
-            endDateContainer.style.display = isPermanentDiscountChecked ? 'none' : (isFirstCheckboxChecked ? 'block' : 'none');
+    const startDatePicker = flatpickr(".startDatePicker", {
+      dateFormat: "d/m/Y",
+      minDate: "today",
+      onClose: function (selectedDates) {
+        if (selectedDates.length > 0) {
+          endDatePicker.set("minDate", selectedDates[0]);
         }
-
-        function validateForm() {
-            const categoryNameValidate = document.getElementById('productName').value.trim().toUpperCase();
-            const discountPercentage = document.getElementById('discountPercentage').value;
-            const startDate = document.getElementById('startDate').value;
-            const endDate = document.getElementById('endDate').value;
-
-            // Category name must be required
-            if (categoryNameValidate === '') {
-                document.querySelector('.categoryNameError').textContent = 'Category name is required';
-                return false;
-            }
-
-            // If isFirstCheckboxChecked, discountPercentageContainer must have a value
-            if(firstCheckbox.checked ){
-            if ( discountPercentage === '') {
-                document.querySelector('.discountPercentageError').textContent = 'Discount percentage is required';
-                return false;
-            }else{
-                document.querySelector('.discountPercentageError').textContent = '';
-            }
-
-            // If !isPermanentDiscountChecked, startDate and endDate must have values
-            if (!permanentDiscountCheckbox.checked) {
-                if (startDate === '') {
-                    document.querySelector('.startDateError').textContent = 'Start date is required';
-                    return false;
-                }else{
-                    document.querySelector('.startDateError').textContent = '';
-
-                }
-                if (endDate === '') {
-                    document.querySelector('.endDateError').textContent = 'End date is required';
-                    return false;
-                }else{
-                    document.querySelector('.endDateError').textContent = '';
-
-                }
-            }else {
-        document.getElementById('startDate').value = '';
-        document.getElementById('endDate').value = '';
-
-        
-    }
-}else{
-    document.getElementById('discountPercentage').value = '';
-    document.getElementById('startDate').value = '';
-    document.getElementById('endDate').value = '';
-
-   
-}
-
-            return true; // Form is valid
-
-        }
-
-
-        
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            if(validateForm()){
-                const formData ={
-                    categoryId : document.getElementById('productName').dataset.categoryId,
-                            categoryName: document.getElementById('productName').value.trim().toUpperCase(),
-                            discountPercentage: document.getElementById('discountPercentage').value,
-                            startDate: document.getElementById('startDate').value,
-                            endDate: document.getElementById('endDate').value
-                }
-                console.log(formData)
-                // return
-                try {
-                    const response = await fetch(`/admin/categoryEdited/${formData.categoryName}`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify(formData)
-                    });
-
-
-
-
-
-
-                    const data = await response.json();
-
-                    if (data.exists) {
-                        alert(data.exists);
-                    } else if(data.success) {
-                        alert(data.success);
-                        window.location.href="/admin/categoryList"
-                    }
-                } catch (error) {
-                    console.error('Error:', error);
-                }
-            }
-            
-        });
-
-        firstCheckbox.addEventListener('change', toggleFields);
-        permanentDiscountCheckbox.addEventListener('change', toggleFields);
-
-        toggleFields();
+      },
     });
+
+    const endDatePicker = flatpickr(".endDatePicker", {
+      dateFormat: "d/m/Y",
+      minDate: "today",
+    });
+
+    const discountPercentageContainer = document.getElementById(
+      "discountPercentageContainer"
+    );
+    const startDateContainer = document.getElementById("startDateContainer");
+    const endDateContainer = document.getElementById("endDateContainer");
+    const permanentDiscountCheckbox = document.getElementById(
+      "permanentDiscountCheckbox"
+    );
+    const firstCheckbox = document.getElementById("isDiscountCheckbox");
+    const permanentDiscountLabel = document.getElementById(
+      "permanentDiscountLabel"
+    );
+
+    function toggleFields() {
+      const isFirstCheckboxChecked = firstCheckbox.checked;
+      const isPermanentDiscountChecked = permanentDiscountCheckbox.checked;
+
+      discountPercentageContainer.style.display = isFirstCheckboxChecked
+        ? "block"
+        : "none";
+      permanentDiscountCheckbox.style.display = isFirstCheckboxChecked
+        ? "block"
+        : "none";
+      permanentDiscountLabel.style.display = isFirstCheckboxChecked
+        ? "block"
+        : "none";
+
+      startDateContainer.style.display = isPermanentDiscountChecked
+        ? "none"
+        : isFirstCheckboxChecked
+        ? "block"
+        : "none";
+      endDateContainer.style.display = isPermanentDiscountChecked
+        ? "none"
+        : isFirstCheckboxChecked
+        ? "block"
+        : "none";
+    }
+
+    function validateForm() {
+      const categoryNameValidate = document
+        .getElementById("productName")
+        .value.trim()
+        .toUpperCase();
+      const discountPercentage =
+        document.getElementById("discountPercentage").value;
+      const startDate = document.getElementById("startDate").value;
+      const endDate = document.getElementById("endDate").value;
+
+      // Category name must be required
+      if (categoryNameValidate === "") {
+        document.querySelector(".categoryNameError").textContent =
+          "Category name is required";
+        return false;
+      }
+
+      // If isFirstCheckboxChecked, discountPercentageContainer must have a value
+      if (firstCheckbox.checked) {
+        if (discountPercentage === "") {
+          document.querySelector(".discountPercentageError").textContent =
+            "Discount percentage is required";
+          return false;
+        } else {
+          document.querySelector(".discountPercentageError").textContent = "";
+        }
+
+        // If !isPermanentDiscountChecked, startDate and endDate must have values
+        if (!permanentDiscountCheckbox.checked) {
+          if (startDate === "") {
+            document.querySelector(".startDateError").textContent =
+              "Start date is required";
+            return false;
+          } else {
+            document.querySelector(".startDateError").textContent = "";
+          }
+          if (endDate === "") {
+            document.querySelector(".endDateError").textContent =
+              "End date is required";
+            return false;
+          } else {
+            document.querySelector(".endDateError").textContent = "";
+          }
+        } else {
+          document.getElementById("startDate").value = "";
+          document.getElementById("endDate").value = "";
+        }
+      } else {
+        document.getElementById("discountPercentage").value = "";
+        document.getElementById("startDate").value = "";
+        document.getElementById("endDate").value = "";
+      }
+
+      return true; // Form is valid
+    }
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      if (validateForm()) {
+        const formData = {
+          categoryId: document.getElementById("productName").dataset.categoryId,
+          categoryName: document
+            .getElementById("productName")
+            .value.trim()
+            .toUpperCase(),
+          discountPercentage:
+            document.getElementById("discountPercentage").value,
+          startDate: document.getElementById("startDate").value,
+          endDate: document.getElementById("endDate").value,
+        };
+        try {
+          const response = await fetch(
+            `/admin/categoryEdited/${formData.categoryName}`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(formData),
+            }
+          );
+
+          const data = await response.json();
+
+          if (data.exists) {
+            alert(data.exists);
+          } else if (data.success) {
+            alert(data.success);
+            window.location.href = "/admin/categoryList";
+          }
+        } catch (error) {}
+      }
+    });
+
+    firstCheckbox.addEventListener("change", toggleFields);
+    permanentDiscountCheckbox.addEventListener("change", toggleFields);
+
+    toggleFields();
+  });
 </script>
 
-
-        <%-include('footer')-%>
-
-
-       
+<%-include('footer')-%>

@@ -1,145 +1,152 @@
 <%-include('header')-%>
 
-
-
-    <!--Body Content-->
-    <div id="page-content">
-    	<!--Page Title-->
-    	<div class="page section-header text-center">
-			<div class="page-title">
-        		<div class="wrapper"><h1 class="page-width">Login</h1></div>
-      		</div>
-		</div>
-        <!--End Page Title-->
-        
-        <div class="container">
-        	<div class="row">
-                
-                <div class="col-12 col-sm-12 col-md-6 col-lg-6 main-col offset-md-3">
-                  
-                	<div class="mb-4">
-                            <!-- <div  class="card-header    errorAlert" >
-                                <p>Incorrect password. Please try again.</p>
-                             </div> -->
-
-
-                             <%if(locals.isAlert){     %>
-                                <div  class="card-header rounded bg-danger text-white   errorAlert" >
-                                    <p>Incorrect password. Please try again.</p>
-                                 </div>
-                            <% } %>
-        
-                            <%if(locals.isAlert2){     %>
-                                <div  class="card-header rounded bg-danger text-white   errorAlert" >
-                                    <p>User not found. Please sign up.</p>
-                                 </div>
-                            <% } %>
-
-                            <%if(locals.isAlert3){     %>
-                                <div  class="card-header rounded bg-danger text-white   errorAlert" >
-
-
-                                    <p>User is Blocked</p>
-                                 </div>
-                            <% } %>
-
-                   
-                       <form method="post" action="/login" id="CustomerLoginForm" accept-charset="UTF-8" class="contact-form">	
-                          <div class="row">
-                            <div class="col-12 col-sm-12 col-md-12 col-lg-12">
-                                <div class="form-group">
-                                    <label for="CustomerEmail">Email</label>
-                                    <input type="" value="adnan@gmail.com" name="email_Id" placeholder="" id="CustomerEmail" class="" autocorrect="off" autocapitalize="off" autofocus="">
-                                    <div class="class" style="color: red;"></div>
-                                
-                                </div>
-                            </div>
-                            <div class="col-12 col-sm-12 col-md-12 col-lg-12">
-                                <div class="form-group">
-                                    <label for="CustomerPassword">Password</label>
-                                    <input type="password" value="33333333" name="password" placeholder="" id="CustomerPassword" class="">                       
-                                    <div class="class" style="color: red;"></div>
- 	
-                                </div>
-                            </div>
-                          </div>
-                          <div class="row">
-                            <div class="text-center col-12 col-sm-12 col-md-12 col-lg-12">
-                                <input type="submit" class="btn mb-3" value="Sign In" style="background-color: cornflowerblue;" onmouseover="this.style.backgroundColor='green'"  onmouseout="this.style.backgroundColor='cornflowerblue'">
-                                <p class="mb-4" >
-									<a href="/forgotPassword" id="RecoverPassword">Forgot your password?</a> &nbsp; | &nbsp;
-								    <a href="/" id="customer_register_link">Create account</a>
-                                </p>
-                            </div>
-                         </div>
-                     </form>
-                    </div>
-               	</div>
-            </div>
-        </div>
-        
+<!--Body Content-->
+<div id="page-content">
+  <!--Page Title-->
+  <div class="page section-header text-center">
+    <div class="page-title">
+      <div class="wrapper"><h1 class="page-width">Login</h1></div>
     </div>
-    <!--End Body Content-->
-    
-  
-    <%-include('footer')-%>
+  </div>
+  <!--End Page Title-->
 
+  <div class="container">
+    <div class="row">
+      <div class="col-12 col-sm-12 col-md-6 col-lg-6 main-col offset-md-3">
+        <div class="mb-4">
+          <%if(locals.isAlert){ %>
+          <div class="card-header rounded bg-danger text-white errorAlert">
+            <p>Incorrect password. Please try again.</p>
+          </div>
+          <% } %> <%if(locals.isAlert2){ %>
+          <div class="card-header rounded bg-danger text-white errorAlert">
+            <p>User not found. Please sign up.</p>
+          </div>
+          <% } %> <%if(locals.isAlert3){ %>
+          <div class="card-header rounded bg-danger text-white errorAlert">
+            <p>User is Blocked</p>
+          </div>
+          <% } %>
+
+          <form
+            method="post"
+            action="/login"
+            id="CustomerLoginForm"
+            accept-charset="UTF-8"
+            class="contact-form"
+          >
+            <div class="row">
+              <div class="col-12 col-sm-12 col-md-12 col-lg-12">
+                <div class="form-group">
+                  <label for="CustomerEmail">Email</label>
+                  <input
+                    type=""
+                    value="ameen@gmail.com"
+                    name="email_Id"
+                    placeholder=""
+                    id="CustomerEmail"
+                    class=""
+                    autocorrect="off"
+                    autocapitalize="off"
+                    autofocus=""
+                  />
+                  <div class="class" style="color: red"></div>
+                </div>
+              </div>
+              <div class="col-12 col-sm-12 col-md-12 col-lg-12">
+                <div class="form-group">
+                  <label for="CustomerPassword">Password</label>
+                  <input
+                    type="password"
+                    value="33333333"
+                    name="password"
+                    placeholder=""
+                    id="CustomerPassword"
+                    class=""
+                  />
+                  <div class="class" style="color: red"></div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="text-center col-12 col-sm-12 col-md-12 col-lg-12">
+                <input
+                  type="submit"
+                  class="btn mb-3"
+                  value="Sign In"
+                  style="background-color: cornflowerblue"
+                  onmouseover="this.style.backgroundColor='green'"
+                  onmouseout="this.style.backgroundColor='cornflowerblue'"
+                />
+                <p class="mb-4">
+                  <a href="/forgotPassword" id="RecoverPassword"
+                    >Forgot your password?</a
+                  >
+                  &nbsp; | &nbsp;
+                  <a href="/" id="customer_register_link">Create account</a>
+                </p>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!--End Body Content-->
+
+<%-include('footer')-%>
 
 <script>
-
-    setTimeout(()=>{
-        const AlertDiv=document.querySelector('.errorAlert')
-        if(AlertDiv){
-            AlertDiv.remove()
-        }
-    },3000)
-   </script>
-
-   
-    
-<script>
-    
-  document.getElementById("CustomerLoginForm").addEventListener("submit", function(event) {
-    event.preventDefault();
-
-    const email = document.getElementById("CustomerEmail").value.trim();
-    const password = document.getElementById("CustomerPassword").value.trim();
-
-    const emailFormat = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-    if (email === "") {
-      document.querySelector("#CustomerEmail + .class").textContent = "Email field is empty. It's required.";
-    } else if (!email.match(emailFormat)) {
-      document.querySelector("#CustomerEmail + .class").textContent = "Please enter a valid email address.";
-    } else {
-      document.querySelector("#CustomerEmail + .class").textContent = "";
+  setTimeout(() => {
+    const AlertDiv = document.querySelector(".errorAlert");
+    if (AlertDiv) {
+      AlertDiv.remove();
     }
-
-    if (password === "") {
-      document.querySelector("#CustomerPassword + .class").textContent = "Password field is empty. It's required.";
-    } else if (password.length < 8) {
-      document.querySelector("#CustomerPassword + .class").textContent = "Password must be at least 8 characters long.";
-    } else {
-      document.querySelector("#CustomerPassword + .class").textContent = "";
-    }
-
-    // If there are no error messages, submit the form
-    const emailError = document.querySelector("#CustomerEmail + .class").textContent;
-    const passwordError = document.querySelector("#CustomerPassword + .class").textContent;
-
-    if (emailError === "" && passwordError === "") {
-      this.submit();
-    }
-  });
+  }, 3000);
 </script>
 
+<script>
+  document
+    .getElementById("CustomerLoginForm")
+    .addEventListener("submit", function (event) {
+      event.preventDefault();
 
+      const email = document.getElementById("CustomerEmail").value.trim();
+      const password = document.getElementById("CustomerPassword").value.trim();
 
-   
-   
-  
+      const emailFormat = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-   
-</body>
+      if (email === "") {
+        document.querySelector("#CustomerEmail + .class").textContent =
+          "Email field is empty. It's required.";
+      } else if (!email.match(emailFormat)) {
+        document.querySelector("#CustomerEmail + .class").textContent =
+          "Please enter a valid email address.";
+      } else {
+        document.querySelector("#CustomerEmail + .class").textContent = "";
+      }
 
-</html>
+      if (password === "") {
+        document.querySelector("#CustomerPassword + .class").textContent =
+          "Password field is empty. It's required.";
+      } else if (password.length < 8) {
+        document.querySelector("#CustomerPassword + .class").textContent =
+          "Password must be at least 8 characters long.";
+      } else {
+        document.querySelector("#CustomerPassword + .class").textContent = "";
+      }
+
+      // If there are no error messages, submit the form
+      const emailError = document.querySelector(
+        "#CustomerEmail + .class"
+      ).textContent;
+      const passwordError = document.querySelector(
+        "#CustomerPassword + .class"
+      ).textContent;
+
+      if (emailError === "" && passwordError === "") {
+        this.submit();
+      }
+    });
+</script>

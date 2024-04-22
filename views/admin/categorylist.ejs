@@ -1,144 +1,141 @@
+<%-include('header')-%> <% function formatDate(date) {%> <% const options = {
+month: 'short', day: 'numeric', year: 'numeric' };%> <% return
+date.toLocaleDateString('en-US', options);%> <%} %>
 
-<%-include('header')-%>
+<!-- Table Start -->
+<div class="container-fluid pt-4 px-4">
+  <div class="row g-4">
+    <div class="bg-light rounded h-100 p-4">
+      <!-- <h6 class="mb-4">Responsive Table</h6> -->
+      <div class="table-responsive">
+        <% if(locals.categoryList){ %>
+        <table class="table">
+          <thead>
+            <tr>
+              <th scope="col">index</th>
+              <th scope="col">category list</th>
+              <th scope="col">special offer</th>
+              <th scope="col">offer validity</th>
+              <th scope="col">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% categoryList.forEach((data, index) => { %>
+            <tr>
+              <td scope="row"><%= index + 1 %></td>
+              <td><%= data.name %></td>
+              <%if(data.discountPercentage){%>
+              <td><%=data.discountPercentage%>%</td>
+              <%}else{%>
+              <td>
+                currently <br />
+                no discount
+              </td>
+              <%}%> <%if(data.discountPercentage && data.startDate){%>
 
-<% function formatDate(date) {%>
-    <% const options = { month: 'short', day: 'numeric', year: 'numeric' };%>
-    <% return date.toLocaleDateString('en-US', options);%>
- <%} %>
+              <td>
+                <%= formatDate(data.startDate) %><br /><%=
+                formatDate(data.endDate) %>
+              </td>
 
-       
+              <%}else if(data.discountPercentage && !data.startDate){%>
+              <td>permanent offer</td>
+              <%}else{%>
+              <td></td>
+              <%}%>
 
-            <!-- Table Start -->
-            <div class="container-fluid pt-4 px-4">
-                <div class="row g-4">
+              <td>
+                <% if (data.isAvailable == true) { %>
+                <button
+                  class="btn btn-info block-btn"
+                  data-user-id="<%= data._id %>"
+                >
+                  to unlist
+                </button>
+                <% } else { %>
+                <button
+                  class="btn btn-info unblock-btn"
+                  data-user-id="<%= data._id %>"
+                >
+                  to list
+                </button>
+                <% } %>
+                <button
+                  class="btn btn-info edit-btn"
+                  data-user-id="<%= data._id %>"
+                >
+                  edit
+                </button>
+              </td>
+            </tr>
+            <% }); %>
+          </tbody>
+        </table>
+        <% } else{%>
+        <h1>no data</h1>
+        <%}%>
+      </div>
+    </div>
 
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 
+    <script>
+      // Function to handle block action
+      document.querySelectorAll(".block-btn").forEach((btn) => {
+        btn.addEventListener("click", function () {
+          const categoryId = this.getAttribute("data-user-id");
+          swal({
+            title: "Are you sure?",
+            text: "Do you want  to unlist  this category?",
+            icon: "warning",
+            buttons: ["Cancel", "to unlist "],
+            dangerMode: true,
+          }).then((willBlock) => {
+            if (willBlock) {
+              window.location.href = `/admin/hide/${categoryId}`;
+            }
+          });
+        });
+      });
 
-                    <div class="bg-light rounded h-100 p-4">
-                        <!-- <h6 class="mb-4">Responsive Table</h6> -->
-                        <div class="table-responsive">
-                            <% if(locals.categoryList){ %>
-                                <table class="table">
-                                    <thead>
-                                        <tr>
-                                            <th scope="col">index</th>
-                                            <th scope="col">category list</th>
-                                            <th scope="col">special offer</th>
-                                            <th scope="col">offer validity</th>
-                                            <th scope="col">Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <% categoryList.forEach((data, index) => { %>
-                                            <tr>
-                                                <td scope="row"><%= index + 1 %></td>
-                                                <td><%= data.name %></td>
-                                                <%if(data.discountPercentage){%>
-                                                    <td><%=data.discountPercentage%>%</td>
-                                                    <%}else{%>
-                                                        <td>currently <br> no discount</td>
-                                                    <%}%>
+      // Function to handle unblock action
+      document.querySelectorAll(".unblock-btn").forEach((btn) => {
+        btn.addEventListener("click", function () {
+          const categoryId = this.getAttribute("data-user-id");
+          swal({
+            title: "Are you sure?",
+            text: "Do you want  to list this category?",
+            icon: "warning",
+            buttons: ["Cancel", "to list"],
+            dangerMode: true,
+          }).then((willUnblock) => {
+            if (willUnblock) {
+              window.location.href = `/admin/show/${categoryId}`;
+            }
+          });
+        });
+      });
 
-                                                    <%if(data.discountPercentage && data.startDate){%>
+      // /categoryEdited/:id
 
-                                                        
+      document.querySelectorAll(".edit-btn").forEach((btn) => {
+        btn.addEventListener("click", function () {
+          const categoryId = this.getAttribute("data-user-id");
+          swal({
+            title: "Are you sure?",
+            text: "Do you want  to edit  this category?",
+            icon: "warning",
+            buttons: ["Cancel", "to edit "],
+            dangerMode: true,
+          }).then((willBlock) => {
+            if (willBlock) {
+              window.location.href = `/admin/editCategory/${categoryId}`;
+            }
+          });
+        });
+      });
+    </script>
 
-                                                        <td><%= formatDate(data.startDate) %><br><%= formatDate(data.endDate) %></td>
-
-
-                                                        
-                                                        <%}else if(data.discountPercentage && !data.startDate){%>
-                                                            <td>permanent offer</td>
-                                                        <%}else{%>
-                                                            <td></td>
-                                                        <%}%>
-
-
-                                                <td>
-                                                    <% if (data.isAvailable == true) { %>
-                                                        <button class="btn btn-info block-btn" data-user-id="<%= data._id %>">to unlist </button>
-                                                    <% } else { %>
-                                                        <button class="btn btn-info unblock-btn" data-user-id="<%= data._id %>">to list</button>
-                                                    <% } %>
-                                                    <button class="btn btn-info edit-btn" data-user-id="<%= data._id %>">edit</button>
-
-                                                </td>
-                                            </tr>
-                                        <% }); %>
-                                    </tbody>
-                                    
-                                </table>
-                            <% } else{%>
-                            <h1>no data</h1>
-                            <%}%>
-                           
-
-
-
-                            
-                        </div>
-                    </div>
-                   
-                    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-
-                    <script>
-                        // Function to handle block action
-                                    document.querySelectorAll('.block-btn').forEach(btn => {
-                                        btn.addEventListener('click', function() {
-                                            const categoryId = this.getAttribute('data-user-id');
-                                            swal({
-                                                title: 'Are you sure?',
-                                                text: 'Do you want  to unlist  this category?',
-                                                icon: 'warning',
-                                                buttons: ['Cancel', 'to unlist '],
-                                                dangerMode: true,
-                                            }).then((willBlock) => {
-                                                if (willBlock) {
-                                                    window.location.href = `/admin/hide/${categoryId}`;
-                                                }
-                                            });
-                                        });
-                                    });
-                                
-
-
-
-                                    // Function to handle unblock action
-                                    document.querySelectorAll('.unblock-btn').forEach(btn => {
-                                        btn.addEventListener('click', function() {
-                                            const categoryId = this.getAttribute('data-user-id');
-                                            swal({
-                                                title: 'Are you sure?',
-                                                text: 'Do you want  to list this category?',
-                                                icon: 'warning',
-                                                buttons: ['Cancel', 'to list'],
-                                                dangerMode: true,
-                                            }).then((willUnblock) => {
-                                                if (willUnblock) {
-                                                    window.location.href = `/admin/show/${categoryId}`;
-                                                }
-                                            });
-                                        });
-                                    });
-
-                        // /categoryEdited/:id
-
-                        document.querySelectorAll('.edit-btn').forEach(btn => {
-                            btn.addEventListener('click', function() {
-                                const categoryId = this.getAttribute('data-user-id');
-                                swal({
-                                    title: 'Are you sure?',
-                                    text: 'Do you want  to edit  this category?',
-                                    icon: 'warning',
-                                    buttons: ['Cancel', 'to edit '],
-                                    dangerMode: true,
-                                }).then((willBlock) => {
-                                    if (willBlock) {
-                                        window.location.href = `/admin/editCategory/${categoryId}`;
-                                    }
-                                });
-                            });
-                        });
-                    </script>
-
-<%-include('footer')-%>
+    <%-include('footer')-%>
+  </div>
+</div>
