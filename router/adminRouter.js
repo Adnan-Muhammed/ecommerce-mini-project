@@ -104,20 +104,6 @@ const orderManagement = require('../controller/orderManagement.js')
 router.get('/orderlist',adminSessionMiddleware.requireAdmin,orderManagement.orderUpdates)
 
 
-const OrderDB = require('../models/order.js')
-router.get('/test',async(req,res)=>{
-
-    // const filter = { "paymentStatus.type": "fulfilled" }; 
-    const projection = { billingAddress: 0, createdAt:0,updatedAt:0};
-    const orders = await OrderDB.find(
-        // filter,
-        {},
-            projection);    
-        res.json(orders)
-})
-
-
-
 
 
 

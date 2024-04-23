@@ -454,14 +454,14 @@ const userlist = async (req, res) => {
             const totalPages = Math.ceil(totalUsersCount / usersPerPage);
 
             if (users.length > 0) {
-                return res.render('admin/userlist', { 
+                return res.render('admin/user-list', { 
                     users, 
                   
                     totalPages,
                     currentPage: page
                 });
             } else {
-                return res.render('admin/userlist', { 
+                return res.render('admin/user-list', { 
                     users: [], 
                    
                     totalPages: 0,
@@ -526,7 +526,7 @@ const userProfile=async (req,res)=>{
         const user = await userDB.findOne({email:emailId})
 
     
-        res.render('user/profile2',{isLogged,user,isPasswordChanged})
+        res.render('user/user-profile',{isLogged,user,isPasswordChanged})
 
     }catch(err){
 res.redirect('/error')
@@ -545,7 +545,7 @@ const userAddAddress = async(req,res)=>{
         const billingDetails = user.billingDetails || []; 
         const userIdJson = user._id
         const userId=userIdJson.toString()
-        res.render('user/addAddress',{isLogged,billingDetails,userId})
+        res.render('user/add-address',{isLogged,billingDetails,userId})
     }catch(err){
         res.redirect('/error')
     }
@@ -564,7 +564,7 @@ const userOrderStatus = async(req,res)=>{
 
 
 
-        res.render('user/orderStatus',{isLogged,orderList})
+        res.render('user/order-status',{isLogged,orderList})
     }catch(err){
 res.redirect('/error')
     }
@@ -580,7 +580,7 @@ const updatePassword = async (req,res)=>{
     const emailId = req.session.user ? req.session.user.email : req.session.userNew? req.session.userNew.email:null
 
     try{
-        res.render('user/updatePassword',{isLogged})
+        res.render('user/update-password',{isLogged})
     }catch(err){
 res.redirect('/error')
     }
@@ -589,7 +589,7 @@ res.redirect('/error')
 
 
 const forgotPassword = (req,res)=>{
-    res.render('user/forgotPassword')
+    res.render('user/forgot-password')
 }
 
 

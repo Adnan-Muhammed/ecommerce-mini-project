@@ -38,13 +38,13 @@ const productListAdmin = async (req, res) => {
 
     if (productList.length > 0) {
       console.log('listed',productList);
-      res.render("admin/productlist", {
+      res.render("admin/product-list", {
         productList,
         totalPages,
         currentPage: page,
       });
     } else {
-      res.render("admin/categorylist");
+      res.render("admin/category-list");
     }
   } catch (err) {
     res.redirect('/error')
@@ -59,7 +59,7 @@ const addProduct = async (req, res) => {
     );
     const multerError = req.session.multerError;
     req.session.multerError = null;
-    res.render("admin/addproduct", { categoryList, multerError });
+    res.render("admin/add-product", { categoryList, multerError });
   } catch (err) {
     res.redirect('/error')
 
@@ -264,7 +264,7 @@ const productUpdate = async (req, res) => {
     const categoryList = await CategoryDB.find(
       { isAvailable: true },
       { name: 1, _id: 1 }
-    );    res.render("admin/editProduct", { editProduct, multerError ,categoryList });
+    );    res.render("admin/edit-product", { editProduct, multerError ,categoryList });
   } catch (err) {
     res.redirect('/error')
   }
@@ -436,7 +436,7 @@ const productListUser = async (req, res) => {
     
     
 
-    res.render("user/productlist", {
+    res.render("user/product-list", {
       isLogged,
       product: productsWithOfferPrice, // Corrected "product" to "products"
       primaryCategories,

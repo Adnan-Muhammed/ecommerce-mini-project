@@ -1,168 +1,137 @@
-const userDB = require('../models/user');
+const userDB = require("../models/user");
 
 const requireUser = (req, res, next) => {
-    if (req.session.user) {
-        console.log('User session found');
-        next();
-    } 
-    else {
-        next()
-    }
+  if (req.session.user) {
+    next();
+  } else {
+    next();
+  }
 };
 
 const requireNotUser = (req, res, next) => {
-    if (req.session.user && !req.session.changePassword) {
-      console.log(333,'its verified post')
-       return  res.redirect('/');
-        }else if(req.session.userNew?.otp){
-        console.log(444,'its verified post')
-        return res.redirect('/')
-        }else {
-        console.log(555,'its verified post')
-        console.log('User session not found');
-        next();
-        }
+  if (req.session.user && !req.session.changePassword) {
+    return res.redirect("/");
+  } else if (req.session.userNew?.otp) {
+    return res.redirect("/");
+  } else {
+    next();
+  }
 };
 
 //testing-=-=-
 
-
-
-
-
-
 //testing-=-=-
 
-const  isBlockedNow=async (req,res,next)=>{
-    console.log('www',111);
-    try{
-
-        if(req.session.user){
-            const {name,email,isBlocked}=req.session.user
-            const user=await userDB.findOne({email:email},{name:1,email:1,isBlocked:1})
-            if(user.isBlocked==true){
-                console.log('isBlocked==true');
-                req.session.isBlocked=true
-                req.session.user=null
-                return res.redirect('/loginpage')
-            }
-            console.log(1111111);
-            if(req.session.changePassword){
-               return res.redirect('/userProfile')
-            }
-        }if(req.session.userNew){
-            const {name,email,isBlocked}=req.session.userNew
-            const user=await userDB.findOne({email:email},{name:1,email:1,isBlocked:1})
-            if(user.isBlocked==true){
-                console.log('isBlocked==true');
-                req.session.isBlocked=true
-                req.session.userNew=null
-                return res.redirect('/loginpage')
-            }
-            next()
-        }
-        else{
-            console.log(2323);
-            next()
-        }
+const isBlockedNow = async (req, res, next) => {
+  try {
+    if (req.session.user) {
+      const { name, email, isBlocked } = req.session.user;
+      const user = await userDB.findOne(
+        { email: email },
+        { name: 1, email: 1, isBlocked: 1 }
+      );
+      if (user.isBlocked == true) {
+        console.log("isBlocked==true");
+        req.session.isBlocked = true;
+        req.session.user = null;
+        return res.redirect("/loginpage");
+      }
+      if (req.session.changePassword) {
+        return res.redirect("/userProfile");
+      }
     }
-    catch(err){
-        console.error(err);
+    if (req.session.userNew) {
+      const { name, email, isBlocked } = req.session.userNew;
+      const user = await userDB.findOne(
+        { email: email },
+        { name: 1, email: 1, isBlocked: 1 }
+      );
+      if (user.isBlocked == true) {
+        req.session.isBlocked = true;
+        req.session.userNew = null;
+        return res.redirect("/loginpage");
+      }
+      next();
+    } else {
+      next();
     }
-}
+  } catch (err) {
+    res.redirect("/error");
+  }
+};
 
-
-const  isBlockedNow2=async (req,res,next)=>{
-    console.log('www',111);
-    try{
-
-        if(req.session.user){
-            const {name,email,isBlocked}=req.session.user
-            const user=await userDB.findOne({email:email},{name:1,email:1,isBlocked:1})
-            if(user.isBlocked==true){
-                console.log('isBlocked==true');
-                req.session.isBlocked=true
-                req.session.user=null
-                console.log('hello its place order user test',12345);
-                return res.redirect('/loginpage')
-
-            }
-            console.log(1111111);
-            if(req.session.changePassword){
-               return res.redirect('/userProfile')
-            }
-            next()
-        }else if(req.session.userNew){
-            const {name,email,isBlocked}=req.session.userNew
-            const user=await userDB.findOne({email:email},{name:1,email:1,isBlocked:1})
-            if(user.isBlocked==true){
-                console.log('isBlocked==true');
-                req.session.isBlocked=true
-                req.session.userNew=null
-                return res.redirect('/loginpage')
-            }
-            next()
-        }else{
-            return res.redirect('/loginpage')
-        }
-        
+const isBlockedNow2 = async (req, res, next) => {
+  try {
+    if (req.session.user) {
+      const { name, email, isBlocked } = req.session.user;
+      const user = await userDB.findOne(
+        { email: email },
+        { name: 1, email: 1, isBlocked: 1 }
+      );
+      if (user.isBlocked == true) {
+        req.session.isBlocked = true;
+        req.session.user = null;
+        return res.redirect("/loginpage");
+      }
+      if (req.session.changePassword) {
+        return res.redirect("/userProfile");
+      }
+      next();
+    } else if (req.session.userNew) {
+      const { name, email, isBlocked } = req.session.userNew;
+      const user = await userDB.findOne(
+        { email: email },
+        { name: 1, email: 1, isBlocked: 1 }
+      );
+      if (user.isBlocked == true) {
+        req.session.isBlocked = true;
+        req.session.userNew = null;
+        return res.redirect("/loginpage");
+      }
+      next();
+    } else {
+      return res.redirect("/loginpage");
     }
-    catch(err){
-        console.error(err);
+  } catch (err) {
+    res.redirect("/error");
+  }
+};
+
+const otpSession = (req, res, next) => {
+  if (req.session.userNew?.otp) {
+    if (req.session.updatePassword) {
+      return next();
     }
-}
-
-
-
-
-
-
-
-
-
-const otpSession=(req,res,next)=>{
-    if( req.session.userNew?.otp){
-        if(req.session.updatePassword){
-          return  next()
-        }
-        console.log('no otp session');
-       return res.redirect('/')
-    }else if(req.session.user){
-        next()  
-}else{
-    return res.redirect('/error')
-}
-}
-
-
+    return res.redirect("/");
+  } else if (req.session.user) {
+    next();
+  } else {
+    return res.redirect("/error");
+  }
+};
 
 const userlogged = (req, res, next) => {
-console.log('userSessionHandling middleware');
-    console.log('is getting here also');
-    if (req.session.userNew || req.session.user) {
-        next();
-    } else {
-        res.redirect('/loginPage');
-    }
-}
+  if (req.session.userNew || req.session.user) {
+    next();
+  } else {
+    res.redirect("/loginPage");
+  }
+};
 
 const passwordUpdation = (req, res, next) => {
-console.log(' forgot password');
-    if (req.session.userNew || req.session.user) {
-        res.redirect('/');
-    } else {
-        next();
-    }
-}
+  if (req.session.userNew || req.session.user) {
+    res.redirect("/");
+  } else {
+    next();
+  }
+};
 
-
-module.exports={
-    requireUser,
-    requireNotUser,
-    isBlockedNow,
-    otpSession,
-    userlogged,
-    passwordUpdation,
-    isBlockedNow2
-    
-}
+module.exports = {
+  requireUser,
+  requireNotUser,
+  isBlockedNow,
+  otpSession,
+  userlogged,
+  passwordUpdation,
+  isBlockedNow2,
+};

@@ -19,7 +19,7 @@ const determineIsLogged = (session) => {
 
    
 const addCoupon=(req,res)=>{
-    res.render('admin/addCoupon')
+    res.render('admin/add-coupon')
 }
 
 
@@ -33,9 +33,9 @@ const couponlist=async (req,res)=>{
 
 
 
-            res.render('admin/couponList',{coupons})
+            res.render('admin/coupon-list',{coupons})
         }else{
-            res.render('admin/couponList')
+            res.render('admin/coupon-list')
             }
         }catch (err){
           req.redirect('/error')
@@ -189,7 +189,7 @@ const editCoupon=  async (req,res)=>{
             day: '2-digit',
             year: 'numeric'
         });
-        res.render('admin/editCoupon',{coupon,formattedExpiryDate})
+        res.render('admin/edit-coupon',{coupon,formattedExpiryDate})
     } catch (err){
       res.redirect('/error')        
     }

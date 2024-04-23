@@ -52,7 +52,7 @@ const pdfDownloading = (req, res) => {
 const salesReport = async (req, res) => {
   try {
     const orders = await generateSalesReport(); // Fetching all orders for sales report
-    res.render("admin/salesReport", { orders });
+    res.render("admin/sales-report", { orders });
 
     // res.json(orders)
   } catch (err) {

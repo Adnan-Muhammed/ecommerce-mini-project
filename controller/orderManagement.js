@@ -25,7 +25,7 @@ const orderUpdates = async (req, res) => {
     
     const orderList = await OrderDB.find();
 
-    res.render("admin/orderlist", { orderList });
+    res.render("admin/order-list", { orderList });
   } catch (err) {
     res.redirect('/error')
   }
@@ -280,7 +280,7 @@ const orderPlacedSuccess = async (req, res) => {
     ? req.session.user.email
     : req.session.userNew.email;
   try {
-    res.render("user/orderPlaced", { isLogged });
+    res.render("user/order-placed", { isLogged });
   } catch (err) {
     res.redirect('/error')
   }
@@ -300,7 +300,7 @@ const orderPlacedFailed = async (req, res) => {
     ? req.session.user.email
     : req.session.userNew.email;
   try {
-    res.render("user/orderFailed", { isLogged });
+    res.render("user/order-failed", { isLogged });
   } catch (err) {
     res.redirect('/error')
   }

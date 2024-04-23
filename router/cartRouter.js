@@ -14,9 +14,7 @@ router.use(session({
 const cartManagement = require('../controller/cartManagement')
  const cartSession=(req,res,next)=>{
    const cartId =req.params.id
-   console.log(cartId);
     req.session.cartId=cartId
-   console.log('cartRouter cartSession creates here');
  
 
     next()

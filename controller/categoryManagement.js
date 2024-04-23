@@ -10,9 +10,9 @@ const categorylist=async (req,res)=>{
     try{
         const categoryList=await CategoryDB.find()
         if(categoryList.length>0){
-            res.render('admin/categorylist',{categoryList})
+            res.render('admin/category-list',{categoryList})
         }else{
-            res.render('admin/categorylist')
+            res.render('admin/category-list')
             }
         }catch (err){
             req.redirect('/error')
@@ -26,7 +26,7 @@ const categorylist=async (req,res)=>{
 
 
 const addCategory=(req,res)=>{
-    res.render('admin/addCategory')
+    res.render('admin/add-category')
 }
 
 
@@ -34,7 +34,7 @@ const editCategory=  async (req,res)=>{
     try{
         const categoryId=req.params.id
         const category = await CategoryDB.findById(categoryId)
-res.render('admin/editCategory',{category})
+res.render('admin/edit-category',{category})
     } catch (err){
         req.redirect('/error')
     }

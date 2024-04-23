@@ -45,9 +45,9 @@ const wishlist = async (req, res) => {
           
           };
       });
-res.render('user/wishlist', { wishlistItems: detailedwishlistItems, isLogged, primaryCategories, otherCategories });
+res.render('user/wish-list', { wishlistItems: detailedwishlistItems, isLogged, primaryCategories, otherCategories });
       }else{
-        res.render('user/wishlist', {isLogged, primaryCategories, otherCategories  });
+        res.render('user/wish-list', {isLogged, primaryCategories, otherCategories  });
       }
     } catch (err) {
       res.status(500).send('Internal Server Error right now');
