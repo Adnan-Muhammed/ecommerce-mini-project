@@ -2,7 +2,7 @@ const UserDB = require("../models/user");
 const ProductDB = require("../models/product");
 const CartDB = require("../models/cart");
 const OrderDB = require("../models/order");
-const Razorpay = require('razorPay')
+const Razorpay = require('razorpay')
 
 
 
