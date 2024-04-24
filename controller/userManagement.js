@@ -21,16 +21,13 @@ const determineIsLogged = (session) => {
 
 const home = async (req, res) => {
     try {
-        // console.log(84848);
         let isLogged = null;
         const product = await productDB.find();
         const { primaryCategories, otherCategories } = await fetchCategoryMiddleware.fetchCategories();
 
         if (req.session.user) {
             isLogged = req.session.user.name;
-            // console.log('userlog');
         } else if (req.session.userNew) {
-            // console.log('userNewlog');
             isLogged = req.session.userNew.name;
         }
 
@@ -135,19 +132,13 @@ const nodemailer = require('nodemailer');
 const userSignupPost = async (req, res) => {
     try {
         const { email, name, password } = req.body;
-
     const  referralCode = (req.body.referralCode)??null
-
     if (referralCode) {
-    
-       
         const referredUser = await userDB.findOneAndUpdate(
             { referral: referralCode }, 
             { $inc: { wallet: 100 } },
             {new:true}
         );
-
-
         const transaction = {
             type: 'credit',
             amount: 100,
@@ -156,26 +147,13 @@ const userSignupPost = async (req, res) => {
           };
           referredUser.transactions.push(transaction);
           await referredUser.save();
-
-
-
-
-
-
-
-
-
-    
     }
-
         const userData = await userDB.findOne({ email: email });
         if (userData) {
             req.session.userExist = userData.email;
             res.redirect('/signuppage');
         } else {
             const hashedPassword = await bcrypt.hash(password, 10);
-
-            
             const otp = otpGenerator.generate(6, {
                 upperCaseAlphabets: false,
                 lowerCaseAlphabets: false,
@@ -188,10 +166,7 @@ const userSignupPost = async (req, res) => {
                 otp:otp,
                 wallet:(referralCode)?50:undefined,
                 transactions: [] // Initialize transactions array
-
             };
-
-
             if (referralCode) {
                 const transaction = {
                     type: 'credit',
@@ -201,29 +176,13 @@ const userSignupPost = async (req, res) => {
                 };
                 user.transactions.push(transaction); // Add transaction to user's transactions array
             }
-
-
-
-
-
-
             req.session.newUser = {
                 email,
                 name,
                 password: hashedPassword,
                 
             };
-
             await userDB.insertMany([user]);
-
-
-
-
-
-
-
-
-            
 
             const transporter = nodemailer.createTransport({
                 service: 'gmail',
@@ -232,13 +191,14 @@ const userSignupPost = async (req, res) => {
                     pass: "tgua inbn eelw qljg"
                 }
             });
-
             const mailOptions = {
                 from: 'adnan.shajahan@gmail.com',
                 to: email,
                 subject: 'Welcome to Our Platform!',
                 text: `Your OTP is ${otp}. Please don't share it.`,
             };
+
+            await transporter.sendMail(mailOptions);
 
          
             res.redirect('/otpPage');
@@ -262,8 +222,10 @@ const otpPage = async (req, res) => {
             throw new Error("Email is required");
         }
         const isOtp = await userDB.findOne({ email }, { otp: 1, _id: 0 });
-        if(!isOtp.otp){
-            const otp = otpGenerator.generate(6, {
+
+        let otp;
+        if(isOtp.otp==null){
+            otp = otpGenerator.generate(6, {
                 upperCaseAlphabets: false,
                 lowerCaseAlphabets: false,
                 specialChars: false,
@@ -273,6 +235,30 @@ const otpPage = async (req, res) => {
                 { $set: { otp: otp } }, 
             );
         }
+
+        if(req.session.resendOtp){
+            const transporter = nodemailer.createTransport({
+                service: 'gmail',
+                auth: {
+                    user: 'adnan.shajahan786@gmail.com',
+                    pass: "tgua inbn eelw qljg"
+                }
+            });
+            const mailOptions = {
+                from: 'adnan.shajahan@gmail.com',
+                to: email,
+                subject: 'Welcome to Our Platform!',
+                text: `Your OTP is ${otp}. Please don't share it.`,
+            };
+
+            await transporter.sendMail(mailOptions);
+        }
+
+
+
+
+
+
         if (isOtp) {
             setTimeout(async () => {
                 await userDB.updateOne({ email }, { $set: { otp: null } });
@@ -336,6 +322,9 @@ const otpVerificationPost = async (req, res) => {
 
 const updatePasswordPost = async (req, res) => {
     try {
+
+
+
         const { email, password } = req.body;
         req.session.email=email
         // Find the user by email
@@ -346,8 +335,6 @@ const updatePasswordPost = async (req, res) => {
         if (req.session.user && req.session.user.email !== user.email) {
             return res.status(404).json({ message: 'your email is not correct' });
         }
-
-
         const hashedPassword = await bcrypt.hash(password, 10);
         // Generate OTP
         const otp = otpGenerator.generate(6, {
@@ -378,14 +365,19 @@ const updatePasswordPost = async (req, res) => {
             subject: 'Password Reset OTP',
             text: `Your OTP for password reset is ${otp}. Please don't share it.`,
         };
+
+        await transporter.sendMail(mailOptions);
       
+
         if(req.session.userNew){
             req.session.updatePassword = true
             return res.redirect('/otpPage');
         }
+       
+
                 res.redirect('/otpPage'); // Redirect to the OTP verification page
     } catch (error) {
-        return res.status(500).json({ message: 'Internal server error.' });
+        // return res.status(500).json({ message: 'Internal server error.' });
         res.redirect('/error')
     }
 };
@@ -405,7 +397,6 @@ const logout= async (req,res)=>{
         res.redirect('/error')
     }
 }
-// its correct
 
 
 
@@ -580,6 +571,7 @@ const updatePassword = async (req,res)=>{
     const emailId = req.session.user ? req.session.user.email : req.session.userNew? req.session.userNew.email:null
 
     try{
+        req.session.updateOrForgotPassword = true
         res.render('user/update-password',{isLogged})
     }catch(err){
 res.redirect('/error')

@@ -31,7 +31,6 @@ const isBlockedNow = async (req, res, next) => {
         { name: 1, email: 1, isBlocked: 1 }
       );
       if (user.isBlocked == true) {
-        console.log("isBlocked==true");
         req.session.isBlocked = true;
         req.session.user = null;
         return res.redirect("/loginpage");
@@ -110,6 +109,36 @@ const otpSession = (req, res, next) => {
   }
 };
 
+const otpSessionNewUser = (req,res,next)=>{
+  if(req.session.newUser){
+    return next();
+  }
+  if(req.session.updateOrForgotPassword){
+    return next();
+  }
+  else{
+    return res.redirect("/error");
+  }
+}
+
+
+const resendOtpSession= (req,res,next)=>{
+  req.session.resendOtp =true
+  if(req.session.newUser){
+    return next();
+  }
+  if(req.session.updateOrForgotPassword){
+    return next();
+  }
+  else{
+    return res.redirect("/error");
+  }
+}
+
+
+
+
+
 const userlogged = (req, res, next) => {
   if (req.session.userNew || req.session.user) {
     next();
@@ -134,4 +163,6 @@ module.exports = {
   userlogged,
   passwordUpdation,
   isBlockedNow2,
+  otpSessionNewUser,
+  resendOtpSession,
 };
