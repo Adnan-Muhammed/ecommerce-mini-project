@@ -10,7 +10,7 @@ const wishlistRoute = require("./router/wishlistRouter");
 const checkoutRoute = require("./router/checkoutRouter");
 const orderRouter = require("./router/orderRouter");
 const productRouter = require("./router/paymentRouter");
-
+const paymentRouter = require('./router/paymentRouter')
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -49,11 +49,12 @@ app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/", userRoute);
 app.use("/admin", adminRoute);
+app.use('/create', paymentRouter)
 app.use(cartRoute);
 app.use(checkoutRoute);
 app.use(orderRouter);
 app.use(wishlistRoute);
-app.use(productRouter);
+// app.use(productRouter);
 
 app.get("/error", (req, res) => {
   res.render("user/404");
