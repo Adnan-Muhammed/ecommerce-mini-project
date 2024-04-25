@@ -661,24 +661,22 @@
   });
 
   function executeRazorpayPayment(orderData) {
+    const data = {
+      amount: orderData.totalValue * 100,
+    };
 
-    var settings = {
-      url: "/create/orderId",
+    fetch("/create/orderId", {
       method: "POST",
-      timeout: 0,
       headers: {
         "Content-Type": "application/json",
       },
-      data: JSON.stringify({
-        amount: orderData.totalValue * 100,
-      }),
-    };
-
-    $.ajax(settings)
-      .done(function (response) {
+      body: JSON.stringify(data),
+    })
+      .then((response) => response.json())
+      .then((response) => {
         const orderId = response.orderId;
         // Razorpay payment integration
-        var options = {
+        const options = {
           key: "rzp_test_EPbDs3EDqJVES2",
           amount: orderData.totalValue * 100,
           currency: "INR",
@@ -686,15 +684,14 @@
           description: "Online Payment",
           image: "",
           order_id: orderId,
-          handler: function (response) {
+          handler: (response) => {
             orderData.paymentStatus = "fulfilled";
-
             executePlaceOrder(orderData);
           },
         };
 
-        var rzp1 = new Razorpay(options);
-        rzp1.on("payment.failed", function (response) {
+        const rzp1 = new Razorpay(options);
+        rzp1.on("payment.failed", (response) => {
           orderData.paymentStatus = "failed";
 
           // Display SweetAlert message
@@ -711,16 +708,15 @@
 
         rzp1.open();
       })
-      .fail(function (jqXHR, textStatus, errorThrown) {
-        if (jqXHR.status === 404) {
+      .catch((error) => {
+        if (error.response && error.response.status === 404) {
           // User is blocked by admin
-
-          $("#BalanceMessage").text(jqXHR.responseJSON.message).show();
-
+          $("#BalanceMessage").text(error.response.data.message).show();
           // alert("User is blocked by admin");
         } else {
           // Other errors
-          alert("An error occurred: " + textStatus);
+          console.error(error);
+          alert("An error occurred: " + error.message);
         }
       });
   }
