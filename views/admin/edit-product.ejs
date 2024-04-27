@@ -10,10 +10,11 @@
         <h6 class="mb-4">Update Product</h6>
         <form
           action="/admin/productupdated/<%=editProduct._id%>"
-          method="post"
+          method="POST"
           enctype="multipart/form-data"
         >
           <div class="form-floating mb-3">
+
             <input
               type="text"
               class="form-control"
@@ -258,8 +259,8 @@
         }).then((result) => {
           if (result.isConfirmed) {
             // If user confirms deletion, proceed with fetch request
-            ///delete/:id/uploads/:imgUrl
-            fetch(`/admin/delete/${productId}/${image}`)
+            fetch(`/admin/delete/${productId}/${image}`, {
+    method: 'DELETE'})
               .then((response) => {
                 if (!response.ok) {
                   throw new Error("Network response was not ok");

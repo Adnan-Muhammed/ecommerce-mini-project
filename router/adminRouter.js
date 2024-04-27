@@ -45,8 +45,10 @@ router.post('/categoryAdded2', adminSessionMiddleware.requireAdmin, categoryMana
 router.post('/newCategoryAdded',adminSessionMiddleware.requireAdmin, categoryManagement.categoryAddedPost)  
 router.get('/show/:id',adminSessionMiddleware.requireAdmin,categoryManagement.show);
 router.get('/hide/:id',adminSessionMiddleware.requireAdmin,categoryManagement.hide);
+
+
 router.get('/editCategory/:id', adminSessionMiddleware.requireAdmin, categoryManagement.editCategory);
-router.post('/categoryEdited/:id',   adminSessionMiddleware.requireAdmin, categoryManagement.editCategoryPost);
+router.put('/categoryEdited/:id',   adminSessionMiddleware.requireAdmin, categoryManagement.editCategoryPost);
 
 
 
@@ -76,12 +78,12 @@ router.get('/list/product/:id',adminSessionMiddleware.requireAdmin,productManage
 router.get('/delete/product/:id',adminSessionMiddleware.requireAdmin,  productManagement.productDelete)
 
 router.get('/addproduct',adminSessionMiddleware.requireAdmin, productManagement.addProduct);
-router.post('/productadded', adminSessionMiddleware.requireAdmin,productManagement.productadded);//post
-router.post('/productUpdated/:id',adminSessionMiddleware.requireAdmin,productManagement.productadded)
+router.post('/productadded', adminSessionMiddleware.requireAdmin,productManagement.productadded);
+router.post('/productupdated/:id',adminSessionMiddleware.requireAdmin,productManagement.productadded)
 
 router.get('/productlist',adminSessionMiddleware.requireAdmin,productManagement.productListAdmin);
 router.get('/productUpdate/:id',adminSessionMiddleware.requireAdmin,productManagement.productUpdate)
-router.get('/delete/:id/uploads/:imgUrl',  adminSessionMiddleware.requireAdmin,productManagement.productImgDelete)
+router.delete('/delete/:id/uploads/:imgUrl',  adminSessionMiddleware.requireAdmin,productManagement.productImgDelete)
 
 
 

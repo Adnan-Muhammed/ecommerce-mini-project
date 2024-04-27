@@ -142,7 +142,6 @@
       link.addEventListener("click", async (event) => {
         event.preventDefault();
         const productId = link.dataset.wishlistId;
-        console.log(productId);
 
         try {
           const response = await fetch(`/remove/wishlist/${productId}`, {
@@ -161,9 +160,7 @@
           window.location.reload();
 
           // alert(responseData.message );
-          console.log("Item removed from wishlist");
         } catch (error) {
-          console.error("Error:", error.message);
           alert(error.message || "Internal Server Error");
         }
       });
