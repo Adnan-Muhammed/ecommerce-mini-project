@@ -33,11 +33,9 @@ const productListAdmin = async (req, res) => {
     const totalProductsCount = await productDB.countDocuments();
 
 
-    console.log(productList);
     const totalPages = Math.ceil(totalProductsCount / productsPerPage);
 
     if (productList.length > 0) {
-      console.log('listed',productList);
       res.render("admin/product-list", {
         productList,
         totalPages,
@@ -79,8 +77,6 @@ const addProduct = async (req, res) => {
 
 const productadded = async (req, res) => {
 
-console.log(1);
-  
   let imageCount = 4;
   const existingProductId = req.params.id ?? null;
 
@@ -141,7 +137,6 @@ console.log(1);
 
 
 
-        console.log(newProduct);
         
         await productDB.insertMany([newProduct]);
         req.session.productAdded = newProduct;
@@ -558,8 +553,7 @@ const priceSortDescending = async (req, res) => {
       price: { $gte: minValue, $lte: maxValue }, // Price range condition
       ...(searchTerm && { name: searchTerm }), // Include name field conditionally
     });
-    console.log(totalProductsCount, "99");
-    console.log(1234);
+   
     const countValue = totalProductsCount;
    
 

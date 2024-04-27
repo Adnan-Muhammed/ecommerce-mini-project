@@ -197,8 +197,7 @@ const addtoCart = async (req, res) => {
       const user = await UserDB.findOne({ email: email });
       const product = await ProductDB.findById(productId);
       const newQuantity = 1;
-      console.log(product);
-      console.log(newQuantity);
+     
 
       if (!user || product.stock <= 0) {
           // Handle user not found or product not available
@@ -264,7 +263,6 @@ const removeFromCart = async (req, res) => {
     const user = await UserDB.findOne({ email: emailId });
 
     if (!user) {
-      // console.log('User not found');
       return res.status(404).send('User not found');
     }
 
@@ -280,11 +278,9 @@ const removeFromCart = async (req, res) => {
     res.redirect('/cartpage'); // You can change this to the appropriate URL
 
   } catch (err) {
-    // console.error('Error removing product from cart:', err);
     res.status(500).send('Internal Server Error');
   }
 };
-
 
 
 const updateQuantity = async (req, res) => {
@@ -320,6 +316,7 @@ const updateQuantity = async (req, res) => {
 
     // Calculate final price after discounts
     let finalPrice = productData.price;
+    let applyCategoryDiscount = true; // Flag to determine whether to apply category discount
 
     if (productData.discountPercentage && productData.discountPercentage > 0) {
       const currentDate = new Date();
@@ -327,8 +324,11 @@ const updateQuantity = async (req, res) => {
 
       if (!expiryDate || currentDate <= expiryDate) {
         finalPrice -= (finalPrice * productData.discountPercentage) / 100;
+        applyCategoryDiscount = false; // Don't apply category discount if product discount exists
       }
-    } else if (productData.categoryId.discountPercentage > 0) {
+    }
+
+    if (applyCategoryDiscount && productData.categoryId.discountPercentage > 0) {
       const currentDate = new Date();
       let startDate = null;
       let endDate = null;
@@ -418,6 +418,7 @@ const updateQuantity = async (req, res) => {
     return res.status(500).json({ error: 'Internal server error' });
   }
 };
+
 
 
 

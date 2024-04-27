@@ -30,17 +30,16 @@ const downloadInvoice = async (req, res) => {
 
 
         // return
-        const invoices = await generateInvoicePDF(orderDetail); // Pass the order as an array to generateInvoicePDF
+        const doc = await generateInvoicePDF(orderDetail); // Pass the order as an array to generateInvoicePDF
         
-    if (invoices.length > 0) {
+    if (true) {
         // Send the first (and only) invoice to the client for download
-        const invoice = invoices[0];
+        // const invoice = invoices[0];
         res.set('Content-Type', 'application/pdf');
-        res.set('Content-Disposition', `attachment; filename=invoice_${orderId}.pdf`);
-        res.send(invoice.pdfBuffer);
-    } else {
-        res.status(404).send('Invoice not found');
-    }
+        res.set('Content-Disposition', `inline; filename=invoice_${orderId}.pdf`);
+        doc.pipe(res)
+        doc.end()
+    } 
 }catch(err){
     res.redirect('/error')
 }
@@ -61,8 +60,8 @@ const generateInvoicePDF = async (orderDetail) => {
     // Create PDF invoice in memory
     const pdfBuffer = await new Promise((resolve, reject) => {
         const buffers = [];
-        doc.on('data', buffer => buffers.push(buffer));
-        doc.on('end', () => resolve(Buffer.concat(buffers)));
+        // doc.on('data', buffer => buffers.push(buffer));
+        // doc.on('end', () => resolve(Buffer.concat(buffers)));
         
         // Add content to the PDF document
         doc.fontSize(16).text('Invoice', { align: 'center' }).moveDown();
@@ -102,12 +101,13 @@ const generateInvoicePDF = async (orderDetail) => {
 
         
         // End PDF generation
-        doc.end();
+        // doc.end();
     });
     
-    invoices.push({ orderId: orderDetail._id, pdfBuffer });
+    // invoices.push({ orderId: orderDetail._id, pdfBuffer });
     
-    return invoices;
+    // return invoices;
+    return doc;
 };
 
 
