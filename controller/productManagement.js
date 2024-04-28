@@ -113,6 +113,8 @@ const productadded = async (req, res) => {
 
 
       if (!req.params.id) {
+        console.log(req.body.price);
+        
         const newProduct = {
           name: req.body.productName,
           price: req.body.productPrice,
@@ -146,17 +148,16 @@ const productadded = async (req, res) => {
       else {
         const productId = req.params.id;
         const existingProduct = await productDB.findById(productId);
+
         const updateProduct = {
           name: req.body.productName,
           price: req.body.productPrice,
           stock: req.body.productStock,
           categoryId: req.body.productCategory,
-          
           description:
           req.body.productDescription.trim() !== ""
           ? req.body.productDescription
           : existingProduct.description,
-
           image:
           (newImages.length > 0 && existingProduct&& existingProduct.image.length > 0)
           ? [...newImages, ...existingProduct.image]

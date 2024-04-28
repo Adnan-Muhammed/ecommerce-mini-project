@@ -11,6 +11,8 @@
   href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css"
 />
 <!-- Select2 CSS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+
 <link
   href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css"
   rel="stylesheet"
@@ -140,14 +142,27 @@
     <div class="bg-light rounded h-100 p-4">
       <h6 class="mb-4">Sales Report</h6>
 
-      <div class="mb-2">
-        <button onclick="downloadPDF()" class="btn btn-sm btn-primary">
-          Download PDF
-        </button>
-        <button onclick="downloadExcel()" class="btn btn-sm btn-primary">
-          Download Excel
-        </button>
+      <div class="d-flex justify-content-between">
+        <div class="mb-2">
+          <button onclick="downloadPDF()" class="btn btn-sm btn-primary">
+            Download PDF
+          </button>
+          <button onclick="downloadExcel()" class="btn btn-sm btn-primary">
+            Download Excel
+          </button>
+        </div>
+        <div class="mb-2 ">
+          <button class="btn btn-sm text-primary" style="background-color: transparent; border: none;">
+            nb: grand total includes tax and delivery Charge
+          </button>
+          
+        </div>
       </div>
+      
+
+
+
+
 
       <div class="table-responsive">
         <table id="my-table" class="table table-bordered">
@@ -156,21 +171,21 @@
               <th rowspan="2">User Name</th>
               <th rowspan="2">Order Date</th>
               <th rowspan="2">
-                Grand Total include( tax:10 & delivery charge:50)
+                Grand Total 
               </th>
-              <th rowspan="2">Payment Status &<br />Order Status</th>
+              <!-- <th rowspan="2">Payment Status &<br />Order Status</th> -->
               <th rowspan="2">Coupon</th>
-              <th rowspan="2">Tax</th>
-              <th style="text-align: center" colspan="7">Order Items</th>
-              <th class="actionBtn" rowspan="2"></th>
+              <!-- <th rowspan="2">Tax</th> -->
+              <th style="text-align: center" colspan="6">Order Items</th>
+              <!-- <th class="actionBtn" rowspan="2"></th> -->
             </tr>
             <tr class="text-dark">
               <th>Product Name</th>
               <th>Unit Price</th>
               <th>Quantity</th>
               <th>Product Price</th>
-              <th>Category Offer</th>
-              <th>Product Offer</th>
+              <th> Offer</th>
+              <!-- <th>Product Offer</th> -->
               <th>Total Price</th>
             </tr>
           </thead>
@@ -184,19 +199,20 @@
                 <%= order.userName %>
               </td>
               <td rowspan="<%= order.orderItems.length %>">
-                <%= new Date(order.orderDate).toLocaleString('en-US', { weekday:
-                'short', day: 'numeric', month: 'short', year: 'numeric', hour:
-                'numeric', minute: 'numeric', second: 'numeric', hour12: true })
+                <%= new Date(order.orderDate).toLocaleString('en-US', {  day: 'numeric', month: 'short', year: 'numeric'  })
                 %>
               </td>
+
+              
+              
               <td rowspan="<%= order.orderItems.length %>">
                 <%= order.grandTotal %>
               </td>
-              <td rowspan="<%= order.orderItems.length %>">
+              <!-- <td rowspan="<%= order.orderItems.length %>">
                 <%= order.paymentStatus.type %>
                 <br />
                 <%= order.orderStatus.type %>
-              </td>
+              </td> -->
               <td rowspan="<%= order.orderItems.length %>">
                 <% if (order.couponName) { %> <%= order.couponName %>
                 <br />
@@ -204,28 +220,28 @@
                 <br />
                 <%= order.couponDiscount %> <% } else { %> N/A <% } %>
               </td>
-              <td rowspan="<%= order.orderItems.length %>"><%= order.tax %></td>
+              <!-- <td rowspan="<%= order.orderItems.length %>"><%= order.tax %></td> -->
               <% } %>
               <td><%= item.productName %></td>
               <td><%= item.unitPrice %></td>
               <td><%= item.quantity %></td>
               <td><%= item.price %></td>
+              
               <td>
-                <%= item.categoryDiscountPecentage %>%
-                <br />
-                <%= item.categoryOffer %>
+                <% if (item.productDiscountPercentage || item.categoryDiscountPercentage) { %>
+                  <%= item.productDiscountPercentage || item.categoryDiscountPercentage %>%
+                <% } else { %>
+                  <!-- Handle case where neither discount percentage exists -->
+                <% } %>
               </td>
-              <td>
-                <%= item.productDiscountPercentage %>%
-                <br />
-                <%= item.productOffer %>
-              </td>
+              
+                
               <td><%= item.totalPrice %></td>
-              <% if (index === 0) { %>
+              <!-- <% if (index === 0) { %>
               <td rowspan="<%= order.orderItems.length %>">
                 <a class="actionBtn" href=""></a>
               </td>
-              <% } %>
+              <% } %> -->
             </tr>
             <% }); %> <% }); %>
           </tbody>
@@ -256,23 +272,15 @@
                                       }">${new Date(
                               order.orderDate
                             ).toLocaleString("en-US", {
-                              weekday: "short",
                               day: "numeric",
                               month: "short",
                               year: "numeric",
-                              hour: "numeric",
-                              minute: "numeric",
-                              second: "numeric",
-                              hour12: true,
+                              
                             })}</td>
                                       <td rowspan="${
                                         order.orderItems.length
                                       }">${order.grandTotal}</td>
-                                      <td rowspan="${
-                                        order.orderItems.length
-                                      }">${order.paymentStatus.type}<br>${
-                              order.orderStatus.type
-                            }</td>
+                                      
                                       <td rowspan="${
                                         order.orderItems.length
                                       }">${
@@ -280,27 +288,21 @@
                                 ? `${order.couponName}<br>${order.couponDiscountPercentage}%<br>${order.couponDiscount}`
                                 : "N/A"
                             }</td>
-                                      <td rowspan="${
-                                        order.orderItems.length
-                                      }">${order.tax}</td>`
+
+
+                                      `
                           : ""
                       }
                       <td>${item.productName}</td>
                       <td>${item.unitPrice}</td>
                       <td>${item.quantity}</td>
                       <td>${item.price}</td>
-                      <td>${item.categoryDiscountPecentage}%<br>${
-          item.categoryOffer
-        }</td>
-                      <td>${item.productDiscountPercentage}%<br>${
-          item.productOffer
-        }</td>
+                      <td>
+  ${item.productDiscountPercentage ? item.productDiscountPercentage + '%' : item.categoryDiscountPercentage ? item.categoryDiscountPercentage + '%' : ''}
+</td>
+
                       <td>${item.totalPrice}</td>
-                      ${
-                        index === 0
-                          ? `<td rowspan="${order.orderItems.length}"><a class="actionBtn" href=""></a></td>`
-                          : ""
-                      }
+                      
                   </tr>`;
       });
     });
@@ -442,53 +444,42 @@
                                     }">${new Date(
                             order.orderDate
                           ).toLocaleString("en-US", {
-                            weekday: "short",
                             day: "numeric",
                             month: "short",
                             year: "numeric",
-                            hour: "numeric",
-                            minute: "numeric",
-                            second: "numeric",
-                            hour12: true,
+                            
                           })}</td>
                                     <td rowspan="${order.orderItems.length}">${
                             order.grandTotal
                           }</td>
-                                    <td rowspan="${order.orderItems.length}">${
-                            order.paymentStatus.type
-                          }<br>${order.orderStatus.type}</td>
+                                   
                                     <td rowspan="${order.orderItems.length}">${
                             order.couponName
                               ? `${order.couponName}<br>${order.couponDiscountPercentage}%<br>${order.couponDiscount}`
                               : "N/A"
                           }</td>
-                                    <td rowspan="${order.orderItems.length}">${
-                            order.tax
-                          }</td>`
+                                   `
                         : ""
                     }
                     <td>${item.productName}</td>
                     <td>${item.unitPrice}</td>
                     <td>${item.quantity}</td>
                     <td>${item.price}</td>
-                    <td>${item.categoryDiscountPecentage}%<br>${
-              item.categoryOffer
-            }</td>
-                    <td>${item.productDiscountPercentage}%<br>${
-              item.productOffer
-            }</td>
+                    <td>
+  ${item.productDiscountPercentage ? item.productDiscountPercentage + '%' : item.categoryDiscountPercentage ? item.categoryDiscountPercentage + '%' : ''}
+</td>
+
                     <td>${item.totalPrice}</td>
-                    ${
-                      index === 0
-                        ? `<td rowspan="${order.orderItems.length}"><a class="actionBtn" href=""></a></td>`
-                        : ""
-                    }
+                    
                 </tr>`;
           });
         });
 
         return html; // Return the generated HTML
       }
+
+
+
 
       // Perform fetch request with the selected dates
       fetch("/admin/dateFilter", {
@@ -521,6 +512,8 @@
 <!-- JavaScript code to generate and download PDF     and EXcel-->
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.1/xlsx.full.min.js"></script>
+
+
 <script>
   function downloadExcel(fileType = "xlsx") {
     // Clone the table
@@ -533,7 +526,9 @@
       }
     });
     const actionHeader = tableClone.querySelector(".actionBtn");
-    actionHeader.parentNode.removeChild(actionHeader);
+    if (actionHeader) {
+      actionHeader.parentNode.removeChild(actionHeader);
+    }
     // Convert the modified table to a worksheet
     const ws = XLSX.utils.table_to_sheet(tableClone);
     const wb = XLSX.utils.book_new();
@@ -542,6 +537,7 @@
   }
 </script>
 
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
 <script>
   function downloadPDF() {
@@ -549,16 +545,19 @@
     // const element = document.querySelector('table');
     const tableClone = document.querySelector("table").cloneNode(true);
     // Remove the action button cells
-    const actionCells = tableClone.querySelectorAll("td[rowspan], th[rowspan]");
-    actionCells.forEach((cell) => {
-      if (cell.innerText.trim() === "download pdf") {
-        cell.innerText = "";
-      }
-    });
+
+    
+
+    const actionCells = tableClone.querySelectorAll(".actionBtn");
+actionCells.forEach((cell) => {
+  cell.remove();
+});
+
 
     const actionHeader = tableClone.querySelector(".actionBtn");
-    actionHeader.innerText = "";
-
+    if (actionHeader) {
+  actionHeader.innerText = "";
+}
     const options = {
       filename: "document.pdf",
       image: { type: "pdf", quality: 0.98 },

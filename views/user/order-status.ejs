@@ -105,6 +105,11 @@
                     <br />
                     <strong> <%= order.paymentStatus.type %> </strong>
 
+
+                   
+
+
+
                     <% if(order.paymentStatus.type =="failed" &&
                     order.orderStatus.type =="processing" ){ %>
                     <button
@@ -137,15 +142,15 @@
                   id="return<%= order.id %>"
                   class="btn btn-warning return-btn"
                   data-order-id="<%= order.id %>"
-                  data-order-status="returned"
+                  data-order-status="order return request"
                   data-toggle="modal"
                   data-target="#returnReasonModal<%= order.id %>"
                 >
                   Return
                 </button>
 
-                <% } else if (order.orderStatus.type !== "cancelled" &&
-                order.orderStatus.type !== "returned") { %>
+                <% } else if (order.orderStatus.type !== "cancelled" && order.orderStatus.type !== "requested to return order"  && order.orderStatus.type !== "return request rejected" &&
+                order.orderStatus.type !== "returned" && order.orderStatus.type !== "return request reject" ) { %>
                 <!-- Show Cancelled button -->
                 <button
                   class="btn btn-info cancelled-btn"
@@ -155,6 +160,7 @@
                   Cancel
                 </button>
                 <% } %>
+               
               </td>
             </tr>
 
@@ -165,7 +171,7 @@
               id="returnReasonModal<%= order.id %>"
               tabindex="-1"
               role="dialog"
-              data-order-status="returned"
+              data-order-status="requested to return order"
               aria-labelledby="returnReasonModalLabel"
               aria-hidden="true"
             >
@@ -535,7 +541,7 @@
       }
 
       const responseData = await response.json();
-      Swal.fire("Returned!", "Your order has been returned.", "success").then(
+      Swal.fire("request send", "Your return   has been send to admin.", "success").then(
         () => {
           window.location.reload();
         }
@@ -543,7 +549,7 @@
     } catch (error) {
       Swal.fire(
         "Error!",
-        "Failed to return order. Please try again later.",
+        "Failed to return order request. Please try again later.",
         "error"
       );
     }

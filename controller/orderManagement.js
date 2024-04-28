@@ -151,7 +151,6 @@ const currentDate = new Date()
         categoryDiscount = categoryOffers[categoryId].discountPercentage;
         categoryOffer = (categoryDiscount * price) / 100
         price -= (price * categoryDiscount) / 100;
-        console.log(categoryDiscount,'-=-=-=-=-','-=-=-=-=-',9086);
       }
 
 
@@ -351,6 +350,65 @@ const orderStatus = async (req, res) => {
 
     }
     }
+    if(newStatus=== "returned"){
+      const paymentReturn =  await OrderDB.findById(orderId)
+
+    if(paymentReturn.paymentStatus.type=="fulfilled"){
+
+
+    const userId =   paymentReturn.userId
+    const returnPayment = paymentReturn.grandTotal
+
+
+
+    const user = await UserDB.findById(userId);
+
+
+        if (!user) {
+          return res.status(404).json({ message: "User not found" });
+        }
+        user.wallet += returnPayment; // Return total amount to user wallet
+        await user.save();
+        // Log the transaction
+        const transaction = {
+          type: 'returned',
+          amount: returnPayment,
+          timestamp: Date.now(),
+          isReturned:true
+        };
+        user.transactions.push(transaction);
+        await user.save();
+
+
+
+
+      paymentReturn.paymentStatus.type="returned"
+      await paymentReturn.save()
+
+
+
+      const orderUpdate = await OrderDB.findById(orderId)
+
+
+      for (const item of orderUpdate.orderItems) {
+        const product = await ProductDB.findById(item.productId);
+        if (!product) {
+          continue; // Skip if product not found
+        }
+        product.stock += item.quantity; // 
+        await product.save();
+
+      }
+
+
+
+
+
+
+
+    }
+
+    }
 
 
 
@@ -361,13 +419,17 @@ const orderStatus = async (req, res) => {
         { new: true } // To return the updated order document
       );
     }
+
+
+
     const updatedOrder = await OrderDB.findByIdAndUpdate(
       orderId,
       { $set: { "orderStatus.type": newStatus } },
       { new: true } // To return the updated order document
     );
 
-    if (updatedOrder) {
+
+    if (updatedOrder ) {
       res.redirect("/admin/orderlist");
     } else {
       res.status(404).json({ message: 'Order not found' });
@@ -449,6 +511,26 @@ const handleOrderStatusUpdate = async (req, res) => {
 
       message = "Order cancelled successfully";
     } 
+
+
+    else if(status === "requested to return order"){
+      const { returnReason } =  req.body
+
+      const orderUpdate = await OrderDB.findByIdAndUpdate(
+        orderId,
+        {
+          $set: {
+            "orderStatus.type": status,
+            returnReason: returnReason
+          }
+        },
+        { new: true }
+      );
+      if (!orderUpdate) {
+        return res.status(404).json({ message: "Order not found" });
+      }
+
+    }
     
     
     else if (status === "returned") {
