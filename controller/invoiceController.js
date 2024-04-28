@@ -7,62 +7,63 @@ const PDFDocument = require('pdfkit');
 
 
 
+const getOrderById = async (orderId) => {
 
+const order = await OrderDB.findById(orderId)
+if(!order){
+    throw new Error('error')
 
-
-
-
-
+}
+return order;
+};
 
 
 
 const downloadInvoice = async (req, res) => {
     const orderId = req.params.orderId;
- 
-
+    
 
     try{
 
-        
+
         const orderDetail = await getOrderById(orderId); // Assuming this function retrieves a single order object
-        
 
 
+        const invoices = await generateInvoicePDF(orderDetail); // Pass the order as an array to generateInvoicePDF
 
-        // return
-        const doc = await generateInvoicePDF(orderDetail); // Pass the order as an array to generateInvoicePDF
-        
-    if (true) {
+    if (invoices.length > 0) {
         // Send the first (and only) invoice to the client for download
-        // const invoice = invoices[0];
+        const invoice = invoices[0];
         res.set('Content-Type', 'application/pdf');
-        res.set('Content-Disposition', `inline; filename=invoice_${orderId}.pdf`);
-        doc.pipe(res)
-        doc.end()
-    } 
+        res.set('Content-Disposition', `attachment; filename=invoice_${orderId}.pdf`);
+        res.send(invoice.pdfBuffer);
+    } else {
+        res.status(404).send('Invoice not found');
+    }
 }catch(err){
     res.redirect('/error')
 }
-    
+
 };
+
 
 
 const generateInvoicePDF = async (orderDetail) => {
     const invoices = [];
-    
+
     const doc = new PDFDocument();
     const invoiceId =generateInvoiceNumber()
 
     const orderDate = new Date(orderDetail.orderDate);
     const formattedDate = `${orderDate.getDate()}/${orderDate.getMonth() + 1}/${orderDate.getFullYear()}`;
 
-    
+
     // Create PDF invoice in memory
     const pdfBuffer = await new Promise((resolve, reject) => {
         const buffers = [];
-        // doc.on('data', buffer => buffers.push(buffer));
-        // doc.on('end', () => resolve(Buffer.concat(buffers)));
-        
+        doc.on('data', buffer => buffers.push(buffer));
+        doc.on('end', () => resolve(Buffer.concat(buffers)));
+
         // Add content to the PDF document
         doc.fontSize(16).text('Invoice', { align: 'center' }).moveDown();
 
@@ -72,17 +73,41 @@ const generateInvoicePDF = async (orderDetail) => {
         doc.fontSize(12).text(`Payment method : ${orderDetail.paymentMethod.type}`,{align: 'center'})
         doc.fontSize(12).text(`Payment method : ${orderDetail.paymentStatus.type}`,{align: 'center'})
         doc.fontSize(12).text(`Date to issue: ${formattedDate}`,{align: 'center'}).moveDown()
-        
+
         // Billing Address
         doc.fontSize(14).text('Billing Address', { underline: true }).moveDown();
-        const billingAddress = orderDetail.billingAddress;
-        doc.fontSize(12).text(`Name: ${billingAddress.name}`);
-        doc.fontSize(12).text(`Phone: ${billingAddress.telephone}`);
-        doc.fontSize(12).text(`Address: ${billingAddress.address}`);
-        doc.fontSize(12).text(`City: ${billingAddress.city}`);
-        doc.fontSize(12).text(`Region/State: ${billingAddress.regionState}`);
-        doc.fontSize(12).text(`Postcode: ${billingAddress.postCode}`).moveDown();
+        // const billingAddress = orderDetail.billingAddress;
+        // doc.fontSize(12).text(`Name: ${billingAddress.name}`);
+        // doc.fontSize(12).text(`Phone: ${billingAddress.telephone}`);
+        // doc.fontSize(12).text(`Address: ${billingAddress.address}`);
+        // doc.fontSize(12).text(`City: ${billingAddress.city}`);
+        // doc.fontSize(12).text(`Region/State: ${billingAddress.regionState}`);
+        // doc.fontSize(12).text(`Postcode: ${billingAddress.postCode}`).moveDown();
         
+const billingAddressHeaders = ['Name', 'Phone', 'Address', 'City', 'Region/State', 'Postcode'];
+const billingAddressData = [` 
+    ${billingAddress.name},
+    ${billingAddress.telephone},
+    ${billingAddress.address},
+    ${billingAddress.city},
+    ${billingAddress.regionState},
+    ${billingAddress.postCode }`
+];
+
+// Table Header
+doc.font('Helvetica-Bold');
+for (const header of billingAddressHeaders) {
+    doc.cell(150, 30, header, { border: true, align: 'center' });
+}
+doc.moveDown();
+
+// Table Row
+doc.font('Helvetica');
+for (const data of billingAddressData) {
+    doc.cell(150, 30, data, { border: true });
+    doc.moveDown();
+}
+
         doc.fontSize(14).text('Order Items', { underline: true }).moveDown();
         for (const item of orderDetail.orderItems) {
             doc.fontSize(12).text(`Product Name: ${item.productName}`);
@@ -99,34 +124,27 @@ const generateInvoicePDF = async (orderDetail) => {
         doc.fontSize(14).text(`Tax: ${orderDetail.tax}`)
         doc.fontSize(14).text(`Grand Total: ${orderDetail.grandTotal}`).moveDown();
 
-        
+
         // End PDF generation
-        // doc.end();
+        doc.end();
     });
-    
-    // invoices.push({ orderId: orderDetail._id, pdfBuffer });
-    
-    // return invoices;
-    return doc;
-};
+
+    invoices.push({ orderId: orderDetail._id, pdfBuffer });
+
+    return invoices;
+};   
+
+
+
 
 
 function generateInvoiceNumber() {
     const prefix = 'INV';
     const date = new Date().toISOString().slice(0, 10).replace(/-/g, ''); // Format: YYYYMMDD
     const randomNumber = Math.floor(Math.random() * 10000).toString().padStart(4, '0'); // Random 4-digit number
-    
+
     return `${prefix}-${date}-${randomNumber}`;
 }
-
-
-
-
-
-
-
-
-
 
 
 

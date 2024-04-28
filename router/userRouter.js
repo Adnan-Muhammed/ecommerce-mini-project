@@ -70,7 +70,7 @@ router.get('/availableCoupons', userSessionHandling.isBlockedNow2,couponManageme
 
 
 const invoiceController = require('../controller/invoiceController.js')
-router.get('/download-invoice/:orderId',userSessionHandling.isBlockedNow2,invoiceController.downloadInvoice)
+router.get('/download-invoice/:orderId', userSessionHandling.isBlockedNow2,invoiceController.downloadInvoice)
 
 
 
