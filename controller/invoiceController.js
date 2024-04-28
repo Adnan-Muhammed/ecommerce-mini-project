@@ -1,27 +1,35 @@
 
-
 const OrderDB = require("../models/order");
 
 
 const PDFDocument = require('pdfkit');
 
 
-
 const getOrderById = async (orderId) => {
 
-const order = await OrderDB.findById(orderId)
-if(!order){
-    throw new Error('error')
 
-}
-return order;
+    const order = await OrderDB.findById(orderId).lean().exec();
+
+    if(!order){
+        throw new Error('error')
+
+    }
+    return order;
 };
+
+
+
+
+
+
+
 
 
 
 const downloadInvoice = async (req, res) => {
     const orderId = req.params.orderId;
-    
+   
+
 
     try{
 
@@ -29,6 +37,9 @@ const downloadInvoice = async (req, res) => {
         const orderDetail = await getOrderById(orderId); // Assuming this function retrieves a single order object
 
 
+
+
+        // return
         const invoices = await generateInvoicePDF(orderDetail); // Pass the order as an array to generateInvoicePDF
 
     if (invoices.length > 0) {
@@ -45,7 +56,6 @@ const downloadInvoice = async (req, res) => {
 }
 
 };
-
 
 
 const generateInvoicePDF = async (orderDetail) => {
@@ -76,37 +86,13 @@ const generateInvoicePDF = async (orderDetail) => {
 
         // Billing Address
         doc.fontSize(14).text('Billing Address', { underline: true }).moveDown();
-        // const billingAddress = orderDetail.billingAddress;
-        // doc.fontSize(12).text(`Name: ${billingAddress.name}`);
-        // doc.fontSize(12).text(`Phone: ${billingAddress.telephone}`);
-        // doc.fontSize(12).text(`Address: ${billingAddress.address}`);
-        // doc.fontSize(12).text(`City: ${billingAddress.city}`);
-        // doc.fontSize(12).text(`Region/State: ${billingAddress.regionState}`);
-        // doc.fontSize(12).text(`Postcode: ${billingAddress.postCode}`).moveDown();
-        
-const billingAddressHeaders = ['Name', 'Phone', 'Address', 'City', 'Region/State', 'Postcode'];
-const billingAddressData = [` 
-    ${billingAddress.name},
-    ${billingAddress.telephone},
-    ${billingAddress.address},
-    ${billingAddress.city},
-    ${billingAddress.regionState},
-    ${billingAddress.postCode }`
-];
-
-// Table Header
-doc.font('Helvetica-Bold');
-for (const header of billingAddressHeaders) {
-    doc.cell(150, 30, header, { border: true, align: 'center' });
-}
-doc.moveDown();
-
-// Table Row
-doc.font('Helvetica');
-for (const data of billingAddressData) {
-    doc.cell(150, 30, data, { border: true });
-    doc.moveDown();
-}
+        const billingAddress = orderDetail.billingAddress;
+        doc.fontSize(12).text(`Name: ${billingAddress.name}`);
+        doc.fontSize(12).text(`Phone: ${billingAddress.telephone}`);
+        doc.fontSize(12).text(`Address: ${billingAddress.address}`);
+        doc.fontSize(12).text(`City: ${billingAddress.city}`);
+        doc.fontSize(12).text(`Region/State: ${billingAddress.regionState}`);
+        doc.fontSize(12).text(`Postcode: ${billingAddress.postCode}`).moveDown();
 
         doc.fontSize(14).text('Order Items', { underline: true }).moveDown();
         for (const item of orderDetail.orderItems) {
@@ -132,10 +118,7 @@ for (const data of billingAddressData) {
     invoices.push({ orderId: orderDetail._id, pdfBuffer });
 
     return invoices;
-};   
-
-
-
+};
 
 
 function generateInvoiceNumber() {
@@ -145,14 +128,6 @@ function generateInvoiceNumber() {
 
     return `${prefix}-${date}-${randomNumber}`;
 }
-
-
-
-
-
-
-
-
 
 
 module.exports = {
