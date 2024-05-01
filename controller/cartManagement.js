@@ -304,7 +304,7 @@ const updateQuantity = async (req, res) => {
     }
 
     if (productData.stock < newQuantity) {
-      return res.status(404).json({ message: 'Out of stock' });
+      return res.status(409).json({  error :'conflict', message: 'The requested quantity exceeds the available stock quantity.' });
     }
 
     // Update quantity and price in cartItem

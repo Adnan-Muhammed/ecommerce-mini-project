@@ -372,7 +372,25 @@
           // Check if the response indicates a product not found error
           return response.json().then((data) => {
             // if (response.status === 404 && data.message === 'Product not found') {
-            if (response.status === 404 && data.message === "out of stock") {
+              console.log(data);
+              console.log('hello');
+              console.log(response.status);
+              if(response.status===409){
+                console.log('its happend');
+                console.log(qtyValue);
+                console.log(stockValue);
+
+                console.log('yessss');
+                let value = document.querySelector(
+      `.qty[data-product-id="${productId}"]`
+    );
+value.value = stockValue
+
+                
+              }
+
+
+            if (response.status === 409 && data.message === "The requested quantity exceeds the available stock quantity.") {
               throw new Error(data.message);
             } else {
               // Handle other errors
@@ -415,11 +433,14 @@
       })
       .catch((error) => {
         // Handle product not found error
+        
 
-        if (error.message === "out of stock") {
-          qtyInput.value = stockValue;
-        } else {
-        }
+        let value = document.querySelector(
+      `.qty[data-product-id="${productId}"]`
+    );
+    value.value = stockValue
+
+       
       });
   };
 </script>
