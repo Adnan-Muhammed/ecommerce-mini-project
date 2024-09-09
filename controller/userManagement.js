@@ -183,7 +183,7 @@ const userSignupPost = async (req, res) => {
                 
             };
             await userDB.insertMany([user]);
-            console.log('adnan.shajahan786@gmail.com');
+            console.log('adnan.shajahan786@gmail.com' , 'something is checking');
             
 
             const transporter = nodemailer.createTransport({
