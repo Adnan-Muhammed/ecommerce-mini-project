@@ -183,6 +183,8 @@ const userSignupPost = async (req, res) => {
                 
             };
             await userDB.insertMany([user]);
+            console.log('adnan.shajahan786@gmail.com');
+            
 
             const transporter = nodemailer.createTransport({
                 service: 'gmail',
@@ -204,6 +206,8 @@ const userSignupPost = async (req, res) => {
             res.redirect('/otpPage');
         }
     } catch (error) {
+        console.log('kittiye');
+        
         res.redirect('/error')
     }
 };
