@@ -131,6 +131,8 @@ const resendOtpSession= (req,res,next)=>{
     return next();
   }
   else{
+    console.log(1,0,8,'resend otp session error');
+    
     return res.redirect("/error");
   }
 }

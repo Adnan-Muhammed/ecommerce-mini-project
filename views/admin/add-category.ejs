@@ -214,6 +214,11 @@
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
       if (validateForm()) {
+
+
+
+
+        
         try {
           const response = await fetch("/admin/categoryAdded", {
             method: "POST",
