@@ -9,7 +9,7 @@ const adminController=require('../controller/adminController.js')
 router.get('/',adminSessionMiddleware.requireNotAdmin,adminController.adminLogin)
 
 
-router.post('/admindashboard',   adminController.adminDashboardPost)
+router.post('/admindashboard', (req,res,next)=>{console.log('helloo'),next()} , adminController.adminDashboardPost)
 router.get('/admindashboard',adminSessionMiddleware.requireAdmin,adminController.adminDashboardGet)
 router.get('/logout', adminController.adminLogout);
 
@@ -28,14 +28,7 @@ router.get('/unblocked/:id',adminSessionMiddleware.requireAdmin, userManagement.
 const categoryManagement = require('../controller/categoryManagement.js');
 router.get('/categoryList', adminSessionMiddleware.requireAdmin, categoryManagement.categorylist);
 router.get('/addCategory', adminSessionMiddleware.requireAdmin, categoryManagement.addCategory);
-
-
-
-
 router.post('/categoryAdded', adminSessionMiddleware.requireAdmin, categoryManagement.categoryAdding);
-
-
-
 
 
 

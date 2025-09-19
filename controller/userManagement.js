@@ -31,8 +31,12 @@ const home = async (req, res) => {
             isLogged = req.session.userNew.name;
         }
 
+        console.log('page and module is in :controller/usermanagement');
+        
         return res.render('user/home', { isLogged, product, primaryCategories, otherCategories });
     } catch (err) {
+        console.log(err);
+        
 
 res.redirect('/error')  
   }
@@ -129,6 +133,7 @@ const userSignupGet=(req,res)=>{
 const otpGenerator = require('otp-generator');
 const nodemailer = require('nodemailer');
 
+
 const userSignupPost = async (req, res) => {
     try {
         const { email, name, password } = req.body;
@@ -148,17 +153,29 @@ const userSignupPost = async (req, res) => {
           referredUser.transactions.push(transaction);
           await referredUser.save();
     }
+
+    console.log(1);
+    
         const userData = await userDB.findOne({ email: email });
         if (userData) {
+
+    console.log(2);
+
             req.session.userExist = userData.email;
             res.redirect('/signuppage');
         } else {
+
+    console.log(3);
+
             const hashedPassword = await bcrypt.hash(password, 10);
             const otp = otpGenerator.generate(6, {
                 upperCaseAlphabets: false,
                 lowerCaseAlphabets: false,
                 specialChars: false,
             });
+
+    console.log(4);
+
             const user = {
                 name: name,
                 email: email,
@@ -167,6 +184,9 @@ const userSignupPost = async (req, res) => {
                 wallet:(referralCode)?50:undefined,
                 transactions: [] // Initialize transactions array
             };
+
+    console.log(5);
+
             if (referralCode) {
                 const transaction = {
                     type: 'credit',
@@ -176,42 +196,377 @@ const userSignupPost = async (req, res) => {
                 };
                 user.transactions.push(transaction); // Add transaction to user's transactions array
             }
+
+    console.log(6);
+
             req.session.newUser = {
                 email,
                 name,
                 password: hashedPassword,
                 
             };
+
+    console.log(7);
+
             await userDB.insertMany([user]);
+            console.log('adnan.shajahan786@gmail.com' , 'something is checking');
+            
+    console.log(8);
 
             const transporter = nodemailer.createTransport({
                 service: 'gmail',
                 auth: {
                     user: 'adnan.shajahan786@gmail.com',
-                    pass: "tgua inbn eelw qljg"
+                    pass: "ppev cvyz pyou hqhz"
                 }
             });
+    console.log(9);
+
             const mailOptions = {
                 from: 'adnan.shajahan@gmail.com',
                 to: email,
                 subject: 'Welcome to Our Platform!',
-                text: `Your OTP is ${otp}. Please don't share it.`,
+                text: `Your OTP is ${otp}. Please don't share it.finally its done`,
             };
 
-            await transporter.sendMail(mailOptions);
+    console.log(10);
 
+            // await transporter.sendMail(mailOptions);
+
+    console.log(11);
          
             res.redirect('/otpPage');
+
+    console.log(12);
+
         }
+
+    console.log(13);
+
     } catch (error) {
+    console.log(14);
+        
         res.redirect('/error')
     }
 };
 
 
+
+
+
+// const userSignupPost = async (req, res) => {
+//     try {
+//         const { email, name, password } = req.body;
+//     const  referralCode = (req.body.referralCode)??null
+//     if (referralCode) {
+//         const referredUser = await userDB.findOneAndUpdate(
+//             { referral: referralCode }, 
+//             { $inc: { wallet: 100 } },
+//             {new:true}
+//         );
+//         const transaction = {
+//             type: 'credit',
+//             amount: 100,
+//             isReferral:true,
+//             timestamp: Date.now()
+//           };
+//           referredUser.transactions.push(transaction);
+//           await referredUser.save();
+//     }
+//         const userData = await userDB.findOne({ email: email });
+//         if (userData) {
+//             req.session.userExist = userData.email;
+//             res.redirect('/signuppage');
+//         } else {
+//             const hashedPassword = await bcrypt.hash(password, 10);
+//             const otp = otpGenerator.generate(6, {
+//                 upperCaseAlphabets: false,
+//                 lowerCaseAlphabets: false,
+//                 specialChars: false,
+//             });
+//             const user = {
+//                 name: name,
+//                 email: email,
+//                 password: hashedPassword, // Save the hashed password in the database
+//                 otp:otp,
+//                 wallet:(referralCode)?50:undefined,
+//                 transactions: [] // Initialize transactions array
+//             };
+//             if (referralCode) {
+//                 const transaction = {
+//                     type: 'credit',
+//                     amount: 50,
+//                     isReferral: true,
+//                     timestamp: Date.now()
+//                 };
+//                 user.transactions.push(transaction); // Add transaction to user's transactions array
+//             }
+//             req.session.newUser = {
+//                 email,
+//                 name,
+//                 password: hashedPassword,
+                
+//             };
+//             await userDB.insertMany([user]);
+
+//             console.log('kli');
+            
+
+//             const transporter = nodemailer.createTransport({
+//                 service: 'gmail',
+//                 auth: {
+//                     // user: 'adnan.shajahan786@gmail.com',
+//                     // pass: "tgua inbn eelw qljg"
+//                     // user: 'deepzsree22@gmail.com',
+//                     // pass: "ydfr deok opgf nksq",
+//                     user: "nischalkshaj5@gmail.com",
+//                     pass: "scojovjuumwsqxnm",
+
+//                 }
+//             });
+
+            
+
+
+//             const mailOptions = {
+//                 from: 'nischalkshaj5@gmail.com',
+//                 to: email,
+//                 subject: 'Welcome to Our Platform!',
+//                 text: `Your OTP is ${otp}. Please don't share it.`,
+//             };
+
+//            const otpTest =await  transporter.sendMail(mailOptions, (error, info) => {
+//                if (error) {
+//                    res.status(500).json({ message: "Failed to send OTP" });
+//                } else {
+//                    res.status(200).json({ message: "OTP sent successfully" });
+//                }
+//            });
+//            console.log(otpTest);
+
+//         // "nodemailer": "^6.9.7",
+
+        
+
+//            console.log(`${email}`);
+           
+//            console.log(otp);
+//            console.log('hai');
+           
+           
+           
+
+         
+//             res.redirect('/otpPage');
+//         }
+//     } catch (error) {
+//         console.log(error);
+        
+//         res.redirect('/error')
+//     }
+// };
+
+
+
+
+// const userSignupPost = async (req, res) => {
+//     try {
+//         const { email, name, password } = req.body;
+//         const referralCode = req.body.referralCode ?? null;
+
+//         if (referralCode) {
+//             const referredUser = await userDB.findOneAndUpdate(
+//                 { referral: referralCode },
+//                 { $inc: { wallet: 100 } },
+//                 { new: true }
+//             );
+
+//             const transaction = {
+//                 type: 'credit',
+//                 amount: 100,
+//                 isReferral: true,
+//                 timestamp: Date.now()
+//             };
+//             referredUser.transactions.push(transaction);
+//             await referredUser.save();
+//         }
+
+//         const userData = await userDB.findOne({ email: email });
+
+//         if (userData) {
+//             req.session.userExist = userData.email;
+//             return res.redirect('/signuppage'); // Use return to prevent further code execution
+//         }
+
+//         const hashedPassword = await bcrypt.hash(password, 10);
+//         const otp = otpGenerator.generate(6, {
+//             upperCaseAlphabets: false,
+//             lowerCaseAlphabets: false,
+//             specialChars: false,
+//         });
+
+//         const user = {
+//             name: name,
+//             email: email,
+//             password: hashedPassword,
+//             otp: otp,
+//             wallet: referralCode ? 50 : undefined,
+//             transactions: []
+//         };
+
+//         if (referralCode) {
+//             const transaction = {
+//                 type: 'credit',
+//                 amount: 50,
+//                 isReferral: true,
+//                 timestamp: Date.now()
+//             };
+//             user.transactions.push(transaction);
+//         }
+
+//         req.session.newUser = {
+//             email,
+//             name,
+//             password: hashedPassword,
+//         };
+
+//         await userDB.insertMany([user]);
+
+//         const transporter = nodemailer.createTransport({
+//             service: 'gmail',
+//             auth: {
+//                 user: 'adnan.shajahan786@gmail.com',
+//                 // pass: 'tgua inbn eelw qljg',
+//                    pass:'ppev cvyz pyou hqhz'
+
+//                 // user: 'nischalkshaj5@gmail.com',
+//                 // pass: 'scojovjuumwsqxnm',
+
+//                 // user: 'deepzsree22@gmail.com',
+//                 // pass: "ydfr deok opgf nksq",
+
+//                 //    user: 'cyber.shopping.project@gmail.com',
+//                 //    pass: "ymdm cgez watr lhil",
+//             }
+//         });
+
+//         const mailOptions = {
+//             from: 'adnan.shajahan786@gmail.com',
+            
+//             // from: 'nischalkshaj5@gmail.com',
+
+//             // from:'deepzsree22@gmail.com',
+
+//             // from: 'cyber.shopping.project@gmail.com',
+
+
+//             to: email,
+//             subject: 'Welcome to Our Platform!',
+//             text: `Your OTP is ${otp}. Please don't share it.`,
+//         };
+
+//         // try {
+//             const info = await transporter.sendMail(mailOptions, (error, info) => {
+//                 if (error) {
+//                     // res.status(500).json({ message: "Failed to send OTP" });
+//                     console.log(error);
+//                     res.redirect('/error')
+                    
+//                 } else {
+//                     console.log(info);
+//                     console.log(otp);
+                    
+                    
+//                     res.redirect('/otpPage')
+//                 }
+//             });
+
+//     } catch (error) {
+//         console.error('Error in userSignupPost:', error);
+//         return res.redirect('/error'); // Use return to prevent further code execution
+//     }
+// };
+
+
+
 //otpPage
 
 
+
+
+// const otpPage = async (req, res) => {
+//     try {
+//         const email = (req.session.user) ? req.session.user.email : (req.session.newUser) ? req.session.newUser.email : req.session.email;
+
+//         if (!email) {
+//             throw new Error("Email is required");
+//         }
+//         const isOtp = await userDB.findOne({ email }, { otp: 1, _id: 0 });
+
+//         console.log(isOtp);
+//         console.log('check when resend ');
+        
+
+        
+//         // let otp;
+//         if(isOtp.otp==null){
+
+//             // otp = otpGenerator.generate(6, {
+//             isOtp.otp = otpGenerator.generate(6, {
+//                 upperCaseAlphabets: false,
+//                 lowerCaseAlphabets: false,
+//                 specialChars: false,
+//             });
+//             await userDB.findOneAndUpdate(
+//                 { email: email }, 
+//                 { $set: { otp: otp } }, 
+//             );
+//         }
+
+//         if(req.session.resendOtp){
+//             const transporter = nodemailer.createTransport({
+//                 service: 'gmail',
+//                 auth: {
+//                     user: 'adnan.shajahan786@gmail.com',
+//                     pass: "tgua inbn eelw qljg"
+//                 }
+//             });
+//             const mailOptions = {
+//                 from: 'adnan.shajahan@gmail.com',
+//                 to: email,
+//                 subject: 'Welcome to Our Platform!',
+//                 text: `Your OTP is ${otp}. Please don't share it.`,
+//             };
+
+//             // await transporter.sendMail(mailOptions);
+//         }
+
+
+
+
+
+//         console.log(isOtp);
+//         console.log(123);
+        
+        
+
+//         if (isOtp) {
+//             console.log(isOtp);
+//             console.log(isOtp.otp);
+            
+//             setTimeout(async () => {
+//                 await userDB.updateOne({ email }, { $set: { otp: null } });
+//             }, 30000);
+//             res.render('user/user-otp', { otp:isOtp });
+//         } else {
+//             res.send('No OTP found');
+//         }
+//     } catch (error) {
+//         console.log(error);
+        
+//         res.redirect('/error')
+//     }
+// };
 
 
 const otpPage = async (req, res) => {
@@ -223,16 +578,25 @@ const otpPage = async (req, res) => {
         }
         const isOtp = await userDB.findOne({ email }, { otp: 1, _id: 0 });
 
-        let otp;
+        console.log(isOtp);
+        console.log('check when resend ');
+        
+
+        
+        // let otp;
         if(isOtp.otp==null){
-            otp = otpGenerator.generate(6, {
+
+            // otp = otpGenerator.generate(6, {
+            isOtp.otp = otpGenerator.generate(6, {
                 upperCaseAlphabets: false,
                 lowerCaseAlphabets: false,
                 specialChars: false,
             });
             await userDB.findOneAndUpdate(
                 { email: email }, 
-                { $set: { otp: otp } }, 
+                // { $set: { otp: otp } }, 
+                { $set: { otp: isOtp.otp } }, 
+
             );
         }
 
@@ -248,18 +612,25 @@ const otpPage = async (req, res) => {
                 from: 'adnan.shajahan@gmail.com',
                 to: email,
                 subject: 'Welcome to Our Platform!',
-                text: `Your OTP is ${otp}. Please don't share it.`,
+                text: `Your OTP is ${isOtp.otp}. Please don't share it.`,
             };
 
-            await transporter.sendMail(mailOptions);
+            // await transporter.sendMail(mailOptions);
         }
 
 
 
 
 
+        console.log(isOtp);
+        console.log(123);
+        
+        
 
         if (isOtp) {
+            console.log(isOtp);
+            console.log(isOtp.otp);
+            
             setTimeout(async () => {
                 await userDB.updateOne({ email }, { $set: { otp: null } });
             }, 30000);
@@ -268,9 +639,13 @@ const otpPage = async (req, res) => {
             res.send('No OTP found');
         }
     } catch (error) {
+        console.log(error);
+        
         res.redirect('/error')
     }
 };
+
+
 
 
 
@@ -346,7 +721,6 @@ const updatePasswordPost = async (req, res) => {
         // Save the OTP in the user document
         user.password = hashedPassword
         user.otp = otp;
-        // await user.otp.save();
         await user.save();
 
 
